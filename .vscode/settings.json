@@ -6,7 +6,10 @@
   "python.pythonPath": ".venv\\Scripts\\python.exe",
   "python.testing.pytestEnabled": true,
   "cSpell.words": [
-    "itertools"
+    "amun",
+    "itertools",
+    "merra",
+    "newa"
   ],
   "python.testing.pytestArgs": [],
   "python.linting.pylintEnabled": false

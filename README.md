@@ -3,7 +3,7 @@
 ## Installing
 
 ```
-pip install
+pip install git+https://github.com/AuroraEnergyResearch/aurora_amun_python_sdk
 ```
 
 ## Developing
