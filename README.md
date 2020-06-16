@@ -1,14 +1,16 @@
 # Aurora Amun SDK
 
+## This is under development and not for general use.
+
 ## Installing
 
-```
+```powershell
 pip install git+https://github.com/AuroraEnergyResearch/aurora_amun_python_sdk
 ```
 
 ## Developing
 
-1. Create a venv and activate if required
+### Create a venv and activate if required
 
 ```powershell
 python -m venv .venv
@@ -16,7 +18,7 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-2. Install dependencies
+### Install dependencies
 
 ```powershell
 # This install this module as symlinks to and all dependencies including the ones needed locally.

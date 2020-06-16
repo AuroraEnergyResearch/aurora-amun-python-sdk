@@ -46,7 +46,7 @@ if __name__ == "__main__":
         log.error(ex)
 
     # Calling with no token in constructor will load one from an environment variable if provided
-    # or a file HOME/.
+    # or a file in HOME/.
     session = AmunSession()
     turbines = session.get_turbines()
     log.info(f"found {len(turbines)} turbines")
