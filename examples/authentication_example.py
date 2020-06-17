@@ -29,7 +29,7 @@ if __name__ == "__main__":
     log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
 
     # Set Level for Amun SDK
-    logging.getLogger("aurora_amun_sdk").setLevel(logging.DEBUG)
+    logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
     # Set Log Level for root logger
     # logging.getLogger().setLevel(
     #    logging.DEBUG
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # making a request with an invalid token throws runtime error
     session = AmunSession(token="Not a Real Token")
     log.debug("Starting")
-    log.info("Getting Turbines")
+    log.info("Getting Turbines with bad token")
     try:
 
         session.get_turbines()
@@ -48,6 +48,7 @@ if __name__ == "__main__":
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file in HOME/.
     session = AmunSession()
+    log.info("Getting Turbines")
     turbines = session.get_turbines()
     log.info(f"found {len(turbines)} turbines")
 

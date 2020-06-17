@@ -47,7 +47,7 @@ if __name__ == "__main__":
     setup_file_and_console_loggers("create_valuation_example.log")
     log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
     # Set Level for Amun SDK
-    logging.getLogger("aurora_amun_sdk").setLevel(logging.DEBUG)
+    logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
 
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
