@@ -86,6 +86,19 @@ class AmunSession:
         response = session_to_use.request("GET", url, params=params)
         return self.__parse_as_json(response)
 
+    def __del_request(self, url, params={}):
+        log.debug(f"DEL Request to {url}  with params {params}")
+
+        response = self.session.request("DELETE", url, params=params)
+        if response.status_code == 200:
+            return
+        elif response.status_code == 401:
+            raise RuntimeError(
+                f"You are not authorised. Please check you have set the correct api token."
+            )
+        else:
+            raise RuntimeError(f"{response.status_code}  {response.text}")
+
     def __put_request(self, url, payload):
         log.debug(f"PUT Request to {url} with payload {payload}")
         response = self.session.request("PUT", url, json=payload)
@@ -116,6 +129,14 @@ class AmunSession:
         url = f"{self.base_url}/valuations"
         return self.__put_request(url, valuation)
 
-    def get_valuation_results(self, valuation_id):
+    def get_valuation_results(self, valuation_id, format, should_return_hourly_data):
+
         url = f"{self.base_url}/valuations/{valuation_id}/outputs"
-        return self.__get_request(url, params={"format": "json"}, should_retry=True)
+        params = {"format": format}
+        if should_return_hourly_data:
+            params["hourlyData"] = True
+        return self.__get_request(url, params=params, should_retry=True)
+
+    def delete_valuation(self, valuation_id):
+        url = f"{self.base_url}/valuations/{valuation_id}"
+        return self.__del_request(url)
