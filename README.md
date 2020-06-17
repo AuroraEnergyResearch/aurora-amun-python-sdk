@@ -5,7 +5,7 @@
 ## Installing
 
 ```powershell
-pip install git+https://github.com/AuroraEnergyResearch/aurora_amun_python_sdk
+pip install git+https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk
 ```
 
 ## Developing

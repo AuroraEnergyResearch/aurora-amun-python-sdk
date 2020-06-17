@@ -1,4 +1,4 @@
-from aurora_amun_sdk.amun import AmunSession
+from aurora.amun.client.session import AmunSession
 import logging
 import logging.handlers
 import os

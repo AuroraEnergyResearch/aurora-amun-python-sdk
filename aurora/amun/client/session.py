@@ -3,7 +3,7 @@ import logging
 import os
 from pathlib import Path
 import json
-from aurora_amun_sdk.utils import configure_session_retry
+from aurora.amun.client.utils import configure_session_retry
 
 
 log = logging.getLogger(__name__)

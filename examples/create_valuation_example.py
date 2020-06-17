@@ -1,10 +1,10 @@
-from aurora_amun_sdk.amun import AmunSession
+from aurora.amun.client.session import AmunSession
 
 import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora_amun_sdk.utils import get_single_value_form_list, save_to_json
+from aurora.amun.client.utils import get_single_value_form_list, save_to_json
 
 log = logging.getLogger(__name__)
 
