@@ -23,29 +23,24 @@ def setup_file_and_console_loggers(fileName):
     logger.addHandler(rotFileHandler)
     logger.addHandler(consoleHandler)
     log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
+
     # Set Level for Amun SDK
     logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
+    # Set Log Level for root logger
+    # logging.getLogger().setLevel(
+    #    logging.DEBUG
+    # )
 
 
 def main():
-    setup_file_and_console_loggers("authentication_example.log")
-
-    # making a request with an invalid token throws runtime error
-    session = AmunSession(token="Not a Real Token")
-    log.debug("Starting")
-    log.info("Getting Turbines with bad token")
-    try:
-
-        session.get_turbines()
-    except RuntimeError as ex:
-        log.error(ex)
+    setup_file_and_console_loggers("valuations_example.log")
 
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file in HOME/.
     session = AmunSession()
-    log.info("Getting Turbines")
-    turbines = session.get_turbines()
-    log.info(f"found {len(turbines)} turbines")
+    log.info("Getting Valuations")
+    valuations = session.get_valuations()
+    log.info(f"found {len(valuations)} valuations")
 
     log.debug("Done")
 

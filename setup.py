@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="aurora-amun-sdk",
-    version="0.1.4",
+    version="0.1.5",
     description="",
     url="https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk",
     author="Aurora Development team",
@@ -13,5 +13,7 @@ setup(
     entry_points={"console_scripts": [""]},
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
-    extras_require={"development": ["flake8", "black", "pytest", "snapshottest"]},
+    extras_require={
+        "development": ["flake8", "black", "pytest", "snapshottest", "sphinx"]
+    },
 )

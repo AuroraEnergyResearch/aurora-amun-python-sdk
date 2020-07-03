@@ -13,13 +13,16 @@ AURORA_API_KEY_FILE_NAME = ".aurora-api-key"
 AURORA_AMUN_PRODUCTION_ENDPOINT = "https://api.auroraer.com/amun/v1"
 
 
-class AmunSession:
-    def __init__(self, baseUrl=None, token=None):
-        self.token = self.__get_token(token)
-        self.base_url = self.__get_base_url(baseUrl)
-        self.session = self.__create_session()
+class APISession:
+    """Internal class to hold base methods for interacting with an Aurora HTTP API
+    """
 
-    def __get_token(self, token):
+    def __init__(self, base_url=None, token=None):
+        self.token = self._get_token(token)
+        self.base_url = self._get_base_url(base_url)
+        self.session = self._create_session()
+
+    def _get_token(self, token):
         if token is not None:
             log.debug(f"Using token passed as parameter to session constructor")
             return token
@@ -29,9 +32,9 @@ class AmunSession:
             )
             return os.environ[AURORA_API_KEY_ENVIRONMENT_VARIABLE_NAME]
         else:
-            return self.__load_token_from_file()
+            return self._load_token_from_file()
 
-    def __get_base_url(self, base_url):
+    def _get_base_url(self, base_url):
         if base_url is not None:
             log.debug(
                 f"Using baseUrl {base_url} passed as parameter to session constructor"
@@ -48,7 +51,7 @@ class AmunSession:
         else:
             return AURORA_AMUN_PRODUCTION_ENDPOINT
 
-    def __load_token_from_file(self):
+    def _load_token_from_file(self):
         file = Path.joinpath(Path.home(), AURORA_API_KEY_FILE_NAME)
         log.debug(f"Looking for token in '{file}'")
         key_found = []
@@ -61,10 +64,10 @@ class AmunSession:
                 raise RuntimeError(f"Could not parse key from file {file}")
         else:
             raise RuntimeError(
-                f"No aurora api key file found '{file}' please create this file and add you api token to it."
+                f"No aurora api key file found '{file}'. Please create the text file '{AURORA_API_KEY_FILE_NAME}' file in your home directory {Path.home()} and add you api token to it."
             )
 
-    def __create_session(self):
+    def _create_session(self):
         log.debug(f"Creating session with token '**************{self.token[-5:]}'")
         session = session = requests.session()
         session.headers = {
@@ -73,20 +76,18 @@ class AmunSession:
         }
         return session
 
-    def __get_request(self, url, params={}, should_retry=False):
+    def _get_request(self, url, params={}, should_retry=False):
         log.debug(f"GET Request to {url}  with params {params}")
 
         if should_retry:
-            session_to_use = configure_session_retry(
-                self.__create_session(), retries=20
-            )
+            session_to_use = configure_session_retry(self._create_session(), retries=20)
         else:
             session_to_use = self.session
 
         response = session_to_use.request("GET", url, params=params)
-        return self.__parse_as_json(response)
+        return self._parse_as_json(response)
 
-    def __del_request(self, url, params={}):
+    def _del_request(self, url, params={}):
         log.debug(f"DEL Request to {url}  with params {params}")
 
         response = self.session.request("DELETE", url, params=params)
@@ -99,44 +100,60 @@ class AmunSession:
         else:
             raise RuntimeError(f"{response.status_code}  {response.text}")
 
-    def __put_request(self, url, payload):
+    def _put_request(self, url, payload):
         log.debug(f"PUT Request to {url} with payload {payload}")
         response = self.session.request("PUT", url, json=payload)
-        return self.__parse_as_json(response)
+        return self._parse_as_json(response)
 
-    def __parse_as_json(self, response):
+    def _parse_as_json(self, response):
         if response.status_code == 200:
             return response.json()
         elif response.status_code == 401:
             raise RuntimeError(
                 f"You are not authorised. Please check you have set the correct api token."
             )
+        elif response.status_code == 403:
+            raise RuntimeError(
+                f"Your token is valid but you do not have the required permissions to perform this operation."
+            )
         else:
             raise RuntimeError(f"{response.status_code}  {response.text}")
+
+
+class AmunSession(APISession):
+    def __init__(self, base_url=None, token=None):
+        super().__init__(base_url, token)
 
     def get_turbines(self):
         payload = {}
         url = f"{self.base_url}/turbines"
-        return self.__get_request(url)
+        return self._get_request(url)
 
     def get_scenarios(self, region):
         payload = {}
         url = f"{self.base_url}/scenarios"
         params = {"region": region}
-        return self.__get_request(url, params)
+        return self._get_request(url, params)
 
     def create_valuation(self, valuation):
         url = f"{self.base_url}/valuations"
-        return self.__put_request(url, valuation)
+        return self._put_request(url, valuation)
+
+    def run_load_factor_calculation(self, load_factor_configuration):
+        url = f"{self.base_url}/loadfactor"
+        return self._put_request(url, load_factor_configuration)
+
+    def get_valuations(self):
+        url = f"{self.base_url}/valuations"
+        return self._get_request(url)
 
     def get_valuation_results(self, valuation_id, format, should_return_hourly_data):
-
         url = f"{self.base_url}/valuations/{valuation_id}/outputs"
         params = {"format": format}
         if should_return_hourly_data:
             params["hourlyData"] = True
-        return self.__get_request(url, params=params, should_retry=True)
+        return self._get_request(url, params=params, should_retry=True)
 
     def delete_valuation(self, valuation_id):
         url = f"{self.base_url}/valuations/{valuation_id}"
-        return self.__del_request(url)
+        return self._del_request(url)
