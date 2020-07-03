@@ -23,13 +23,23 @@
       }
     },
     {
+      "name": "Stage API: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "env": {
+        "AURORA_API_BASE_URL": "https://api-staging.auroraer.com/amun/v1"
+      }
+    },
+    {
       "name": "Local API: Current File",
       "type": "python",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
       "env": {
-        "AURORA_API_KEY": "WindInternalUser",
+        "AURORA_API_KEY": "AMUN_AUTOMATED_TEST_TOKEN",
         "AURORA_API_BASE_URL": "http://localhost:3001/v1"
       }
     }
