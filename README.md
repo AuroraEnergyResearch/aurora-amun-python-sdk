@@ -8,20 +8,13 @@
 pip install git+https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk
 ```
 
-## Developing
+In order to use the Amun API a user token is required. This token can be added to the file `HOME/.aurora-api-key` for example `C:\Users\Joe Bloggs\.aurora-api-key` or set as the environment variable `AURORA_API_KEY`.
 
-### Create a venv and activate if required
+Once the key is set up the `AmunSession` object can be created to access the api
 
-```powershell
-python -m venv .venv
-#enable python virtual environment
-.\.venv\Scripts\Activate.ps1
-```
-
-### Install dependencies
-
-```powershell
-# This install this module as symlinks to and all dependencies including the ones needed locally.
-# It uses setup.py to find dependancies.
-pip install -e  .[development] # This install this module as symlinks to and all dependencies including the ones needed locally.
+```python
+from aurora.amun.client.session import AmunSession
+session  = AmunSession()
+turbines  = session.get_turbines()
+print(turbines[0])
 ```
