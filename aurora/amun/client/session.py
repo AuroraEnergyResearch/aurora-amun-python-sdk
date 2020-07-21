@@ -1,3 +1,5 @@
+from aurora.amun.client.parameters import FlowParameters, LoadFactorBaseParameters
+from typing import Dict
 import requests
 import logging
 import os
@@ -121,27 +123,130 @@ class APISession:
 
 
 class AmunSession(APISession):
+    """Manage access to the Amun API.
+
+    By default the session will connect to the production Amun API endpoint. This can be overridden by passing the base_url into the constructor 
+    or by setting the environment variable *AURORA_API_BASE_URL*. This is for internal use only.
+
+    The authentication token is read from the users home directory *$home/.aurora-api-key* e.g. *C:/Users/Joe Bloggs/.aurora-api-key*. 
+    This can be overridden by passing the token into the constructor or by setting the environment variable *AURORA_API_KEY*.
+
+
+    Args:
+        base_url (string, optional): Override the base url used to contact the Amun API. Defaults to None.
+        token (string, optional): Overide the api authentication token used for API access. Defaults to None.
+    """
+
     def __init__(self, base_url=None, token=None):
         super().__init__(base_url, token)
 
     def get_turbines(self):
-        payload = {}
+        """Get the turbines available to the user.
+
+        **Response**:
+
+       .. code-block:: 
+
+            [{
+                'id': 29,
+                'manufacturer': 'EWT Directwind',
+                'name': 'EWT Directwind 2000/96',
+                'ratedCapacity': 2,
+                'rotorDiameter': 96,
+                'minHubHeight': None,
+                'maxHubHeight': None,
+                'cutInSpeed': 3.5,
+                'cutOutSpeed': 25,
+                'specSource': 'https://www.thewindpower.net/turbine_en_879_ewt_directwind-2000-96.php',
+                'type': 'public',
+                },........
+
+        """
+
         url = f"{self.base_url}/turbines"
         return self._get_request(url)
 
     def get_scenarios(self, region):
-        payload = {}
+        """Get the scenarios that are available for the specified region.
+
+        Args:
+            region (str): The code for the region to lookup scenarios for.
+
+        Returns:
+            List of Scenario details.
+
+        **Response**:
+
+        .. code-block:: 
+
+                [{
+                    'id': 3,
+                    'name': '2019 Smart Power Scenario',
+                    'description': 'To examine the impact of a smarter power system with more flexible capacity and demand',
+                    'region': 'gbr',
+                    'S3uri': None,
+                    'currency': 'GBP',
+                    'currencyYear': 2018,
+                    'hasFile': False
+                },.....
+
+        """
         url = f"{self.base_url}/scenarios"
         params = {"region": region}
-        return self._get_request(url, params)
+        scenarios = self._get_request(url, params)
+        return scenarios  # list(map(lambda x: scenario_from_dict(x), scenarios))
 
     def create_valuation(self, valuation):
         url = f"{self.base_url}/valuations"
         return self._put_request(url, valuation)
 
-    def run_load_factor_calculation(self, load_factor_configuration):
+    def run_load_factor_calculation(self, load_factor_configuration: Dict):
+        """Calculate the load factor and wind speeds for a year given a start time and a location.
+
+        Args:
+            load_factor_configuration (Dict): A dictionary of load factor parameters.
+
+        Returns:
+            Dictionary: A Dictionary with the keys
+
+            * parameters
+            * appliedParams
+            * typicalHourly
+            * weatherYearHourly
+
+        """
         url = f"{self.base_url}/loadfactor"
         return self._put_request(url, load_factor_configuration)
+
+    def run_load_factor_for_parameters(
+        self, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
+    ):
+        """Calculate the load factor and wind speeds for a year given a start time and a location.
+
+        Args:
+            flow_parameters (FlowParameters): The parameters specific to the calculation type 
+
+                * AverageWindSpeedParameters, 
+                * BuiltInWindParameters, 
+                * PowerDensityParameters, 
+                * WeibullParameters
+
+            base_parameters (LoadFactorBaseParameters): The parameters required for all flows to the calculation type.
+
+        Returns:
+            Dictionary: A Dictionary with the keys
+
+                * parameters
+                * appliedParams
+                * typicalHourly
+                * weatherYearHourly
+        """
+
+        # Create a request by combining the paramters
+        request = {}
+        request.update(vars(flow_parameters))
+        request.update(vars(base_parameters))
+        return self.run_load_factor_calculation(request)
 
     def get_valuations(self):
         url = f"{self.base_url}/valuations"

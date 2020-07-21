@@ -1,3 +1,12 @@
+import requests
+from aurora.amun.client.parameters import (
+    AverageWindSpeedParameters,
+    BuiltInWindParameters,
+    FlowParameters,
+    LoadFactorBaseParameters,
+    PowerDensityParameters,
+    WeibullParameters,
+)
 from aurora.amun.client.session import AmunSession
 
 import logging
@@ -40,39 +49,61 @@ def get_turbine_by_name(turbines, turbine_name):
     )
 
 
-def run_request_and_save(session, load_factor_run_parameters):
-    log.info(f"getting for {load_factor_run_parameters['windType']}")
-    load_factors = session.run_load_factor_calculation(load_factor_run_parameters)
+def run_request_and_save(
+    session, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
+):
+    log.info(f"getting for {flow_parameters.windType}")
+
+    load_factors = session.run_load_factor_for_parameters(
+        flow_parameters, base_parameters
+    )
+
     loadFactorRequestId = load_factors["parameters"]["loadFactorRequestId"]
     log.info(f"Got result for {loadFactorRequestId}")
     save_to_json(
-        f"load_factors_{datetime.now().isoformat().replace(':','_')}_{loadFactorRequestId}.json",
+        f"load_factors_{datetime.now().isoformat().replace(':','_')}_{flow_parameters.windType}_{loadFactorRequestId}.json",
         load_factors,
     )
 
 
 def main():
     setup_file_and_console_loggers("get_load_factors_example.log")
+
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
     session = AmunSession()
     turbines = session.get_turbines()
 
-    load_factor_run_parameters = {
-        "windType": "era5",
-        "longitude": 0,
-        "latitude": 59.59,
-        "regionCode": "gbr",
-        "turbineModelId": get_turbine_by_name(turbines, "Siemens SWT-4.0-130")["id"],
-        "numberOfTurbines": 10,
-        "hubHeight": 90,
-        "obstacleHeight": 0,
-        "wakeLoss": 0.1,
-        "roughnessLength": 0.001,
-        "startTimeUTC": "2016-01-01T01:41:01.00Z",
-    }
+    base_parameters = LoadFactorBaseParameters(
+        turbineModelId=get_turbine_by_name(turbines, "Siemens SWT-4.0-130")["id"],
+        latitude=59.59,
+        longitude=0,
+        startTimeUTC="2018-01-01T00:00:00.00Z",
+        regionCode="GBR",
+        hubHeight=90,
+        obstacleHeight=0,
+        wakeLoss=0.1,
+        numberOfTurbines=12,
+        roughnessLength=0.02,
+        usePowerCurveSmoothing=False,
+    )
 
-    run_request_and_save(session, load_factor_run_parameters)
+    run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
+    run_request_and_save(
+        session,
+        WeibullParameters(measurementHeight=90, weibullScale=12, weibullShape=6),
+        base_parameters,
+    )
+    run_request_and_save(
+        session,
+        PowerDensityParameters(measurementHeight=90, averagePowerDensity=400.1),
+        base_parameters,
+    )
+    run_request_and_save(
+        session,
+        AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
+        base_parameters,
+    )
 
 
 if __name__ == "__main__":

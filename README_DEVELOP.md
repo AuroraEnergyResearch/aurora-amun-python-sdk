@@ -19,3 +19,13 @@ python -m venv .venv
 # It uses setup.py to find dependancies.
 pip install -e  .[development] # This install this module as symlinks to and all dependencies including the ones needed locally.
 ```
+
+### Building the documentation
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+cd docs
+.\make.ps1
+```
+
+This expected the documentation project to be checked out as a sibling in `..\aurora-amun-python-sdk-docs\`
