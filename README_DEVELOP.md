@@ -28,4 +28,4 @@ cd docs
 .\make.ps1
 ```
 
-This expected the documentation project to be checked out as a sibling in `..\aurora-amun-python-sdk-docs\`
+This expected the documentation [aurora-amun-python-sdk-docs](https://auroraenergyresearch.github.io/aurora-amun-python-sdk-docs/) to be checked out as a sibling in `..\aurora-amun-python-sdk-docs\`

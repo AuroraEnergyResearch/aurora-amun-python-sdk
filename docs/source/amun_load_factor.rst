@@ -2,7 +2,6 @@ Calculating Load Factors
 ====================================
 
 
-
 .. automethod:: aurora.amun.client.session.AmunSession.run_load_factor_for_parameters
    :noindex: 
 
@@ -33,14 +32,14 @@ Calculating Load Factors
       )
 
 Common Parameters
-====================================
+-----------------------------
 
 .. autoclass:: aurora.amun.client.parameters.LoadFactorBaseParameters
    :members:
    :noindex: 
 
 Flow Based Parameters
-====================================
+-----------------------------
 
 .. autoclass:: aurora.amun.client.parameters.BuiltInWindParameters
    :members:
