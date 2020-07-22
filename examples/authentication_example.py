@@ -3,10 +3,16 @@ import logging
 import logging.handlers
 import os
 
-log = logging.getLogger(__name__)
 
-# Sets Up root loging console(INFO) and file (DEBUG) handlers
-def setup_file_and_console_loggers(fileName):
+def setup_file_and_console_loggers(fileName, logger):
+    """Create a console and file logger and set the aurora.amun 
+    package to log debug messages for the logger passed in. File logger
+
+    :param fileName: name to give the file logger.
+    :type fileName: string
+    :param logger: the logger to attach to
+    :type logger: logger
+    """
     os.makedirs("logs", exist_ok=True)
     rotFileHandler = logging.handlers.RotatingFileHandler(
         f"logs/{fileName}", "a", 30 * 1024 * 1024, 10
@@ -22,13 +28,15 @@ def setup_file_and_console_loggers(fileName):
     logger = logging.getLogger()
     logger.addHandler(rotFileHandler)
     logger.addHandler(consoleHandler)
-    log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
+
     # Set Level for Amun SDK
     logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
 
 
 def main():
-    setup_file_and_console_loggers("authentication_example.log")
+    log = logging.getLogger(__name__)
+    log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
+    setup_file_and_console_loggers("authentication_example.log", log)
 
     # making a request with an invalid token throws runtime error
     session = AmunSession(token="Not a Real Token")

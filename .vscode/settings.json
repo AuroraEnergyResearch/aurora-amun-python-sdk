@@ -12,5 +12,6 @@
     "newa"
   ],
   "python.testing.pytestArgs": [],
-  "python.linting.pylintEnabled": false
+  "python.linting.pylintEnabled": false,
+  "autoDocstring.docstringFormat": "google"
 }

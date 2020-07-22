@@ -10,7 +10,9 @@ pip install git+https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk
 
 In order to use the Amun API a user token is required. This token can be added to the file `HOME/.aurora-api-key` for example `C:\Users\Joe Bloggs\.aurora-api-key` or set as the environment variable `AURORA_API_KEY`.
 
-Once the key is set up the `AmunSession` object can be created to access the api
+Once the key is set up the `AmunSession` object can be created to access the api. Examples of methods available can be found in [examples](examples).
+
+See [aurora-amun-python-sdk-docs](https://auroraenergyresearch.github.io/aurora-amun-python-sdk-docs/) for full SDK documentation.
 
 ```python
 from aurora.amun.client.session import AmunSession

@@ -1,3 +1,5 @@
+from typing import List
+from aurora.amun.client.data import Scenario
 from aurora.amun.client.session import AmunSession
 
 import logging
@@ -32,9 +34,9 @@ def setup_file_and_console_loggers(fileName):
     #
 
 
-def get_scenario_by_name(scenarios, scenario_name):
+def get_scenario_by_name(scenarios: List[Scenario], scenario_name: str) -> Scenario:
     return get_single_value_form_list(
-        filter_function=lambda x: x["name"] == scenario_name,
+        filter_function=lambda x: x.name == scenario_name,
         results_list=scenarios,
         error=f"with name '{scenario_name}'",
     )
@@ -57,7 +59,6 @@ def main():
     region = "gbr"
     scenarios = session.get_scenarios(region)
 
-    log.info(f"Scenarios {list(map(lambda x: x['name'],scenarios))}")
     turbines = session.get_turbines()
 
     scenario_name = "Aurora Central weather years - 2020 April"
@@ -74,7 +75,7 @@ def main():
         "obstacleHeight": 0,
         "wakeLoss": 0.1,
         "roughnessLength": 0.001,
-        "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
+        "scenarioId": get_scenario_by_name(scenarios, scenario_name).id,
     }
 
     valuation = session.create_valuation(valuation_parameters)
