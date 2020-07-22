@@ -1,6 +1,9 @@
 class LoadFactorBaseParameters:
     """Parameters for all wind types.
 
+        Note:
+            Not all regions/locations support Multi-Turbine Power Curve Smoothing.
+
         Args:
             turbineModelId (int): The Id of the Turbine to use in the calculation as returned from :meth:`.AmunSession.get_turbines`.
             latitude (float): The latitude of the point (-90 to 90).
@@ -50,7 +53,7 @@ class FlowParameters:
     """Base class for a flow. Internal Use only. 
 
         Args:
-            windType (str): All flows must define a unique windtype as defined by the API http API.
+            windType (str): All flows must define a unique windtype as defined by the Amun http API.
     """
 
     def __init__(self, windType: str):
@@ -59,12 +62,17 @@ class FlowParameters:
 
 
 class BuiltInWindParameters(FlowParameters):
-    """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*). Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
+    """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*). 
+
+        Note:
+            Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
 
         Args:
             windType (str): one of ("era5","merra2","newa")
-            useReanalysisCorrection (bool, optional):Should Regional Reanalysis Correction be enabled if true then a location specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
-            reanalysisScaleCorrectionDelta (float, optional): Override the location specific *reanalysisScaleCorrectionDelta*. This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
+            useReanalysisCorrection (bool, optional):Should Regional Reanalysis Correction be enabled. If true then a location 
+            specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
+            reanalysisScaleCorrectionDelta (float, optional): Override the location specific *reanalysisScaleCorrectionDelta*. 
+            This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
     """
 
     def __init__(

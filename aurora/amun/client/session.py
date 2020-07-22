@@ -16,7 +16,7 @@ AURORA_AMUN_PRODUCTION_ENDPOINT = "https://api.auroraer.com/amun/v1"
 
 
 class APISession:
-    """Internal class to hold base methods for interacting with an Aurora HTTP API
+    """Internal class to hold base methods for interacting with the Aurora HTTP API
     """
 
     def __init__(self, base_url=None, token=None):
