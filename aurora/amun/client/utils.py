@@ -72,3 +72,9 @@ def save_to_json(file_name, object):
     log.info(f"Saving to {file}")
     with open(file, "w") as writer:
         json.dump(object, writer, indent=4)
+
+
+def get_json(file):
+    with open(file, "r") as reader:
+        data = json.load(reader)
+    return data

@@ -1,4 +1,8 @@
-from aurora.amun.client.parameters import FlowParameters, LoadFactorBaseParameters
+from aurora.amun.client.parameters import (
+    FlowParameters,
+    LoadFactorBaseParameters,
+    SpeedAtHeight,
+)
 from typing import Dict
 import requests
 import logging
@@ -13,6 +17,13 @@ AURORA_API_KEY_ENVIRONMENT_VARIABLE_NAME = "AURORA_API_KEY"
 AURORA_API_BASE_URL_ENVIRONMENT_VARIABLE_NAME = "AURORA_API_BASE_URL"
 AURORA_API_KEY_FILE_NAME = ".aurora-api-key"
 AURORA_AMUN_PRODUCTION_ENDPOINT = "https://api.auroraer.com/amun/v1"
+
+
+class AmunJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, SpeedAtHeight):
+            return obj.to_request_dictionary()
+        return json.JSONEncoder.default(self, obj)
 
 
 class APISession:
@@ -104,7 +115,9 @@ class APISession:
 
     def _put_request(self, url, payload):
         log.debug(f"PUT Request to {url} with payload {payload}")
-        response = self.session.request("PUT", url, json=payload)
+        response = self.session.request(
+            "PUT", url, data=json.dumps(payload, cls=AmunJSONEncoder)
+        )
         return self._parse_as_json(response)
 
     def _parse_as_json(self, response):
