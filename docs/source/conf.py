@@ -40,7 +40,41 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
 
-
+"""Docstring Sections from sphinx.ext.napoleon¶
+  All of the following section headers are supported:
+  Args (alias of Parameters)
+  Arguments (alias of Parameters)
+  Attention
+  Attributes
+  Caution
+  Danger
+  Error
+  Example
+  Examples
+  Hint
+  Important
+  Keyword Args (alias of Keyword Arguments)
+  Keyword Arguments
+  Methods
+  Note
+  Notes
+  Other Parameters
+  Parameters
+  Return (alias of Returns)
+  Returns
+  Raise (alias of Raises)
+  Raises
+  References
+  See Also
+  Tip
+  Todo
+  Warning
+  Warnings (alias of Warning)
+  Warn (alias of Warns)
+  Warns
+  Yield (alias of Yields)
+  Yields
+"""
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

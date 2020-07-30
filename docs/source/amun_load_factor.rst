@@ -60,4 +60,8 @@ Flow Based Parameters
 .. autoclass:: aurora.amun.client.parameters.PowerDensityParameters
    :members:
    :noindex: 
+
+.. autoclass:: aurora.amun.client.parameters.UploadedWindParameters
+   :members:
+   :noindex: 
    

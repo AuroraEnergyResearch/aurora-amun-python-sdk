@@ -1,15 +1,18 @@
+from aurora.amun.client.responses import (
+    RegionDetail,
+    get_RegionDetail_from_response,
+)
 from aurora.amun.client.parameters import (
     FlowParameters,
     LoadFactorBaseParameters,
-    SpeedAtHeight,
 )
-from typing import Dict
+from typing import Dict, List
 import requests
 import logging
 import os
 from pathlib import Path
 import json
-from aurora.amun.client.utils import configure_session_retry
+from aurora.amun.client.utils import AmunJSONEncoder, configure_session_retry
 
 
 log = logging.getLogger(__name__)
@@ -17,13 +20,6 @@ AURORA_API_KEY_ENVIRONMENT_VARIABLE_NAME = "AURORA_API_KEY"
 AURORA_API_BASE_URL_ENVIRONMENT_VARIABLE_NAME = "AURORA_API_BASE_URL"
 AURORA_API_KEY_FILE_NAME = ".aurora-api-key"
 AURORA_AMUN_PRODUCTION_ENDPOINT = "https://api.auroraer.com/amun/v1"
-
-
-class AmunJSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, SpeedAtHeight):
-            return obj.to_request_dictionary()
-        return json.JSONEncoder.default(self, obj)
 
 
 class APISession:
@@ -179,8 +175,29 @@ class AmunSession(APISession):
         url = f"{self.base_url}/turbines"
         return self._get_request(url)
 
+    def get_region_details(
+        self, latitude: float, longitude: float
+    ) -> List[RegionDetail]:
+        """Get a list of supported regions for a given point.
+
+        Args:
+            latitude (float): latitude of the point to lookup.
+            longitude (float): longitude
+
+        Returns:
+            List[RegionDetail]: A list of all the supported regions for the point.
+        """
+
+        url = f"{self.base_url}/regions/details"
+        params = {"lon": longitude, "lat": latitude}
+        region_details = self._get_request(url, params)
+        return list(
+            map(lambda resp: get_RegionDetail_from_response(resp), region_details)
+        )
+
     def get_scenarios(self, region):
-        """Get the scenarios that are available for the specified region.
+        """Get the scenarios that are available for the specified region. The regions for a given location
+           to use can be found be using :meth:`.AmunSession.get_region_details`
 
         Args:
             region (str): The code for the region to lookup scenarios for.
@@ -216,6 +233,9 @@ class AmunSession(APISession):
     def run_load_factor_calculation(self, load_factor_configuration: Dict):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
+        See Also: 
+            :meth:`.AmunSession.get_region_details` to get region codes and available data sets for a point
+
         Args:
             load_factor_configuration (Dict): A dictionary of load factor parameters.
 
@@ -235,6 +255,9 @@ class AmunSession(APISession):
         self, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
     ):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
+
+        See Also: 
+            :meth:`.AmunSession.get_region_details` to get region codes and available data sets for a point
 
         Args:
             flow_parameters (FlowParameters): The parameters specific to the calculation type 

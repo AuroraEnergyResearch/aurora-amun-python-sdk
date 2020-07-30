@@ -1,3 +1,4 @@
+from aurora.amun.client.parameters import SpeedAtHeight
 import logging
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -63,6 +64,13 @@ def configure_session_retry(
     session.mount("http://", adapter)
     session.mount("https://", adapter)
     return session
+
+
+class AmunJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, SpeedAtHeight):
+            return obj.to_request_dictionary()
+        return json.JSONEncoder.default(self, obj)
 
 
 def save_to_json(file_name, object):

@@ -88,17 +88,8 @@ def main():
         roughnessLength=0.02,
         usePowerCurveSmoothing=False,
     )
-    speeds = get_json("examples\example_windSpeed.json")["speeds"]
-    run_request_and_save(
-        session,
-        UploadedWindParameters(
-            uploadedWindStartTime="2017-01-01T00:00:00.000Z",
-            lowHeight=SpeedAtHeight(10, speeds=speeds),
-        ),
-        base_parameters,
-    )
 
-    """ run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
+    run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
 
     run_request_and_save(
         session,
@@ -114,7 +105,17 @@ def main():
         session,
         AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
         base_parameters,
-    ) """
+    )
+
+    speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
+    run_request_and_save(
+        session,
+        UploadedWindParameters(
+            uploadedWindStartTime="2017-01-01T00:00:00.000Z",
+            lowHeight=SpeedAtHeight(10, speeds=speeds),
+        ),
+        base_parameters,
+    )
 
 
 if __name__ == "__main__":

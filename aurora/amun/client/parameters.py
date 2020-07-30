@@ -1,13 +1,12 @@
 from typing import List
-import json
 
 
 class SpeedAtHeight:
-    """[summary]
+    """The wind speeds at a given height,
 
         Args:
-            height (float): The measurement height in meters of the speeds
-            speeds (List[float]):An list of wind speed in meter per second.
+            height (float): The measurement height (m) of the wind speeds.
+            speeds (List[float]):A list of wind speeds in m/s.
         """
 
     def __init__(self, height: float, speeds: List[float]):
@@ -158,8 +157,8 @@ class PowerDensityParameters(FlowParameters):
 
 class UploadedWindParameters(FlowParameters):
     """The parameters required to run a custom (uploaded) load factor calculation.  If *highHeight*
-    is specified it must be the same length as the *lowHeight* and be measured at a greater height. 
-    The speeds upload should be hourly measurements starting at *uploadedWindStartTime* and span at least 1 year.
+        is specified it must be the same length as the *lowHeight* and be measured at a greater height. 
+        The speeds upload should be hourly measurements starting at *uploadedWindStartTime* and span at least 1 year.
 
         Args:
             uploadedWindStartTime (str): The time in UTC that the wind speeds upload start from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
