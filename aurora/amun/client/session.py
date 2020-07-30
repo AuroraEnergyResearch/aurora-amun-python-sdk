@@ -234,7 +234,7 @@ class AmunSession(APISession):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
         See Also: 
-            :meth:`.AmunSession.get_region_details` to get region codes and available data sets for a point
+            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
             load_factor_configuration (Dict): A dictionary of load factor parameters.
@@ -257,7 +257,7 @@ class AmunSession(APISession):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
         See Also: 
-            :meth:`.AmunSession.get_region_details` to get region codes and available data sets for a point
+            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
             flow_parameters (FlowParameters): The parameters specific to the calculation type 
