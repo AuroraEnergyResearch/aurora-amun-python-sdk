@@ -1,3 +1,23 @@
+from typing import List
+
+
+class SpeedAtHeight:
+    """The wind speeds at a given height,
+
+        Args:
+            height (float): The measurement height (m) of the wind speeds.
+            speeds (List[float]):A list of wind speeds in m/s.
+        """
+
+    def __init__(self, height: float, speeds: List[float]):
+
+        self.height = height
+        self.speeds = speeds
+
+    def to_request_dictionary(self):
+        return vars(self)
+
+
 class LoadFactorBaseParameters:
     """Parameters for all wind types.
 
@@ -133,4 +153,27 @@ class PowerDensityParameters(FlowParameters):
         super().__init__("PowerDensity")
         self.averagePowerDensity = averagePowerDensity
         self.measurementHeight = measurementHeight
+
+
+class UploadedWindParameters(FlowParameters):
+    """The parameters required to run a custom (uploaded) load factor calculation.  If *highHeight*
+        is specified it must be the same length as the *lowHeight* and be measured at a greater height. 
+        The speeds upload should be hourly measurements starting at *uploadedWindStartTime* and span at least 1 year.
+
+        Args:
+            uploadedWindStartTime (str): The time in UTC that the wind speeds upload start from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
+            lowHeight (SpeedAtHeight): The height and speed for the low height wind speed to upload.
+            highHeight (SpeedAtHeight, optional): The height and speed for the high height wind speed to upload. Defaults to None.
+        """
+
+    def __init__(
+        self,
+        uploadedWindStartTime: str,
+        lowHeight: SpeedAtHeight,
+        highHeight: SpeedAtHeight = None,
+    ):
+        super().__init__("uploadedwind")
+        self.uploadedWindStartTime = uploadedWindStartTime
+        self.lowHeight = lowHeight
+        self.highHeight = highHeight
 

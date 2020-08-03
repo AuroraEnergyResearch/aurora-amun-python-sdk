@@ -1,10 +1,11 @@
-import requests
 from aurora.amun.client.parameters import (
     AverageWindSpeedParameters,
     BuiltInWindParameters,
     FlowParameters,
     LoadFactorBaseParameters,
     PowerDensityParameters,
+    SpeedAtHeight,
+    UploadedWindParameters,
     WeibullParameters,
 )
 from aurora.amun.client.session import AmunSession
@@ -13,7 +14,7 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import get_single_value_form_list, save_to_json
+from aurora.amun.client.utils import get_single_value_form_list, save_to_json, get_json
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ def run_request_and_save(
 
 def main():
     setup_file_and_console_loggers("get_load_factors_example.log")
-
+    log.info(f"Starting")
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
     session = AmunSession()
@@ -78,7 +79,7 @@ def main():
         turbineModelId=get_turbine_by_name(turbines, "Siemens SWT-4.0-130")["id"],
         latitude=59.59,
         longitude=0,
-        startTimeUTC="2018-01-01T00:00:00.00Z",
+        startTimeUTC="2018-01-01T00:00:00.000Z",
         regionCode="GBR",
         hubHeight=90,
         obstacleHeight=0,
@@ -89,6 +90,7 @@ def main():
     )
 
     run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
+
     run_request_and_save(
         session,
         WeibullParameters(measurementHeight=90, weibullScale=12, weibullShape=6),
@@ -102,6 +104,16 @@ def main():
     run_request_and_save(
         session,
         AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
+        base_parameters,
+    )
+
+    speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
+    run_request_and_save(
+        session,
+        UploadedWindParameters(
+            uploadedWindStartTime="2017-01-01T00:00:00.000Z",
+            lowHeight=SpeedAtHeight(10, speeds=speeds),
+        ),
         base_parameters,
     )
 

@@ -1,3 +1,4 @@
+from aurora.amun.client.parameters import SpeedAtHeight
 import logging
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -65,6 +66,13 @@ def configure_session_retry(
     return session
 
 
+class AmunJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, SpeedAtHeight):
+            return obj.to_request_dictionary()
+        return json.JSONEncoder.default(self, obj)
+
+
 def save_to_json(file_name, object):
     output_dir = Path("out")
     os.makedirs(output_dir, exist_ok=True)
@@ -72,3 +80,9 @@ def save_to_json(file_name, object):
     log.info(f"Saving to {file}")
     with open(file, "w") as writer:
         json.dump(object, writer, indent=4)
+
+
+def get_json(file):
+    with open(file, "r") as reader:
+        data = json.load(reader)
+    return data
