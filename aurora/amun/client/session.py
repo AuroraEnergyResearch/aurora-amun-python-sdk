@@ -262,10 +262,11 @@ class AmunSession(APISession):
         Args:
             flow_parameters (FlowParameters): The parameters specific to the calculation type 
 
-                * AverageWindSpeedParameters, 
-                * BuiltInWindParameters, 
-                * PowerDensityParameters, 
-                * WeibullParameters
+                * :class:`~aurora.amun.client.parameters.AverageWindSpeedParameters`
+                * :class:`~aurora.amun.client.parameters.BuiltInWindParameters`
+                * :class:`~aurora.amun.client.parameters.PowerDensityParameters`
+                * :class:`~aurora.amun.client.parameters.WeibullParameters`
+                * :class:`~aurora.amun.client.parameters.UploadedWindParameters`
 
             base_parameters (LoadFactorBaseParameters): The parameters required for all flows to the calculation type.
 
