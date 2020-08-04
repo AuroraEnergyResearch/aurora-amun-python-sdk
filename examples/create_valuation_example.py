@@ -1,5 +1,3 @@
-from typing import List
-from aurora.amun.client.data import Scenario
 from aurora.amun.client.session import AmunSession
 
 import logging
@@ -34,9 +32,9 @@ def setup_file_and_console_loggers(fileName):
     #
 
 
-def get_scenario_by_name(scenarios: List[Scenario], scenario_name: str) -> Scenario:
+def get_scenario_by_name(scenarios, scenario_name: str):
     return get_single_value_form_list(
-        filter_function=lambda x: x.name == scenario_name,
+        filter_function=lambda x: x["name"] == scenario_name,
         results_list=scenarios,
         error=f"with name '{scenario_name}'",
     )
@@ -61,7 +59,7 @@ def main():
 
     turbines = session.get_turbines()
 
-    scenario_name = "Aurora Central weather years - 2020 April"
+    scenario_name = "Aurora Central Weather Years - 2020 April"
 
     valuation_parameters = {
         "windType": "era5",
@@ -75,19 +73,19 @@ def main():
         "obstacleHeight": 0,
         "wakeLoss": 0.1,
         "roughnessLength": 0.001,
-        "scenarioId": get_scenario_by_name(scenarios, scenario_name).id,
+        "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
     }
 
     valuation = session.create_valuation(valuation_parameters)
 
     log.info(f"Created {valuation['id']}")
-    save_to_json(f"valuation_{valuation['id']}.json", valuation)
+    save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
 
     results = session.get_valuation_results(
         valuation["id"], format="gzip", should_return_hourly_data=True
     )
     log.info(f"Got result for {results['valuation']}")
-    save_to_json(f"valuation_results_{valuation['id']}.json", results)
+    save_to_json(f"valuations/valuation_{valuation['id']}_out.json", results)
     log.info(f"Deleting {valuation['id']}")
     session.delete_valuation(valuation["id"])
     log.debug("Done")

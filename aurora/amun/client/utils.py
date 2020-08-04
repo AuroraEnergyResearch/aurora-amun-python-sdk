@@ -75,8 +75,9 @@ class AmunJSONEncoder(json.JSONEncoder):
 
 def save_to_json(file_name, object):
     output_dir = Path("out")
-    os.makedirs(output_dir, exist_ok=True)
     file = Path.joinpath(output_dir, file_name)
+    os.makedirs(file.parent, exist_ok=True)
+
     log.info(f"Saving to {file}")
     with open(file, "w") as writer:
         json.dump(object, writer, indent=4)
