@@ -36,6 +36,6 @@ def get_RegionDetail_from_response(resp: Dict) -> RegionDetail:
         pmfCode=resp["pmfCode"],
         defaultWind=resp["defaultWind"],
         availableDatasets=resp["availableDatasets"],
-        era5CorrectionEnabled=resp["availableDatasets"],
+        era5CorrectionEnabled=resp["era5CorrectionEnabled"],
         powerCurveSmoothingEnabled=resp["powerCurveSmoothingEnabled"],
     )
