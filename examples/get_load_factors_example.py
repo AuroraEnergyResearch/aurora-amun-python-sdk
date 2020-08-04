@@ -62,7 +62,7 @@ def run_request_and_save(
     loadFactorRequestId = load_factors["parameters"]["loadFactorRequestId"]
     log.info(f"Got result for {loadFactorRequestId}")
     save_to_json(
-        f"load_factors_{datetime.now().isoformat().replace(':','_')}_{flow_parameters.windType}_{loadFactorRequestId}.json",
+        f"load_factors/load_factors_{datetime.now().isoformat().replace(':','_')}_{flow_parameters.windType}_{loadFactorRequestId}.json",
         load_factors,
     )
 
