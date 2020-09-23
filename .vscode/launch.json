@@ -10,7 +10,9 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "env": {}
+      "env": {
+          "AURORA_API_BASE_URL": "https://api.auroraer.com/amun/v1"
+      }
     },
     {
       "name": "Dev API: Current File",
