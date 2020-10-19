@@ -71,7 +71,7 @@ def main():
         "numberOfTurbines": 10,
         "hubHeight": 90,
         "obstacleHeight": 0,
-        "wakeLoss": 0.1,
+        "lossesAvailability": 0.1,
         "roughnessLength": 0.001,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
     }
@@ -82,7 +82,7 @@ def main():
     save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
 
     results = session.get_valuation_results(
-        valuation["id"], format="gzip", should_return_hourly_data=True
+        valuation["id"], format="json", should_return_hourly_data=False
     )
     log.info(f"Got result for {results['valuation']}")
     save_to_json(f"valuations/valuation_{valuation['id']}_out.json", results)

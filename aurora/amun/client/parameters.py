@@ -33,7 +33,7 @@ class LoadFactorBaseParameters:
             regionCode (str): The code for the region used to set region specific parameters.
             hubHeight (float): Given in meters (m).
             obstacleHeight (float): Given in meters (m).
-            wakeLoss (float): Static roughness. If not given, will be derived from reanalysis data,
+            lossesAvailability (float): Percentage for external losses. (0 <= lossesAvailability < 1)
             numberOfTurbines (int): 
             roughnessLength (float, optional): Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
             usePowerCurveSmoothing (bool, optional):Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
@@ -49,7 +49,7 @@ class LoadFactorBaseParameters:
         regionCode: str,
         hubHeight: float,
         obstacleHeight: float,
-        wakeLoss: float,
+        lossesAvailability: float,
         numberOfTurbines: int,
         roughnessLength: float = None,
         usePowerCurveSmoothing: bool = None,
@@ -63,7 +63,7 @@ class LoadFactorBaseParameters:
         self.regionCode = regionCode
         self.hubHeight = hubHeight
         self.obstacleHeight = obstacleHeight
-        self.wakeLoss = wakeLoss
+        self.lossesAvailability = lossesAvailability
         self.numberOfTurbines = numberOfTurbines
         self.roughnessLength = roughnessLength
         self.usePowerCurveSmoothing = usePowerCurveSmoothing
