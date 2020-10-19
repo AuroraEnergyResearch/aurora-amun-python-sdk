@@ -8,7 +8,7 @@ from aurora.amun.client.utils import get_single_value_form_list, save_to_json
 
 log = logging.getLogger(__name__)
 
-# Sets Up root loging console(INFO) and file (DEBUG) handlers
+# Sets Up root logging console(INFO) and file (DEBUG) handlers
 def setup_file_and_console_loggers(fileName):
     os.makedirs("logs", exist_ok=True)
     rotFileHandler = logging.handlers.RotatingFileHandler(
