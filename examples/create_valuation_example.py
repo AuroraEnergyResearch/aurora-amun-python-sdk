@@ -71,7 +71,7 @@ def main():
         "numberOfTurbines": 10,
         "hubHeight": 90,
         "obstacleHeight": 0,
-        "wakeLoss": 0.1,
+        "lossesAvailability": 0.1,
         "roughnessLength": 0.001,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
     }
