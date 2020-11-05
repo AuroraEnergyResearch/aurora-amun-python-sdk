@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import get_single_value_form_list, save_to_json
+from aurora.amun.client.utils import get_single_value_form_list, save_to_json, get_json
 
 log = logging.getLogger(__name__)
 
@@ -40,16 +40,8 @@ def get_scenario_by_name(scenarios, scenario_name: str):
     )
 
 
-def get_turbine_by_name(turbines, turbine_name):
-    return get_single_value_form_list(
-        filter_function=lambda x: x["name"] == turbine_name,
-        results_list=turbines,
-        error=f"with name '{turbine_name}'",
-    )
-
-
 def main():
-    setup_file_and_console_loggers("create_valuation_example.log")
+    setup_file_and_console_loggers("generation_valuation_example.log")
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
     session = AmunSession()
@@ -67,12 +59,6 @@ def main():
         "description": "Created by Api",
         "longitude": "-1.21",
         "latitude": "59.59",
-        "turbineModelId": get_turbine_by_name(turbines, "Siemens SWT-4.0-130")["id"],
-        "numberOfTurbines": 10,
-        "hubHeight": 90,
-        "obstacleHeight": 0,
-        "lossesAvailability": 0.1,
-        "roughnessLength": 0.001,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
     }
 
@@ -80,6 +66,12 @@ def main():
 
     log.info(f"Created {valuation['id']}")
     save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
+
+    # Check the json document for a complete structure of what is required
+    # historicCalibration is for weather years
+    session.send_calibrated_production(
+        valuation["id"], get_json("examples\data\example_calibratedGeneration.json")
+    )
 
     results = session.get_valuation_results(
         valuation["id"], format="json", should_return_hourly_data=False

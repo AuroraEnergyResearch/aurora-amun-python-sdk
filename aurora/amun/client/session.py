@@ -116,6 +116,13 @@ class APISession:
         )
         return self._parse_as_json(response)
 
+    def _post_request(self, url, payload):
+        log.debug(f"POST Request to {url} with payload {payload}")
+        response = self.session.request(
+            "POST", url, data=json.dumps(payload, cls=AmunJSONEncoder)
+        )
+        return self._parse_as_json(response)
+
     def _parse_as_json(self, response):
         if response.status_code == 200:
             return response.json()
@@ -299,3 +306,16 @@ class AmunSession(APISession):
     def delete_valuation(self, valuation_id):
         url = f"{self.base_url}/valuations/{valuation_id}"
         return self._del_request(url)
+
+    def update_valuation(self, valuation):
+        url = (f"{self.base_url}/valuations/{valuation['id']}",)
+        return self._post_request(url, valuation)
+
+    def send_production_for_calibration(self, valuation_id, generation):
+        url = f"{self.base_url}/valuations/{valuation_id}/rawGeneration"
+        return self._post_request(url, generation)
+
+    def send_calibrated_production(self, valuation_id, generation):
+        url = f"{self.base_url}/valuations/{valuation_id}/calibratedGeneration"
+        return self._post_request(url, generation)
+
