@@ -84,6 +84,7 @@ def main():
         hubHeight=90,
         obstacleHeight=0,
         lossesAvailability=0.1,
+        lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
         usePowerCurveSmoothing=False,

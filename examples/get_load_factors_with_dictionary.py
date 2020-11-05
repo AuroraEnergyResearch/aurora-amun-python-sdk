@@ -4,11 +4,11 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import get_single_value_form_list, save_to_json
+from aurora.amun.client.utils import get_single_value_form_list, save_to_json, get_json
 
 log = logging.getLogger(__name__)
 
-# Sets Up root logging console(INFO) and file (DEBUG) handlers
+# Sets Up root loging console(INFO) and file (DEBUG) handlers
 def setup_file_and_console_loggers(fileName):
     os.makedirs("logs", exist_ok=True)
     rotFileHandler = logging.handlers.RotatingFileHandler(
@@ -32,14 +32,6 @@ def setup_file_and_console_loggers(fileName):
     #
 
 
-def get_scenario_by_name(scenarios, scenario_name: str):
-    return get_single_value_form_list(
-        filter_function=lambda x: x["name"] == scenario_name,
-        results_list=scenarios,
-        error=f"with name '{scenario_name}'",
-    )
-
-
 def get_turbine_by_name(turbines, turbine_name):
     return get_single_value_form_list(
         filter_function=lambda x: x["name"] == turbine_name,
@@ -49,46 +41,46 @@ def get_turbine_by_name(turbines, turbine_name):
 
 
 def main():
-    setup_file_and_console_loggers("create_valuation_example.log")
+    setup_file_and_console_loggers("get_load_factors_example.log")
+    log.info(f"Starting")
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
     session = AmunSession()
-
-    region = "gbr"
-    scenarios = session.get_scenarios(region)
-
     turbines = session.get_turbines()
 
-    scenario_name = "Aurora Central Weather Years - 2020 April"
+    windType = "era5"
 
-    valuation_parameters = {
-        "windType": "era5",
-        "name": f"SDK Wind Farm {datetime.now()}",
-        "description": "Created by Api",
-        "longitude": "-1.21",
-        "latitude": "59.59",
+    parameters = {
+        "windType": windType,
         "turbineModelId": get_turbine_by_name(turbines, "Siemens SWT-4.0-130")["id"],
-        "numberOfTurbines": 10,
+        "latitude": 59.59,
+        "longitude": 0,
+        "startTimeUTC": "2018-01-01T00:00:00.000Z",
+        "regionCode": "GBR",
         "hubHeight": 90,
         "obstacleHeight": 0,
-        "lossesAvailability": 0.1,
-        "roughnessLength": 0.001,
-        "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
+        "numberOfTurbines": 12,
+        "roughnessLength": 0.02,
+        "usePowerCurveSmoothing": False,
+        # Optional
+        # "lossesWake": 0.2,
+        # "lossesAvailability": 0.02,
+        # "lossesElectrical": 0.01,
+        # "lossesTurbinePerformance": 0.1,
+        # "lossesEnvironmental": 0.05,
+        # "lossesOtherCurtailment": 0.0,
     }
 
-    valuation = session.create_valuation(valuation_parameters)
+    log.info(f"getting for {windType}")
 
-    log.info(f"Created {valuation['id']}")
-    save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
+    load_factors = session.run_load_factor_calculation(parameters)
 
-    results = session.get_valuation_results(
-        valuation["id"], format="json", should_return_hourly_data=False
+    loadFactorRequestId = load_factors["parameters"]["loadFactorRequestId"]
+    log.info(f"Got result for {loadFactorRequestId}")
+    save_to_json(
+        f"load_factors/load_factors_{datetime.now().isoformat().replace(':','_')}_{windType}_{loadFactorRequestId}.json",
+        load_factors,
     )
-    log.info(f"Got result for {results['valuation']}")
-    save_to_json(f"valuations/valuation_{valuation['id']}_out.json", results)
-    log.info(f"Deleting {valuation['id']}")
-    session.delete_valuation(valuation["id"])
-    log.debug("Done")
 
 
 if __name__ == "__main__":
