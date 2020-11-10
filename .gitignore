@@ -132,3 +132,5 @@ out
 
 # Sphinx
 docs/build
+
+examples/scratch
