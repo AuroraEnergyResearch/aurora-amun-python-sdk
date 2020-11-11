@@ -19,7 +19,7 @@ Calculating Load Factors
         regionCode="GBR",
         hubHeight=90,
         obstacleHeight=0,
-        wakeLoss=0.1,
+        lossesAvailability=0.1,
         numberOfTurbines=12,
         roughnessLength=0.02,
         usePowerCurveSmoothing=False,
