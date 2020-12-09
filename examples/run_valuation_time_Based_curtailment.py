@@ -73,13 +73,8 @@ def main():
         "obstacleHeight": 0,
         "roughnessLength": 0.001,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
+        "curtailmentThreshold": 2,
         # Optional
-        # "lossesWake": 0.2,
-        # "lossesAvailability": 0.02,
-        # "lossesElectrical": 0.01,
-        # "lossesTurbinePerformance": 0.1,
-        # "lossesEnvironmental": 0.05,
-        # "lossesOtherCurtailment": 0.0,
         "timeBasedCurtailmentThresholds": [
             {"threshold": 10, "timeValidFrom": "2024-01-01T00:00:00.000Z",},
             {"threshold": 20, "timeValidFrom": "2028-01-01T00:00:00.000Z",},
