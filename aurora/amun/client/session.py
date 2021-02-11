@@ -320,6 +320,17 @@ class AmunSession(APISession):
         return self._post_request(url, generation)
 
     def get_wind(self, lat, lon, year, dataset):
+        """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*). 
+
+            Note:
+                Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
+
+            Args:
+                latitude (float): The latitude of the point (-90 to 90).
+                longitude (float): The latitude of the point (-180 to 180).
+                dataset (str): one of ("Era5","Merra2","NEWA")
+                year (number):The year to fetch wind data for.
+        """
         url = f"{self.base_url}/wind/series"
         params = {"lat": lat, "lon": lon, "year": year, "dataset": dataset}
         return self._get_request(url, params=params)
