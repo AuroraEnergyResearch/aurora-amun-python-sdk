@@ -319,3 +319,8 @@ class AmunSession(APISession):
         url = f"{self.base_url}/valuations/{valuation_id}/calibratedGeneration"
         return self._post_request(url, generation)
 
+    def get_wind(self, lat, lon, year, dataset):
+        url = f"{self.base_url}/wind/series"
+        params = {"lat": lat, "lon": lon, "year": year, "dataset": dataset}
+        return self._get_request(url, params=params)
+
