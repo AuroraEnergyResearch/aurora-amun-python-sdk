@@ -1,3 +1,4 @@
+from json import encoder
 from aurora.amun.client.responses import (
     RegionDetail,
     get_RegionDetail_from_response,
@@ -12,6 +13,7 @@ import logging
 import os
 from pathlib import Path
 import json
+from urllib.parse import urlencode
 from aurora.amun.client.utils import AmunJSONEncoder, configure_session_retry
 
 
@@ -292,9 +294,18 @@ class AmunSession(APISession):
         request.update(vars(base_parameters))
         return self.run_load_factor_calculation(request)
 
-    def get_valuations(self):
-        url = f"{self.base_url}/valuations"
+    def get_valuations(self, searchText = None):
+        if searchText == None:
+            url = f"{self.base_url}/valuations"
+        else:
+            url = f"{self.base_url}/valuations/?{urlencode({'searchText':searchText})}"
         return self._get_request(url)
+    
+    def copy_valuation(self, valuation_id):
+        url = f"{self.base_url}/valuations/{valuation_id}/copy"
+        return self._post_request(url,{})
+
+
 
     def get_valuation_results(self, valuation_id, format, should_return_hourly_data):
         url = f"{self.base_url}/valuations/{valuation_id}/outputs"
