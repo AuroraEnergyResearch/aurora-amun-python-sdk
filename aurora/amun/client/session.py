@@ -1,3 +1,4 @@
+from json import encoder
 from aurora.amun.client.responses import (
     RegionDetail,
     get_RegionDetail_from_response,
@@ -12,6 +13,7 @@ import logging
 import os
 from pathlib import Path
 import json
+from urllib.parse import urlencode
 from aurora.amun.client.utils import AmunJSONEncoder, configure_session_retry
 
 
@@ -23,8 +25,7 @@ AURORA_AMUN_PRODUCTION_ENDPOINT = "https://api.auroraer.com/amun/v1"
 
 
 class APISession:
-    """Internal class to hold base methods for interacting with the Aurora HTTP API
-    """
+    """Internal class to hold base methods for interacting with the Aurora HTTP API"""
 
     def __init__(self, base_url=None, token=None):
         self.token = self._get_token(token)
@@ -141,10 +142,10 @@ class APISession:
 class AmunSession(APISession):
     """Manage access to the Amun API.
 
-    By default the session will connect to the production Amun API endpoint. This can be overridden by passing the base_url into the constructor 
+    By default the session will connect to the production Amun API endpoint. This can be overridden by passing the base_url into the constructor
     or by setting the environment variable *AURORA_API_BASE_URL*. This is for internal use only.
 
-    The authentication token is read from the users home directory *$home/.aurora-api-key* e.g. *C:/Users/Joe Bloggs/.aurora-api-key*. 
+    The authentication token is read from the users home directory *$home/.aurora-api-key* e.g. *C:/Users/Joe Bloggs/.aurora-api-key*.
     This can be overridden by passing the token into the constructor or by setting the environment variable *AURORA_API_KEY*.
 
 
@@ -159,23 +160,23 @@ class AmunSession(APISession):
     def get_turbines(self):
         """Get the turbines available to the user.
 
-        **Response**:
+         **Response**:
 
-       .. code-block:: 
+        .. code-block::
 
-            [{
-                'id': 29,
-                'manufacturer': 'EWT Directwind',
-                'name': 'EWT Directwind 2000/96',
-                'ratedCapacity': 2,
-                'rotorDiameter': 96,
-                'minHubHeight': None,
-                'maxHubHeight': None,
-                'cutInSpeed': 3.5,
-                'cutOutSpeed': 25,
-                'specSource': 'https://www.thewindpower.net/turbine_en_879_ewt_directwind-2000-96.php',
-                'type': 'public',
-                },........
+             [{
+                 'id': 29,
+                 'manufacturer': 'EWT Directwind',
+                 'name': 'EWT Directwind 2000/96',
+                 'ratedCapacity': 2,
+                 'rotorDiameter': 96,
+                 'minHubHeight': None,
+                 'maxHubHeight': None,
+                 'cutInSpeed': 3.5,
+                 'cutOutSpeed': 25,
+                 'specSource': 'https://www.thewindpower.net/turbine_en_879_ewt_directwind-2000-96.php',
+                 'type': 'public',
+                 },........
 
         """
 
@@ -214,7 +215,7 @@ class AmunSession(APISession):
 
         **Response**:
 
-        .. code-block:: 
+        .. code-block::
 
                 [{
                     'id': 3,
@@ -240,7 +241,7 @@ class AmunSession(APISession):
     def run_load_factor_calculation(self, load_factor_configuration: Dict):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
-        See Also: 
+        See Also:
             :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
@@ -263,11 +264,11 @@ class AmunSession(APISession):
     ):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
-        See Also: 
+        See Also:
             :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
-            flow_parameters (FlowParameters): The parameters specific to the calculation type 
+            flow_parameters (FlowParameters): The parameters specific to the calculation type
 
                 * :class:`~aurora.amun.client.parameters.AverageWindSpeedParameters`
                 * :class:`~aurora.amun.client.parameters.BuiltInWindParameters`
@@ -292,9 +293,17 @@ class AmunSession(APISession):
         request.update(vars(base_parameters))
         return self.run_load_factor_calculation(request)
 
-    def get_valuations(self):
+    def get_valuations(self, searchText=None):
         url = f"{self.base_url}/valuations"
-        return self._get_request(url)
+        if searchText == None:
+            params = {}
+        else:
+            params = {"searchText": searchText}
+        return self._get_request(url, params=params)
+
+    def copy_valuation(self, valuation_id):
+        url = f"{self.base_url}/valuations/{valuation_id}/copy"
+        return self._post_request(url, {})
 
     def get_valuation_results(self, valuation_id, format, should_return_hourly_data):
         url = f"{self.base_url}/valuations/{valuation_id}/outputs"
@@ -320,18 +329,17 @@ class AmunSession(APISession):
         return self._post_request(url, generation)
 
     def get_wind(self, lat, lon, year, dataset):
-        """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*). 
+        """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*).
 
-            Note:
-                Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
+        Note:
+            Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
 
-            Args:
-                latitude (float): The latitude of the point (-90 to 90).
-                longitude (float): The latitude of the point (-180 to 180).
-                dataset (str): one of ("Era5","Merra2","NEWA")
-                year (number):The year to fetch wind data for.
+        Args:
+            latitude (float): The latitude of the point (-90 to 90).
+            longitude (float): The latitude of the point (-180 to 180).
+            dataset (str): one of ("Era5","Merra2","NEWA")
+            year (number):The year to fetch wind data for.
         """
         url = f"{self.base_url}/wind/series"
         params = {"lat": lat, "lon": lon, "year": year, "dataset": dataset}
         return self._get_request(url, params=params)
-
