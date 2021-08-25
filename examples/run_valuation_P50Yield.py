@@ -60,7 +60,6 @@ def main():
     turbines = session.get_turbines()
 
     scenario_name = "Aurora Central Weather Years - 2020 April"
-    scenario_name = "Aurora Central 2019 October V1"  # remove me
 
     valuation_parameters = {
         "windType": "p50YieldScaling",
