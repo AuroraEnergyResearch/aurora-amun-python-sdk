@@ -3,10 +3,12 @@ from aurora.amun.client.parameters import (
     BuiltInWindParameters,
     FlowParameters,
     LoadFactorBaseParameters,
+    P50ScalingParameters,
     PowerDensityParameters,
     SpeedAtHeight,
     UploadedWindParameters,
     WeibullParameters,
+    P50YieldScalingParameters,
 )
 from aurora.amun.client.session import AmunSession
 
@@ -90,33 +92,40 @@ def main():
         usePowerCurveSmoothing=False,
     )
 
-    run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
+    # run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
 
+    # run_request_and_save(
+    #     session,
+    #     WeibullParameters(measurementHeight=90, weibullScale=12, weibullShape=6),
+    #     base_parameters,
+    # )
+    # run_request_and_save(
+    #     session,
+    #     PowerDensityParameters(measurementHeight=90, averagePowerDensity=400.1),
+    #     base_parameters,
+    # )
+    # run_request_and_save(
+    #     session,
+    #     AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
+    #     base_parameters,
+    # )
+    # run_request_and_save(
+    #     session, P50ScalingParameters(p50GrossProduction=0.4), base_parameters,
+    # )
     run_request_and_save(
         session,
-        WeibullParameters(measurementHeight=90, weibullScale=12, weibullShape=6),
+        P50YieldScalingParameters(annualProductionInGwHours=2000),
         base_parameters,
     )
-    run_request_and_save(
-        session,
-        PowerDensityParameters(measurementHeight=90, averagePowerDensity=400.1),
-        base_parameters,
-    )
-    run_request_and_save(
-        session,
-        AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
-        base_parameters,
-    )
-
-    speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
-    run_request_and_save(
-        session,
-        UploadedWindParameters(
-            uploadedWindStartTime="2017-01-01T00:00:00.000Z",
-            lowHeight=SpeedAtHeight(10, speeds=speeds),
-        ),
-        base_parameters,
-    )
+    # speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
+    # run_request_and_save(
+    #     session,
+    #     UploadedWindParameters(
+    #         uploadedWindStartTime="2017-01-01T00:00:00.000Z",
+    #         lowHeight=SpeedAtHeight(10, speeds=speeds),
+    #     ),
+    #     base_parameters,
+    # )
 
 
 if __name__ == "__main__":
