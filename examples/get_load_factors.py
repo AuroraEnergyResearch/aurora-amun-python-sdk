@@ -114,7 +114,7 @@ def main():
     )
     run_request_and_save(
         session,
-        P50YieldScalingParameters(annualProductionInGwHours=2000),
+        P50YieldScalingParameters(annualProductionInGwHours=200),
         base_parameters,
     )
     speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
