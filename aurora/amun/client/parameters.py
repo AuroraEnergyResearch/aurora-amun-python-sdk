@@ -172,6 +172,34 @@ class PowerDensityParameters(FlowParameters):
         self.measurementHeight = measurementHeight
 
 
+class P50ScalingParameters(FlowParameters):
+    """The parameters required for a *P50Scaling* calculation.
+
+        Args:
+            p50GrossProduction (float, 0 < p50GrossProduction < 1):  the P50 load factor which represents the long-term production potential of this site, 
+                typically from an energy assessment report, will be used to calibrate the underlying reanalysis wind speed, 
+                such that the long-term production potential used in Amun-based valuations are the same.
+    """
+
+    def __init__(self, p50GrossProduction: float):
+
+        super().__init__("P50Scaling")
+        self.p50GrossProduction = p50GrossProduction
+
+
+class P50YieldScalingParameters(FlowParameters):
+    """The parameters required for a *P50YieldScaling* calculation.
+
+        Args:
+            annualProductionInGwHours (float, 0 < annualProductionInGwHours < 1000000):  the production expected by the site in a year in Gigawatt Hours.
+    """
+
+    def __init__(self, annualProductionInGwHours: float):
+
+        super().__init__("p50YieldScaling")
+        self.annualProductionInGwHours = annualProductionInGwHours
+
+
 class UploadedWindParameters(FlowParameters):
     """The parameters required to run a custom (uploaded) load factor calculation.  If *highHeight*
         is specified it must be the same length as the *lowHeight* and be measured at a greater height. 

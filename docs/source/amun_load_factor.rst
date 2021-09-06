@@ -64,4 +64,14 @@ Flow Based Parameters
 .. autoclass:: aurora.amun.client.parameters.UploadedWindParameters
    :members:
    :noindex: 
+
+   
+.. autoclass:: aurora.amun.client.parameters.P50ScalingParameters
+   :members:
+   :noindex: 
+
+   
+.. autoclass:: aurora.amun.client.parameters.P50YieldScalingParameters
+   :members:
+   :noindex: 
    

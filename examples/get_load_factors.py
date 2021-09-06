@@ -3,10 +3,12 @@ from aurora.amun.client.parameters import (
     BuiltInWindParameters,
     FlowParameters,
     LoadFactorBaseParameters,
+    P50ScalingParameters,
     PowerDensityParameters,
     SpeedAtHeight,
     UploadedWindParameters,
     WeibullParameters,
+    P50YieldScalingParameters,
 )
 from aurora.amun.client.session import AmunSession
 
@@ -107,7 +109,14 @@ def main():
         AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
         base_parameters,
     )
-
+    run_request_and_save(
+        session, P50ScalingParameters(p50GrossProduction=0.4), base_parameters,
+    )
+    run_request_and_save(
+        session,
+        P50YieldScalingParameters(annualProductionInGwHours=200),
+        base_parameters,
+    )
     speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
     run_request_and_save(
         session,
