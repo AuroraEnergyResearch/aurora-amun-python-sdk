@@ -191,13 +191,13 @@ class P50YieldScalingParameters(FlowParameters):
     """The parameters required for a *P50YieldScaling* calculation.
 
         Args:
-            annualProductionInGwHours (float, 0 < annualProductionInGwHours < 1000000):  the production expected by the site in a year in Gigawatt Hours.
+            annualProductionInGWHours (float, 0 < annualProductionInGWHours < 1000000):  the production expected by the site in a year in Gigawatt Hours.
     """
 
-    def __init__(self, annualProductionInGwHours: float):
+    def __init__(self, annualProductionInGWHours: float):
 
         super().__init__("p50YieldScaling")
-        self.annualProductionInGwHours = annualProductionInGwHours
+        self.annualProductionInGWHours = annualProductionInGWHours
 
 
 class UploadedWindParameters(FlowParameters):
