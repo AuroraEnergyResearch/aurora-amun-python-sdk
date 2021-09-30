@@ -74,7 +74,6 @@ def main():
     save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
 
     # Check the json document for a complete structure of what is required
-    # historicCalibration is for weather years
     session.send_custom_wind(
         valuation["id"], get_json("examples\data\example_wind_request.json")
     )
