@@ -344,13 +344,17 @@ class AmunSession(APISession):
         params = {"lat": lat, "lon": lon, "year": year, "dataset": dataset}
         return self._get_request(url, params=params)
 
+    def send_custom_wind(self, valuation_id, wind):
+        url = f"{self.base_url}/valuations/{valuation_id}/wind"
+        return self._post_request(url, wind)
+
     def get_windfarms(self, search):
         """Search for windfarms
-            Note:
-               
+        Note:
 
-            Args:
-                search (string): Search term to filter by.
+
+        Args:
+            search (string): Search term to filter by.
 
         """
         url = f"{self.base_url}/windfarms"
@@ -359,11 +363,11 @@ class AmunSession(APISession):
 
     def get_windfarm(self, uuid):
         """Get windfarm by uuid
-            Note:
-               
+        Note:
 
-            Args:
-                search (uuid): uuid of windfarm to get.
+
+        Args:
+            search (uuid): uuid of windfarm to get.
 
         """
         url = f"{self.base_url}/windfarms/{uuid}"
