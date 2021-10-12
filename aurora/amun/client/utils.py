@@ -49,7 +49,11 @@ class RetryWithLogger(Retry):
 
 # Configurable retry session that can be used generically
 def configure_session_retry(
-    session, retries=3, backoff_factor=5, status_forcelist=[504], back_off_max=10,
+    session,
+    retries=3,
+    backoff_factor=5,
+    status_forcelist=[504],
+    back_off_max=10,
 ):
     retry = RetryWithLogger(
         total=retries,
@@ -87,3 +91,12 @@ def get_json(file):
     with open(file, "r") as reader:
         data = json.load(reader)
     return data
+
+
+def get_scenario_by_name(scenarios, scenario_name: str):
+    return get_single_value_form_list(
+        filter_function=lambda x: x["name"] == scenario_name
+        and x["is_retired"] == False,
+        results_list=scenarios,
+        error=f"with name '{scenario_name}'",
+    )
