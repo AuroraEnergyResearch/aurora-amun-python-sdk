@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import get_single_value_form_list, save_to_json, get_json
+from aurora.amun.client.utils import save_to_json, get_json, get_scenario_by_name
 
 log = logging.getLogger(__name__)
 
@@ -28,16 +28,6 @@ def setup_file_and_console_loggers(fileName):
     log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
     # Set Level for Amun SDK
     logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
-
-    #
-
-
-def get_scenario_by_name(scenarios, scenario_name: str):
-    return get_single_value_form_list(
-        filter_function=lambda x: x["name"] == scenario_name,
-        results_list=scenarios,
-        error=f"with name '{scenario_name}'",
-    )
 
 
 def main():
