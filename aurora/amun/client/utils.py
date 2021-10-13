@@ -49,7 +49,11 @@ class RetryWithLogger(Retry):
 
 # Configurable retry session that can be used generically
 def configure_session_retry(
-    session, retries=3, backoff_factor=5, status_forcelist=[504], back_off_max=10,
+    session,
+    retries=3,
+    backoff_factor=5,
+    status_forcelist=[504],
+    back_off_max=10,
 ):
     retry = RetryWithLogger(
         total=retries,
