@@ -33,8 +33,6 @@ def setup_file_and_console_loggers(fileName):
     # Set Level for Amun SDK
     logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
 
-    #
-
 
 def get_turbine_by_name(turbines, turbine_name):
     return get_single_value_form_list(

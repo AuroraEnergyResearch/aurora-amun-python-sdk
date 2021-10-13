@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import get_scenario_by_name, save_to_json, get_json
+from aurora.amun.client.utils import save_to_json, get_json, get_scenario_by_name
 
 log = logging.getLogger(__name__)
 

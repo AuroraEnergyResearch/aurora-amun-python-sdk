@@ -5,11 +5,7 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import (
-    save_to_json,
-    get_json,
-    get_scenario_by_name,
-)
+from aurora.amun.client.utils import save_to_json, get_json, get_scenario_by_name
 
 log = logging.getLogger(__name__)
 
@@ -33,8 +29,6 @@ def setup_file_and_console_loggers(fileName):
     log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
     # Set Level for Amun SDK
     logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
-
-    #
 
 
 def main():
