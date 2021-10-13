@@ -4,7 +4,11 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import get_single_value_form_list, save_to_json
+from aurora.amun.client.utils import (
+    get_single_value_form_list,
+    save_to_json,
+    get_scenario_by_name,
+)
 
 log = logging.getLogger(__name__)
 
@@ -30,14 +34,6 @@ def setup_file_and_console_loggers(fileName):
     logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
 
     #
-
-
-def get_scenario_by_name(scenarios, scenario_name: str):
-    return get_single_value_form_list(
-        filter_function=lambda x: x["name"] == scenario_name,
-        results_list=scenarios,
-        error=f"with name '{scenario_name}'",
-    )
 
 
 def get_turbine_by_name(turbines, turbine_name):
@@ -76,13 +72,34 @@ def main():
         "curtailmentThreshold": 2,
         # Optional
         "timeBasedCurtailmentThresholds": [
-            {"threshold": 10, "timeValidFrom": "2024-01-01T00:00:00.000Z",},
-            {"threshold": 20, "timeValidFrom": "2028-01-01T00:00:00.000Z",},
-            {"threshold": 40, "timeValidFrom": "2032-01-01T00:00:00.000Z",},
-            {"threshold": 60, "timeValidFrom": "2036-01-01T00:00:00.000Z",},
-            {"threshold": 80, "timeValidFrom": "2040-01-01T00:00:00.000Z",},
-            {"threshold": 100, "timeValidFrom": "2044-01-01T00:00:00.000Z",},
-            {"threshold": 120, "timeValidFrom": "2048-01-01T00:00:00.000Z",},
+            {
+                "threshold": 10,
+                "timeValidFrom": "2024-01-01T00:00:00.000Z",
+            },
+            {
+                "threshold": 20,
+                "timeValidFrom": "2028-01-01T00:00:00.000Z",
+            },
+            {
+                "threshold": 40,
+                "timeValidFrom": "2032-01-01T00:00:00.000Z",
+            },
+            {
+                "threshold": 60,
+                "timeValidFrom": "2036-01-01T00:00:00.000Z",
+            },
+            {
+                "threshold": 80,
+                "timeValidFrom": "2040-01-01T00:00:00.000Z",
+            },
+            {
+                "threshold": 100,
+                "timeValidFrom": "2044-01-01T00:00:00.000Z",
+            },
+            {
+                "threshold": 120,
+                "timeValidFrom": "2048-01-01T00:00:00.000Z",
+            },
         ],
     }
 
