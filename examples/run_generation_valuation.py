@@ -41,15 +41,18 @@ def main():
 
     turbines = session.get_turbines()
 
-    scenario_name = "Aurora Central Weather Years - 2020 April"
+    scenario_name = "Aurora Central - July 2021"
 
     valuation_parameters = {
-        "windType": "era5",
         "name": f"SDK Wind Farm {datetime.now()}",
         "description": "Created by Api",
-        "longitude": "-1.21",
-        "latitude": "59.59",
+        "longitude": "-3.67",
+        "latitude": "58.57",
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
+        "turbineModelId": 6,
+        "numberOfTurbines": 1,
+        "hubHeight": 65,
+        "obstacleHeight": 0,
     }
 
     valuation = session.create_valuation(valuation_parameters)
@@ -58,10 +61,12 @@ def main():
     save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
 
     # Check the json document for a complete structure of what is required
-    # historicCalibration is for weather years
-    session.send_calibrated_production(
-        valuation["id"], get_json("examples\data\example_calibratedGeneration.json")
-    )
+    scenario_json = get_json("examples\data\example_generation_request.json")
+
+    # Specify data's granularity in minutes
+    scenario_json["granularityInMins"] = 60
+
+    session.send_production_for_calibration(valuation["id"], scenario_json)
 
     results = session.get_valuation_results(
         valuation["id"], format="json", should_return_hourly_data=False

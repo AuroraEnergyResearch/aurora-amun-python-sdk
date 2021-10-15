@@ -1,4 +1,3 @@
-from examples.run_valuation_P50Yield import get_turbine_by_name
 from aurora.amun.client.session import AmunSession
 
 import logging
@@ -45,16 +44,11 @@ def main():
     scenario_name = "Aurora Central Weather Years - 2020 April"
 
     valuation_parameters = {
+        "windType": "era5",
         "name": f"SDK Wind Farm {datetime.now()}",
         "description": "Created by Api",
-        "longitude": "-1.009191",
-        "latitude": "52.308479",
-        "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
-        "turbineModelId": get_turbine_by_name(turbines, "Alstom Eco 110")["id"],
-        "numberOfTurbines": 10,
-        "hubHeight": 80,
-        "obstacleHeight": 0,
-        "roughnessLength": 0.001,
+        "longitude": "-1.21",
+        "latitude": "59.59",
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
     }
 
@@ -63,13 +57,11 @@ def main():
     log.info(f"Created {valuation['id']}")
     save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
 
-    scenario_json = get_json("examples\data\example_wind_request.json")
-
-    # Specify data's granularity in minutes
-    scenario_json["granularityInMins"] = 60
-
     # Check the json document for a complete structure of what is required
-    session.send_custom_wind(valuation["id"], scenario_json)
+    # historicCalibration is for weather years
+    session.send_calibrated_production(
+        valuation["id"], get_json("examples\data\example_calibratedGeneration.json")
+    )
 
     results = session.get_valuation_results(
         valuation["id"], format="json", should_return_hourly_data=False
