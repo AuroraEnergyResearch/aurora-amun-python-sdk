@@ -110,7 +110,9 @@ def main():
         base_parameters,
     )
     run_request_and_save(
-        session, P50ScalingParameters(p50GrossProduction=0.4), base_parameters,
+        session,
+        P50ScalingParameters(p50GrossProduction=0.4),
+        base_parameters,
     )
     run_request_and_save(
         session,
@@ -123,6 +125,7 @@ def main():
         UploadedWindParameters(
             uploadedWindStartTime="2017-01-01T00:00:00.000Z",
             lowHeight=SpeedAtHeight(10, speeds=speeds),
+            granularityInMins=60,
         ),
         base_parameters,
     )

@@ -96,7 +96,7 @@ def get_json(file):
 def get_scenario_by_name(scenarios, scenario_name: str):
     return get_single_value_form_list(
         filter_function=lambda x: x["name"] == scenario_name
-        and x["is_retired"] == False,
+        and x["isRetired"] == False,
         results_list=scenarios,
         error=f"with name '{scenario_name}'",
     )
