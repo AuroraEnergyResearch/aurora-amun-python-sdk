@@ -344,7 +344,7 @@ class AmunSession(APISession):
         params = {"lat": lat, "lon": lon, "year": year, "dataset": dataset}
         return self._get_request(url, params=params)
 
-    def get_wind_atlas(self, lat, lon, year, regionCode):
+    def get_wind_atlas(self, lat, lon, year, radius, regionCode):
         """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*).
 
         Note:
@@ -357,7 +357,7 @@ class AmunSession(APISession):
             year (number):The year to fetch wind data for.
         """
         url = f"{self.base_url}/wind/atlas/{regionCode}/averagewindspeed"
-        params = {"lat": lat, "lon": lon, "year": year}
+        params = {"lat": lat, "lon": lon, "year": year, "radius": radius}
         return self._get_request(url, params=params)
 
     def send_custom_wind(self, valuation_id, wind):

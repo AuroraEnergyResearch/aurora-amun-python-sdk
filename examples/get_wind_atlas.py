@@ -9,11 +9,12 @@ def main():
     lat = 51.771239
     lon = -1.284330
     year = 2016
+    radius = 8
     regionCode = "gbr"  # "gbr" | "deu"
 
     print(f"Getting wind {regionCode}")
     windData = session.get_wind_atlas(
-        lat=lat, lon=lon, year=year, regionCode=regionCode
+        lat=lat, lon=lon, year=year, radius=radius, regionCode=regionCode
     )
     save_to_json(f"wind/{year}_{regionCode}_{lat}_{lon}.json", windData)
 
