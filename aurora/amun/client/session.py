@@ -344,7 +344,9 @@ class AmunSession(APISession):
         params = {"lat": lat, "lon": lon, "year": year, "dataset": dataset}
         return self._get_request(url, params=params)
 
-    def get_wind_atlas(self, lat, lon, year, radius, regionCode):
+    def get_wind_atlas(
+        self, lat, lon, radius, numberOfTurbines, rotorDiameterInMeters, regionCode
+    ):
         """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*).
 
         Note:
@@ -353,11 +355,19 @@ class AmunSession(APISession):
         Args:
             latitude (float): The latitude of the point (-90 to 90).
             longitude (float): The latitude of the point (-180 to 180).
-            dataset (str): one of ("Era5","Merra2","NEWA")
-            year (number):The year to fetch wind data for.
+            radius (int):The radius of the area to average wind speed over 0 to 1000.
+            numberOfTurbines (int): If no radius specified this is required to allow the size of the windfarm to be estimated.
+            rotorDiameterInMeters (int):The rotor diameter of the turbines used to calculate size of the windfarm from the number of turbines if None a default value is used.
+
         """
         url = f"{self.base_url}/wind/atlas/{regionCode}/averagewindspeed"
-        params = {"lat": lat, "lon": lon, "year": year, "radius": radius}
+        params = {
+            "lat": lat,
+            "lon": lon,
+            "radius": radius,
+            "numberOfTurbines": numberOfTurbines,
+            "rotorDiameterInMeters": rotorDiameterInMeters,
+        }
         return self._get_request(url, params=params)
 
     def send_custom_wind(self, valuation_id, wind):
