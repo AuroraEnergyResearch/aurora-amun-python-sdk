@@ -337,8 +337,8 @@ class AmunSession(APISession):
         Args:
             latitude (float): The latitude of the point (-90 to 90).
             longitude (float): The latitude of the point (-180 to 180).
-            dataset (str): one of ("Era5","Merra2","NEWA")
             year (number):The year to fetch wind data for.
+            dataset (str): one of ("Era5","Merra2","NEWA").
         """
         url = f"{self.base_url}/wind/series"
         params = {"lat": lat, "lon": lon, "year": year, "dataset": dataset}
