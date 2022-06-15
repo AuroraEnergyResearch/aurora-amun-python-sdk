@@ -53,7 +53,7 @@ def main():
 
     turbines = session.get_turbines()
 
-    #  scenario_name = "Aurora Central Weather Years - 2020 April"
+    #  scenario_name = "Aurora Central - April 2022"
     scenario_name = "Aurora Central - 2020 October"
     valuation_parameters = {
         "windType": "era5",
@@ -70,34 +70,13 @@ def main():
         "curtailmentThreshold": 2,
         # Optional
         "timeBasedCurtailmentThresholds": [
-            {
-                "threshold": 10,
-                "timeValidFrom": "2024-01-01T00:00:00.000Z",
-            },
-            {
-                "threshold": 20,
-                "timeValidFrom": "2028-01-01T00:00:00.000Z",
-            },
-            {
-                "threshold": 40,
-                "timeValidFrom": "2032-01-01T00:00:00.000Z",
-            },
-            {
-                "threshold": 60,
-                "timeValidFrom": "2036-01-01T00:00:00.000Z",
-            },
-            {
-                "threshold": 80,
-                "timeValidFrom": "2040-01-01T00:00:00.000Z",
-            },
-            {
-                "threshold": 100,
-                "timeValidFrom": "2044-01-01T00:00:00.000Z",
-            },
-            {
-                "threshold": 120,
-                "timeValidFrom": "2048-01-01T00:00:00.000Z",
-            },
+            {"threshold": 10, "timeValidFrom": "2024-01-01T00:00:00.000Z",},
+            {"threshold": 20, "timeValidFrom": "2028-01-01T00:00:00.000Z",},
+            {"threshold": 40, "timeValidFrom": "2032-01-01T00:00:00.000Z",},
+            {"threshold": 60, "timeValidFrom": "2036-01-01T00:00:00.000Z",},
+            {"threshold": 80, "timeValidFrom": "2040-01-01T00:00:00.000Z",},
+            {"threshold": 100, "timeValidFrom": "2044-01-01T00:00:00.000Z",},
+            {"threshold": 120, "timeValidFrom": "2048-01-01T00:00:00.000Z",},
         ],
     }
 

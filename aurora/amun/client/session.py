@@ -350,8 +350,7 @@ class AmunSession(APISession):
         """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*).
 
         Note:
-            Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
-
+            Not all locations are supported.
         Args:
             latitude (float): The latitude of the point (-90 to 90).
             longitude (float): The latitude of the point (-180 to 180).

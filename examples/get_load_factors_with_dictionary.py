@@ -48,7 +48,7 @@ def main():
     session = AmunSession()
     turbines = session.get_turbines()
 
-    windType = "era5"
+    windType = "AuroraWindAtlas"
 
     parameters = {
         "windType": windType,

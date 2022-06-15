@@ -53,7 +53,7 @@ def main():
 
     turbines = session.get_turbines()
 
-    scenario_name = "Aurora Central Weather Years - 2020 April"
+    scenario_name = "Aurora Central - April 2022"
 
     valuation_parameters = {
         "windType": "era5",
