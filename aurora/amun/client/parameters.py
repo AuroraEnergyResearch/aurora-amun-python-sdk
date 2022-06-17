@@ -1,4 +1,34 @@
+from enum import Enum
 from typing import List
+
+
+class WindType(Enum):
+    """The types of wind to use in calculations"""
+
+    #: Uses the raw reanalysis dataset Era5. Check the region details endpoint for dataset availability.
+    Era5 = "Era5"
+    #:
+    UploadedWind = "UploadedWind"
+    #:
+    Generation = "Generation"
+    #: Uses the raw reanalysis dataset Merra2. Check the region details endpoint for dataset availability.
+    Merra2 = "Merra2"
+    #:
+    Weibull = "Weibull"
+    #: Uses the raw reanalysis dataset NEWA. Check the region details endpoint for dataset availability.
+    NEWA = "NEWA"
+    #:
+    P50Scaling = "P50Scaling"
+    #:
+    PowerDensity = "PowerDensity"
+    #:
+    AverageWindSpeed = "AverageWindSpeed"
+    #:
+    CalibratedGeneration = "CalibratedGeneration"
+    #: Uses the reanalysis dataset calibrated using the AmunWindAtlas. Check the region details endpoint for dataset availability.
+    AuroraWindAtlas = "AuroraWindAtlas"
+    #:
+    P50YieldScaling = "P50YieldScaling"
 
 
 class SpeedAtHeight:
@@ -90,22 +120,22 @@ class FlowParameters:
     """Base class for a flow. Internal Use only.
 
     Args:
-        windType (str): All flows must define a unique windtype as defined by the Amun http API.
+        windType (WindType): All flows must define a unique windtype as defined by the Amun http API.
     """
 
-    def __init__(self, windType: str):
+    def __init__(self, windType: WindType):
 
         self.windType = windType
 
 
 class BuiltInWindParameters(FlowParameters):
-    """The parameters used for built in wind calculations (*era5*,*merra2*,*newa*).
+    """The parameters used for built in wind calculations.
 
     Note:
         Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
 
     Args:
-        windType (str): one of ("era5","merra2","newa")
+        windType (WindType): one of (WindType.Era5,WindType.Merra2,WindType.NEWA)
         useReanalysisCorrection (bool, optional):Should Regional Reanalysis Correction be enabled. If true then a location
         specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
         reanalysisScaleCorrectionDelta (float, optional): Override the location specific *reanalysisScaleCorrectionDelta*.
@@ -114,7 +144,7 @@ class BuiltInWindParameters(FlowParameters):
 
     def __init__(
         self,
-        windType: str,
+        windType: WindType,
         useReanalysisCorrection: bool = None,
         reanalysisScaleCorrectionDelta: float = None,
     ):
@@ -136,7 +166,7 @@ class WeibullParameters(FlowParameters):
         self, weibullShape: float, weibullScale: float, measurementHeight: float
     ):
 
-        super().__init__("weibull")
+        super().__init__(WindType.Weibull)
         self.weibullShape = weibullShape
         self.weibullScale = weibullScale
         self.measurementHeight = measurementHeight
@@ -152,7 +182,7 @@ class AverageWindSpeedParameters(FlowParameters):
 
     def __init__(self, averageWindSpeed: float, measurementHeight: float):
 
-        super().__init__("averageWindSpeed")
+        super().__init__(WindType.AverageWindSpeed)
         self.averageWindSpeed = averageWindSpeed
         self.measurementHeight = measurementHeight
 
@@ -167,7 +197,7 @@ class PowerDensityParameters(FlowParameters):
 
     def __init__(self, averagePowerDensity: float, measurementHeight: float):
 
-        super().__init__("PowerDensity")
+        super().__init__(WindType.PowerDensity)
         self.averagePowerDensity = averagePowerDensity
         self.measurementHeight = measurementHeight
 
@@ -183,7 +213,7 @@ class P50ScalingParameters(FlowParameters):
 
     def __init__(self, p50GrossProduction: float):
 
-        super().__init__("P50Scaling")
+        super().__init__(WindType.P50Scaling)
         self.p50GrossProduction = p50GrossProduction
 
 
@@ -196,7 +226,7 @@ class P50YieldScalingParameters(FlowParameters):
 
     def __init__(self, annualProductionInGWHours: float):
 
-        super().__init__("p50YieldScaling")
+        super().__init__(WindType.P50YieldScaling)
         self.annualProductionInGWHours = annualProductionInGWHours
 
 
@@ -218,7 +248,7 @@ class UploadedWindParameters(FlowParameters):
         highHeight: SpeedAtHeight = None,
         granularityInMins: int = 60,
     ):
-        super().__init__("uploadedwind")
+        super().__init__(WindType.UploadedWind)
         self.uploadedWindStartTime = uploadedWindStartTime
         self.lowHeight = lowHeight
         self.highHeight = highHeight

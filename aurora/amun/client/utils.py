@@ -1,4 +1,4 @@
-from aurora.amun.client.parameters import SpeedAtHeight
+from aurora.amun.client.parameters import SpeedAtHeight, WindType
 import logging
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -49,11 +49,7 @@ class RetryWithLogger(Retry):
 
 # Configurable retry session that can be used generically
 def configure_session_retry(
-    session,
-    retries=3,
-    backoff_factor=5,
-    status_forcelist=[504],
-    back_off_max=10,
+    session, retries=3, backoff_factor=5, status_forcelist=[504], back_off_max=10,
 ):
     retry = RetryWithLogger(
         total=retries,
@@ -74,6 +70,8 @@ class AmunJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, SpeedAtHeight):
             return obj.to_request_dictionary()
+        if isinstance(obj, WindType):
+            return str(obj.value)
         return json.JSONEncoder.default(self, obj)
 
 
