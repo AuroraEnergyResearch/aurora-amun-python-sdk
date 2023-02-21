@@ -130,8 +130,10 @@ dmypy.json
 .pyre/
 out
 
-
 # Sphinx
 docs/build
+
+# PyCharm
+.idea
 
 examples/scratch
