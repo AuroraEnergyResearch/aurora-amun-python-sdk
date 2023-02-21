@@ -32,7 +32,7 @@ def setup_file_and_console_loggers(fileName):
 
 
 def main():
-    setup_file_and_console_loggers("generation_valuation_example.log")
+    setup_file_and_console_loggers("run_average_wind_speed_valuation.log")
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
     session = AmunSession()
