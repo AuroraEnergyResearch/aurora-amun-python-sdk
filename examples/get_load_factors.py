@@ -20,6 +20,7 @@ from aurora.amun.client.utils import get_single_value_form_list, save_to_json, g
 
 log = logging.getLogger(__name__)
 
+
 # Sets Up root loging console(INFO) and file (DEBUG) handlers
 def setup_file_and_console_loggers(fileName):
     os.makedirs("logs", exist_ok=True)
@@ -90,6 +91,7 @@ def main():
         numberOfTurbines=12,
         roughnessLength=0.02,
         usePowerCurveSmoothing=False,
+        useReanalysisCorrection=True,
     )
 
     run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
