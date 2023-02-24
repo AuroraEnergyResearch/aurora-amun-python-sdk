@@ -40,7 +40,6 @@ class SpeedAtHeight:
     """
 
     def __init__(self, height: float, speeds: List[float]):
-
         self.height = height
         self.speeds = speeds
 
@@ -66,6 +65,7 @@ class LoadFactorBaseParameters:
         numberOfTurbines (int): The number of turbines in the site.
         roughnessLength (float, optional): Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
         usePowerCurveSmoothing (bool, optional):Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
+        useReanalysisCorrection(bool, optional):Should Reanalysis Correctionbe used only valid for ERA5, Defaults to False.
         smoothingCoefficient (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
         lossesWake (float) default 0: The percentage to apply for wake loss. (0 <= lossesWake < 1)
         lossesAvailability (float) default 0: Percentage for external losses.  (0 <= lossesAvailability < 1)
@@ -87,6 +87,7 @@ class LoadFactorBaseParameters:
         numberOfTurbines: int,
         roughnessLength: float = None,
         usePowerCurveSmoothing: bool = None,
+        useReanalysisCorrection: bool = False,
         smoothingCoefficient: float = None,
         lossesWake: float = 0.0,
         lossesAvailability: float = 0.0,
@@ -107,6 +108,7 @@ class LoadFactorBaseParameters:
         self.numberOfTurbines = numberOfTurbines
         self.roughnessLength = roughnessLength
         self.usePowerCurveSmoothing = usePowerCurveSmoothing
+        self.useReanalysisCorrection = useReanalysisCorrection
 
         self.lossesWake = lossesWake
         self.lossesAvailability = lossesAvailability
@@ -124,7 +126,6 @@ class FlowParameters:
     """
 
     def __init__(self, windType: WindType):
-
         self.windType = windType
 
 
@@ -165,7 +166,6 @@ class WeibullParameters(FlowParameters):
     def __init__(
         self, weibullShape: float, weibullScale: float, measurementHeight: float
     ):
-
         super().__init__(WindType.Weibull)
         self.weibullShape = weibullShape
         self.weibullScale = weibullScale
@@ -181,7 +181,6 @@ class AverageWindSpeedParameters(FlowParameters):
     """
 
     def __init__(self, averageWindSpeed: float, measurementHeight: float):
-
         super().__init__(WindType.AverageWindSpeed)
         self.averageWindSpeed = averageWindSpeed
         self.measurementHeight = measurementHeight
@@ -196,7 +195,6 @@ class PowerDensityParameters(FlowParameters):
     """
 
     def __init__(self, averagePowerDensity: float, measurementHeight: float):
-
         super().__init__(WindType.PowerDensity)
         self.averagePowerDensity = averagePowerDensity
         self.measurementHeight = measurementHeight
@@ -212,7 +210,6 @@ class P50ScalingParameters(FlowParameters):
     """
 
     def __init__(self, p50GrossProduction: float):
-
         super().__init__(WindType.P50Scaling)
         self.p50GrossProduction = p50GrossProduction
 
@@ -225,7 +222,6 @@ class P50YieldScalingParameters(FlowParameters):
     """
 
     def __init__(self, annualProductionInGWHours: float):
-
         super().__init__(WindType.P50YieldScaling)
         self.annualProductionInGWHours = annualProductionInGWHours
 
