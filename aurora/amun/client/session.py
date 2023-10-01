@@ -1,4 +1,5 @@
 from json import encoder
+import time
 from aurora.amun.client.responses import (
     RegionDetail,
     get_RegionDetail_from_response,
@@ -7,14 +8,14 @@ from aurora.amun.client.parameters import (
     FlowParameters,
     LoadFactorBaseParameters,
 )
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import requests
 import logging
 import os
 from pathlib import Path
 import json
 from urllib.parse import urlencode
-from aurora.amun.client.utils import AmunJSONEncoder, configure_session_retry
+from aurora.amun.client.utils import AmunJSONEncoder, configure_session_retry, get_v2_url
 
 
 log = logging.getLogger(__name__)
@@ -238,6 +239,141 @@ class AmunSession(APISession):
         url = f"{self.base_url}/valuations"
         return self._put_request(url, valuation)
 
+
+    def submit_load_factor_calculations(self, load_factor_configurations: List(Dict)) -> List(str):
+        """
+        Submits a request to calculate the load factor and wind speeds for a year given
+        a start time and a location.
+        You can submit a lot of calculations at once and then use the tokens in response
+        to check on the status of each calculation.
+
+        See Also:
+            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+
+        Args:
+            list of load_factor_configurations (List(Dict)) where each load_factor_configuration is a dictionary of load factor parameters.
+
+        Returns:
+            List of tokens where each token is a unique identifier for the calculation. The order of the tokens matches the order of the input parameters.
+            * token: unique identifier for the calculation
+        """
+
+        # This is a v2 feature
+        url = f"{self.base_url}/loadfactor"
+        url = url.replace("v1", "v2")
+
+        # Saves the request and a unique token of each calculation/simulation
+        tokens = []
+        for i, configuration in enumerate(load_factor_configurations):
+            creation_response = self._put_request(url, configuration)
+            if not hasattr(creation_response, 'token'):
+                print(f"Could not create load factor calculation for configuration {i}: {configuration}")
+                tokens.append(None)
+            else:
+                tokens.append(creation_response.token)
+        return tokens
+    
+
+    def get_load_factor_calculation(self, token):
+        """
+        V2 feature.
+        Gets the status of a load factor calculation given its token. The status can be:
+            If still running:
+            {
+                status: "Running",
+            }
+
+            If finished successfully:
+            {
+                status: "Complete",
+                exiryTime: DateTime of when the results will be deleted,
+                results: {...load factors...}
+            }
+
+            If errored:
+            {
+                status: "Errored",
+                error: "Error message"
+            }
+
+        """
+        url = get_v2_url(f"{self.base_url}/loadfactor")
+        return self._get_request(f'{url}/{token}')
+
+
+    def track_load_factor_calculation(self, tokens: List(str)) -> List(Dict):
+        """
+        V2 feature
+        Tracks the status of a load factor calculation/simulation given their token and
+        returns the results of the simulations as soon as they finish running.
+
+        Args:
+            list of tokens (List(str)) where each token is a unique identifier for the calculation.
+
+        Returns:
+            List of dictionaries of this type. Order of the results matches the order of the input parameters:
+                * If finished:
+                    * parameters
+                    * appliedParams
+                    * typicalHourly
+                    * weatherYearHourly
+                * If errored:
+                    * error
+                * If failed to start:
+                    * None
+        """
+        
+        results = [None] * len(tokens)
+        leftToRun = tokens.copy()
+
+        while len(leftToRun) > 0:
+            time.sleep(10)
+            for token in leftToRun:
+                i = tokens.index(token)
+
+                # If the token is None then it was not created
+                if token is None:
+                    leftToRun.remove(token)
+                
+                response = self.get_load_factor_calculation(token)
+                if response.status == "Errored":
+                    leftToRun.remove(token)
+                    results[i] = response.error
+                elif response.status == "Complete":
+                    leftToRun.remove(token)
+                    results[i] = response.result
+        return results
+    
+
+    def run_load_factors_in_batch(self, load_factor_configurations: List(Dict)) -> List(Dict):
+        """Calculate the load factor and wind speeds for a year given a start time and a location.
+
+        See Also:
+            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+
+        Args:
+            list of load_factor_configurations (List(Dict)) where each load_factor_configuration is a dictionary of load factor parameters.
+
+        Returns:
+            List of dictionaries of this type. Order of the results matches the order of the input parameters:
+                * result: Dictionary with the keys:
+                    * parameters
+                    * appliedParams
+                    * typicalHourly
+                    * weatherYearHourly
+        """
+        url = get_v2_url(f"{self.base_url}/loadfactor")
+
+        # Step 1: Submit all the calculations/simualations
+        tokens = self.submit_load_factor_calculations(load_factor_configurations)
+
+        # Step 2: Wait for each simulation to finish
+        results = self.track_load_factor_calculation(tokens)
+
+        return results
+
+
+    ## Chris never used it and probably never will
     def run_load_factor_calculation(self, load_factor_configuration: Dict):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
@@ -249,7 +385,6 @@ class AmunSession(APISession):
 
         Returns:
             Dictionary: A Dictionary with the keys
-
             * parameters
             * appliedParams
             * typicalHourly
@@ -258,6 +393,47 @@ class AmunSession(APISession):
         """
         url = f"{self.base_url}/loadfactor"
         return self._put_request(url, load_factor_configuration)
+
+
+    def run_load_factors_for_parameters_batch(
+        self, flow_parameters: List(FlowParameters), base_parameters: List(LoadFactorBaseParameters)
+    ) -> List(Dict):
+        """Calculate the load factor and wind speeds for a year given a start time and a location.
+
+        See Also:
+            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+
+        Args:
+            flow_parameters (List(FlowParameters)): The list of parameters specific to the calculation type
+
+                * :class:`~aurora.amun.client.parameters.AverageWindSpeedParameters`
+                * :class:`~aurora.amun.client.parameters.BuiltInWindParameters`
+                * :class:`~aurora.amun.client.parameters.PowerDensityParameters`
+                * :class:`~aurora.amun.client.parameters.WeibullParameters`
+                * :class:`~aurora.amun.client.parameters.UploadedWindParameters`
+
+            base_parameters (List(LoadFactorBaseParameters)): List of parameters required for all flows to the calculation type. These are applied to all the flow parameters
+
+        Returns:
+            List of dictionaries of this type. Order of the results matches the order of the input parameters:
+                * result: Dictionary with the keys:
+                    * parameters
+                    * appliedParams
+                    * typicalHourly
+                    * weatherYearHourly
+        """
+        assert_message = "The number of flow parameters must match the number of base parameters"
+        assert len(flow_parameters) == len(base_parameters), assert_message
+
+        requests = []
+        for flow, base in zip(flow_parameters, base_parameters):
+            # Create a request by combining the paramters
+            request = {}
+            request.update(vars(flow))
+            request.update(vars(base))
+            requests.append(request)
+        return self.run_load_factors_in_batch(requests)
+
 
     def run_load_factor_for_parameters(
         self, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters

@@ -98,3 +98,7 @@ def get_scenario_by_name(scenarios, scenario_name: str):
         results_list=scenarios,
         error=f"with name '{scenario_name}'",
     )
+
+def get_v2_url(url):
+    """ If the feature is available in v2 only"""
+    return url.replace("/v1/", "/v2/")
