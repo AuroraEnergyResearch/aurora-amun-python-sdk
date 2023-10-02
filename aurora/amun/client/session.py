@@ -8,6 +8,7 @@ from aurora.amun.client.parameters import (
     FlowParameters,
     LoadFactorBaseParameters,
 )
+from aurora.amun.client.utils import get_single_value_form_list
 from typing import Dict, List, Tuple
 import requests
 import logging
@@ -160,29 +161,39 @@ class AmunSession(APISession):
 
     def get_turbines(self):
         """Get the turbines available to the user.
-
-         **Response**:
-
-        .. code-block::
-
-             [{
-                 'id': 29,
-                 'manufacturer': 'EWT Directwind',
-                 'name': 'EWT Directwind 2000/96',
-                 'ratedCapacity': 2,
-                 'rotorDiameter': 96,
-                 'minHubHeight': None,
-                 'maxHubHeight': None,
-                 'cutInSpeed': 3.5,
-                 'cutOutSpeed': 25,
-                 'specSource': 'https://www.thewindpower.net/turbine_en_879_ewt_directwind-2000-96.php',
-                 'type': 'public',
-                 },........
-
+        
+        **Response example**:
+        ```json
+            [{
+                'id': 29,
+                'manufacturer': 'EWT Directwind',
+                'name': 'EWT Directwind 2000/96',
+                'ratedCapacity': 2,
+                'rotorDiameter': 96,
+                'minHubHeight': None,
+                'maxHubHeight': None,
+                'cutInSpeed': 3.5,
+                'cutOutSpeed': 25,
+                'specSource': 'https://www.thewindpower.net/turbine_en_879_ewt_directwind-2000-96.php',
+                'type': 'public',
+                },
+                    ...
+        ```
         """
 
         url = f"{self.base_url}/turbines"
         return self._get_request(url)
+
+    def get_turbine_by_name(self, turbine_name):
+        """Get a turbine by name.
+        """
+        turbines = self.get_turbines()
+
+        return get_single_value_form_list(
+            filter_function=lambda x: x["name"] == turbine_name,
+            results_list=turbines,
+            error=f"with name '{turbine_name}'",
+        )
 
     def get_region_details(
         self, latitude: float, longitude: float
@@ -206,7 +217,7 @@ class AmunSession(APISession):
 
     def get_scenarios(self, region):
         """Get the scenarios that are available for the specified region. The regions for a given location
-           to use can be found be using :meth:`.AmunSession.get_region_details`
+           to use can be found be using `.AmunSession.get_region_details`
 
         Args:
             region (str): The code for the region to lookup scenarios for.
@@ -214,10 +225,9 @@ class AmunSession(APISession):
         Returns:
             List of Scenario details.
 
-        **Response**:
+        **Response example**:
 
-        .. code-block::
-
+        ```json
                 [{
                     'id': 3,
                     'name': '2019 Smart Power Scenario',
@@ -227,8 +237,9 @@ class AmunSession(APISession):
                     'currency': 'GBP',
                     'currencyYear': 2018,
                     'hasFile': False
-                },.....
-
+                },
+                ...
+        ```
         """
         url = f"{self.base_url}/scenarios"
         params = {"region": region}
@@ -248,7 +259,7 @@ class AmunSession(APISession):
         to check on the status of each calculation.
 
         See Also:
-            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+            `AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
             list of load_factor_configurations (List(Dict)) where each load_factor_configuration is a dictionary of load factor parameters.
@@ -259,8 +270,7 @@ class AmunSession(APISession):
         """
 
         # This is a v2 feature
-        url = f"{self.base_url}/loadfactor"
-        url = url.replace("v1", "v2")
+        url = get_v2_url(f"{self.base_url}/loadfactor")
 
         # Saves the request and a unique token of each calculation/simulation
         tokens = []
@@ -274,28 +284,22 @@ class AmunSession(APISession):
         return tokens
     
 
-    def get_load_factor_calculation(self, token):
+    def get_load_factor_calculation(self, token: str):
         """
         V2 feature.
-        Gets the status of a load factor calculation given its token. The status can be:
-            If still running:
-            {
-                status: "Running",
-            }
+        Gets the status of a load factor calculation given its token.
 
-            If finished successfully:
-            {
-                status: "Complete",
-                exiryTime: DateTime of when the results will be deleted,
-                results: {...load factors...}
-            }
+        For calculation that is still running:
+        - `status` - "Running"
 
-            If errored:
-            {
-                status: "Errored",
-                error: "Error message"
-            }
+        For a finished calculation:
+        - `status` - "Complete"
+        - `exiryTime` - Date and time of when the results will be deleted,
+        - `results` - load factors
 
+        For errored calculation:
+        - `status` - "Running"
+        - `error` - a string explaining the error
         """
         url = get_v2_url(f"{self.base_url}/loadfactor")
         return self._get_request(f'{url}/{token}')
@@ -307,20 +311,21 @@ class AmunSession(APISession):
         Tracks the status of a load factor calculation/simulation given their token and
         returns the results of the simulations as soon as they finish running.
 
-        Args:
-            list of tokens (List(str)) where each token is a unique identifier for the calculation.
+        Accepts a list of tokens of calculations and returns a list of results.
+        The order of the results matches the order of the input parameters.
+        Depending on the status of the calculation the result will have different keys:
 
-        Returns:
-            List of dictionaries of this type. Order of the results matches the order of the input parameters:
-                * If finished:
-                    * parameters
-                    * appliedParams
-                    * typicalHourly
-                    * weatherYearHourly
-                * If errored:
-                    * error
-                * If failed to start:
-                    * None
+        For finished calculations:
+        - `parameters` - the parameters used for the calculation
+        - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
+        - `typicalHourly` - typical hourly load factors
+        - `weatherYearHourly` - hourly load factors for the weather year  
+        
+        For errored calculations:
+        - `error` - a string explaining the error  
+        
+        For calcualtions that failed to be submitted:
+        - `None`
         """
         
         results = [None] * len(tokens)
@@ -349,18 +354,17 @@ class AmunSession(APISession):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
         See Also:
-            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+            `.AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
-            list of load_factor_configurations (List(Dict)) where each load_factor_configuration is a dictionary of load factor parameters.
+            list of load_factor_configurations where each load_factor_configuration is a dictionary of load factor parameters.
 
         Returns:
             List of dictionaries of this type. Order of the results matches the order of the input parameters:
-                * result: Dictionary with the keys:
-                    * parameters
-                    * appliedParams
-                    * typicalHourly
-                    * weatherYearHourly
+            - `parameters` - the parameters used for the calculation
+            - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
+            - `typicalHourly` - typical hourly load factors
+            - `weatherYearHourly` - hourly load factors for the weather year  
         """
         url = get_v2_url(f"{self.base_url}/loadfactor")
 
@@ -378,17 +382,17 @@ class AmunSession(APISession):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
         See Also:
-            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+           `.AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
-            load_factor_configuration (Dict): A dictionary of load factor parameters.
+            load_factor_configuration: A dictionary of load factor parameters.
 
         Returns:
             Dictionary: A Dictionary with the keys
-            * parameters
-            * appliedParams
-            * typicalHourly
-            * weatherYearHourly
+            - `parameters` - the parameters used for the calculation
+            - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
+            - `typicalHourly` - typical hourly load factors
+            - `weatherYearHourly` - hourly load factors for the weather year  
 
         """
         url = f"{self.base_url}/loadfactor"
@@ -401,26 +405,24 @@ class AmunSession(APISession):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
         See Also:
-            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+            `.AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
-            flow_parameters (List(FlowParameters)): The list of parameters specific to the calculation type
+            flow_parameters: The list of parameters specific to the calculation type
+                * `aurora.amun.client.parameters.AverageWindSpeedParameters`
+                * `aurora.amun.client.parameters.BuiltInWindParameters`
+                * `aurora.amun.client.parameters.PowerDensityParameters`
+                * `aurora.amun.client.parameters.WeibullParameters`
+                * `aurora.amun.client.parameters.UploadedWindParameters`
 
-                * :class:`~aurora.amun.client.parameters.AverageWindSpeedParameters`
-                * :class:`~aurora.amun.client.parameters.BuiltInWindParameters`
-                * :class:`~aurora.amun.client.parameters.PowerDensityParameters`
-                * :class:`~aurora.amun.client.parameters.WeibullParameters`
-                * :class:`~aurora.amun.client.parameters.UploadedWindParameters`
-
-            base_parameters (List(LoadFactorBaseParameters)): List of parameters required for all flows to the calculation type. These are applied to all the flow parameters
+            base_parameters: List of parameters required for all flows to the calculation type. These are applied to all the flow parameters
 
         Returns:
             List of dictionaries of this type. Order of the results matches the order of the input parameters:
-                * result: Dictionary with the keys:
-                    * parameters
-                    * appliedParams
-                    * typicalHourly
-                    * weatherYearHourly
+            - `parameters` - the parameters used for the calculation
+            - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
+            - `typicalHourly` - typical hourly load factors
+            - `weatherYearHourly` - hourly load factors for the weather year 
         """
         assert_message = "The number of flow parameters must match the number of base parameters"
         assert len(flow_parameters) == len(base_parameters), assert_message
@@ -441,26 +443,24 @@ class AmunSession(APISession):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
         See Also:
-            :meth:`.AmunSession.get_region_details` to get region codes and available datasets for a point
+            `AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
-            flow_parameters (FlowParameters): The parameters specific to the calculation type
-
-                * :class:`~aurora.amun.client.parameters.AverageWindSpeedParameters`
-                * :class:`~aurora.amun.client.parameters.BuiltInWindParameters`
-                * :class:`~aurora.amun.client.parameters.PowerDensityParameters`
-                * :class:`~aurora.amun.client.parameters.WeibullParameters`
-                * :class:`~aurora.amun.client.parameters.UploadedWindParameters`
+            flow_parameters: The parameters specific to the calculation type
+                * `aurora.amun.client.parameters.AverageWindSpeedParameters`
+                * `aurora.amun.client.parameters.BuiltInWindParameters`
+                * `aurora.amun.client.parameters.PowerDensityParameters`
+                * `aurora.amun.client.parameters.WeibullParameters`
+                * `aurora.amun.client.parameters.UploadedWindParameters`
 
             base_parameters (LoadFactorBaseParameters): The parameters required for all flows to the calculation type.
 
         Returns:
             Dictionary: A Dictionary with the keys
-
-                * parameters
-                * appliedParams
-                * typicalHourly
-                * weatherYearHourly
+            - `parameters` - the parameters used for the calculation
+            - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
+            - `typicalHourly` - typical hourly load factors
+            - `weatherYearHourly` - hourly load factors for the weather year 
         """
 
         # Create a request by combining the paramters
@@ -527,6 +527,7 @@ class AmunSession(APISession):
 
         Note:
             Not all locations are supported.
+
         Args:
             latitude (float): The latitude of the point (-90 to 90).
             longitude (float): The latitude of the point (-180 to 180).
@@ -551,8 +552,6 @@ class AmunSession(APISession):
 
     def get_windfarms(self, search):
         """Search for windfarms
-        Note:
-
 
         Args:
             search (string): Search term to filter by.
@@ -564,8 +563,6 @@ class AmunSession(APISession):
 
     def get_windfarm(self, uuid):
         """Get windfarm by uuid
-        Note:
-
 
         Args:
             search (uuid): uuid of windfarm to get.

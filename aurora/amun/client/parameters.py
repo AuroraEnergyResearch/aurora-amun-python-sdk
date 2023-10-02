@@ -1,33 +1,36 @@
 from enum import Enum
 from typing import List
 
+"""
+Collection of classes used to define the parameters for a load factor calculation.
+"""
 
 class WindType(Enum):
     """The types of wind to use in calculations"""
 
     #: Uses the raw reanalysis dataset Era5. Check the region details endpoint for dataset availability.
     Era5 = "Era5"
-    #:
+    #: Uses the wind speeds uploaded by the user.
     UploadedWind = "UploadedWind"
-    #:
+    #: Uses generation data uploaded by the user.
     Generation = "Generation"
     #: Uses the raw reanalysis dataset Merra2. Check the region details endpoint for dataset availability.
     Merra2 = "Merra2"
-    #:
+    #: Uses Weibull shape and scale parametes to estimate the wind speeds.
     Weibull = "Weibull"
     #: Uses the raw reanalysis dataset NEWA. Check the region details endpoint for dataset availability.
     NEWA = "NEWA"
-    #:
+    #: Uses P50 load factor parameter which represents the long-term production potential of this site.
     P50Scaling = "P50Scaling"
-    #:
+    #: Uses power density of the site at a specific height to estimate the wind speeds.
     PowerDensity = "PowerDensity"
-    #:
+    #: Uses the average wind speed of the site at a specific height to estimate the wind speeds.
     AverageWindSpeed = "AverageWindSpeed"
-    #:
+    #: Uses the calibrated generation data uploaded by the user.
     CalibratedGeneration = "CalibratedGeneration"
     #: Uses the reanalysis dataset calibrated using the AmunWindAtlas. Check the region details endpoint for dataset availability.
     AuroraWindAtlas = "AuroraWindAtlas"
-    #:
+    #: Uses expectde annual production in GWh to estimate the wind speeds.
     P50YieldScaling = "P50YieldScaling"
 
 
@@ -54,7 +57,7 @@ class LoadFactorBaseParameters:
         Not all regions/locations support Multi-Turbine Power Curve Smoothing.
 
     Args:
-        turbineModelId (int): The Id of the Turbine to use in the calculation as returned from :meth:`.AmunSession.get_turbines`.
+        turbineModelId (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
         latitude (float): The latitude of the point (-90 to 90).
         longitude (float): The latitude of the point (-180 to 180).
 

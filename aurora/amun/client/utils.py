@@ -100,5 +100,4 @@ def get_scenario_by_name(scenarios, scenario_name: str):
     )
 
 def get_v2_url(url):
-    """ If the feature is available in v2 only"""
     return url.replace("/v1/", "/v2/")

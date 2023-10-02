@@ -1,0 +1,9 @@
+{
+  "items": [
+    "docs/Reference/parameters",
+    "docs/Reference/responses",
+    "docs/Reference/session"
+  ],
+  "label": "SDK Reference",
+  "type": "category"
+}

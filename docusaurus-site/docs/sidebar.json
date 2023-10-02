@@ -1,0 +1,10 @@
+{
+  "items": [
+    "docs/parameters",
+    "docs/responses",
+    "docs/session",
+    "docs/utils"
+  ],
+  "label": "SDK Reference",
+  "type": "category"
+}
