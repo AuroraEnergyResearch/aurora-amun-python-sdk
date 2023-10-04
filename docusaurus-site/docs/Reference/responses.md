@@ -13,7 +13,7 @@ The details about a region required to construct valid valuation and load factor
 
 **Arguments**:
 
-- `pmfCode` _str_ - The *regionCode* to use when required to look up more details e.g. which scenarios are available. :meth:`.AmunSession.get_scenarios`
+- `pmfCode` _str_ - The *regionCode* to use when required to look up more details e.g. which scenarios are available. `.AmunSession.get_scenarios`
 - `defaultWind` _str_ - The dataset used by default in calculations
 - `availableDatasets` _List[str]_ - A list of datasets that are available for the region.
 - `era5CorrectionEnabled` _bool_ - Is era5 correction available for the region.

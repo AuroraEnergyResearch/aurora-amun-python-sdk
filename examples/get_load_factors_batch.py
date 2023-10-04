@@ -1,7 +1,9 @@
+import logging
+from datetime import datetime
+
 from aurora.amun.client.parameters import (
     AverageWindSpeedParameters,
     BuiltInWindParameters,
-    FlowParameters,
     LoadFactorBaseParameters,
     P50ScalingParameters,
     PowerDensityParameters,
@@ -11,37 +13,14 @@ from aurora.amun.client.parameters import (
     P50YieldScalingParameters,
 )
 from aurora.amun.client.session import AmunSession
-
-import logging
-import logging.handlers
-import os
-from datetime import datetime
 from aurora.amun.client.utils import save_to_json, get_json, setup_file_and_console_loggers
 
 log = logging.getLogger(__name__)
-
-def run_request_and_save(
-    session, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
-):
-    log.info(f"getting for {flow_parameters.windType}")
-
-    load_factors = session.run_load_factor_for_parameters(
-        flow_parameters, base_parameters
-    )
-
-    loadFactorRequestId = load_factors["parameters"]["loadFactorRequestId"]
-    log.info(f"Got result for {loadFactorRequestId}")
-    save_to_json(
-        f"load_factors/load_factors_{datetime.now().isoformat().replace(':','_')}_{flow_parameters.windType}_{loadFactorRequestId}.json",
-        load_factors,
-    )
 
 def main():
     setup_file_and_console_loggers("get_load_factors_example.log")
 
     log.info(f"Starting")
-    # Calling with no token in constructor will load one from an environment variable if provided
-    # or a file HOME/.
     session = AmunSession()
     turbine = session.get_turbine_by_name("Siemens SWT-4.0-130")
 
@@ -61,43 +40,30 @@ def main():
         useReanalysisCorrection=True,
     )
 
-    run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
-
-    run_request_and_save(
-        session,
+    list_of_parameters = [
+        BuiltInWindParameters("era5"),
         WeibullParameters(measurementHeight=90, weibullScale=12, weibullShape=6),
-        base_parameters,
-    )
-    run_request_and_save(
-        session,
         PowerDensityParameters(measurementHeight=90, averagePowerDensity=400.1),
-        base_parameters,
-    )
-    run_request_and_save(
-        session,
         AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
-        base_parameters,
-    )
-    run_request_and_save(
-        session,
         P50ScalingParameters(p50GrossProduction=0.4),
-        base_parameters,
-    )
-    run_request_and_save(
-        session,
         P50YieldScalingParameters(annualProductionInGWHours=200),
-        base_parameters,
-    )
-    speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
-    run_request_and_save(
-        session,
         UploadedWindParameters(
             uploadedWindStartTime="2017-01-01T00:00:00.000Z",
-            lowHeight=SpeedAtHeight(10, speeds=speeds),
+            lowHeight=SpeedAtHeight(10, speeds=get_json("examples\data\example_windSpeed.json")["speeds"]),
             granularityInMins=60,
         ),
-        base_parameters,
+    ]
+    results = session.run_load_factors_for_parameters_batch(
+        list_of_parameters, [base_parameters] * len(list_of_parameters)
     )
-    
+
+    for result, params in zip(results, list_of_parameters):
+        loadFactorRequestId = result["parameters"]["loadFactorRequestId"]
+        log.info(f"Got result for {loadFactorRequestId}")
+        save_to_json(
+            f"load_factors/load_factors_{datetime.now().isoformat().replace(':','_')}_{params.windType}_{loadFactorRequestId}.json",
+            result,
+        )
+
 if __name__ == "__main__":
     main()

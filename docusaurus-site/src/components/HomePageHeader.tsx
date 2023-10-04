@@ -4,7 +4,7 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import styles from "./styles.module.css";
 
-function HomepageHeader() {
+const HomePageHeader = () => {
   const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
@@ -20,13 +20,13 @@ function HomepageHeader() {
           </Link>
           <Link
             className="button button--secondary button--lg margin-right--md"
-            to="/docs/Examples/add-example-turbine"
+            to="/docs/Examples/Load Factors/common"
           >
             Examples
           </Link>
           <Link
             className="button button--secondary button--lg margin-right--md"
-            to="/docs/Reference"
+            to="/docs/Reference/parameters"
           >
             SDK Reference
           </Link>
@@ -36,4 +36,4 @@ function HomepageHeader() {
   );
 }
 
-export default HomepageHeader;
+export default HomePageHeader;

@@ -6,32 +6,32 @@ Collection of classes used to define the parameters for a load factor calculatio
 """
 
 class WindType(Enum):
-    """The types of wind to use in calculations"""
+    """The types of power data to use in calculations."""
 
-    #: Uses the raw reanalysis dataset Era5. Check the region details endpoint for dataset availability.
-    Era5 = "Era5"
-    #: Uses the wind speeds uploaded by the user.
-    UploadedWind = "UploadedWind"
-    #: Uses generation data uploaded by the user.
-    Generation = "Generation"
-    #: Uses the raw reanalysis dataset Merra2. Check the region details endpoint for dataset availability.
-    Merra2 = "Merra2"
-    #: Uses Weibull shape and scale parametes to estimate the wind speeds.
-    Weibull = "Weibull"
-    #: Uses the raw reanalysis dataset NEWA. Check the region details endpoint for dataset availability.
-    NEWA = "NEWA"
-    #: Uses P50 load factor parameter which represents the long-term production potential of this site.
-    P50Scaling = "P50Scaling"
-    #: Uses power density of the site at a specific height to estimate the wind speeds.
-    PowerDensity = "PowerDensity"
-    #: Uses the average wind speed of the site at a specific height to estimate the wind speeds.
+    #: Amun will use wind speed reanalysis data in the location and calibrate it so that the long-term average wind speed matched the user's projection.
     AverageWindSpeed = "AverageWindSpeed"
-    #: Uses the calibrated generation data uploaded by the user.
-    CalibratedGeneration = "CalibratedGeneration"
-    #: Uses the reanalysis dataset calibrated using the AmunWindAtlas. Check the region details endpoint for dataset availability.
+    #: Aurora's high-resolution wind speed atlas based on Aurora's data from existing wind farms. Check the region details for availability.
     AuroraWindAtlas = "AuroraWindAtlas"
-    #: Uses expectde annual production in GWh to estimate the wind speeds.
+    #: Hourly simulated production series in the same reference year as Aurora's power market model uploaded by the user. The only adjustment made by Amun to this data will come from price-based economic curtailment.
+    CalibratedGeneration = "CalibratedGeneration"
+    #: ERA5 reanalysis dataset. Check the region details for availability.
+    Era5 = "Era5"
+    #: At least one year of hourly metered or modelled production uploaded by the user. Amun will use this data create bespoke power curve that captures the relationship between reanalysis wind speed and observed generation.
+    Generation = "Generation"
+    #: MERRA-2 reanalysis dataset. Check the region details for availability.
+    Merra2 = "Merra2"
+    #: NEWA reanalysis dataset. Check the region details for availability.
+    NEWA = "NEWA"
+    #: Represents the site's long-term P50 production potential as a load factor. Amun will calibrate underlying reanalysis wind speeds to match the long-term P50 load factor.
+    P50Scaling = "P50Scaling"
+    #: Represents the site's long-term production P50 potential as generation (GWh/year). Amun will calibrate underlying reanalysis wind speeds to match the long-term P50 production.
     P50YieldScaling = "P50YieldScaling"
+    #: Power Density is a quantitative measure of wind energy available at a location. Amun will calibrate underlying reanalysis wind speeds to match the average power density.
+    PowerDensity = "PowerDensity"
+    #: Upload at least one year of hourly modelled or metered wind speed data to calibrate your wind speed profile. Amun will use this data to derive a statistical relationship between uploaded data and the reanalysis wind speed for the same location and time period uploaded.
+    UploadedWind = "UploadedWind"
+    #: Weibull parameters represent the long-term wind speed distribution at the site. Amun will calibrate underlying reanalysis wind speeds distribution to match shape.
+    Weibull = "Weibull"
 
 
 class SpeedAtHeight:
@@ -132,6 +132,20 @@ class FlowParameters:
         self.windType = windType
 
 
+class AverageWindSpeedParameters(FlowParameters):
+    """The parameters required for a *AverageWindSpeed* calculation.
+
+    Args:
+        averageWindSpeed (float): The average wind speed of your site to use as calibration (m/s)
+        measurementHeight (float): The height at which the measurements were taken (m)
+    """
+
+    def __init__(self, averageWindSpeed: float, measurementHeight: float):
+        super().__init__(WindType.AverageWindSpeed)
+        self.averageWindSpeed = averageWindSpeed
+        self.measurementHeight = measurementHeight
+
+
 class BuiltInWindParameters(FlowParameters):
     """The parameters used for built in wind calculations.
 
@@ -139,7 +153,7 @@ class BuiltInWindParameters(FlowParameters):
         Not all locations support all wind types and not all locations support Regional Reanalysis Correction.
 
     Args:
-        windType (WindType): one of (WindType.Era5,WindType.Merra2,WindType.NEWA)
+        windType (WindType): AuroraWindAtlas, Era5, Merra2, or NEWA
         useReanalysisCorrection (bool, optional):Should Regional Reanalysis Correction be enabled. If true then a location
         specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
         reanalysisScaleCorrectionDelta (float, optional): Override the location specific *reanalysisScaleCorrectionDelta*.
@@ -155,52 +169,6 @@ class BuiltInWindParameters(FlowParameters):
         super().__init__(windType)
         self.useReanalysisCorrection = useReanalysisCorrection
         self.reanalysisScaleCorrectionDelta = reanalysisScaleCorrectionDelta
-
-
-class WeibullParameters(FlowParameters):
-    """The parameters required for a *Weibull* calculation.
-
-    Args:
-        weibullShape (float): The long term shape parameter from your wind report
-        weibullScale (float): The long term scale parameter from your wind report
-        measurementHeight (float): The height at which the measurements were taken (m)
-    """
-
-    def __init__(
-        self, weibullShape: float, weibullScale: float, measurementHeight: float
-    ):
-        super().__init__(WindType.Weibull)
-        self.weibullShape = weibullShape
-        self.weibullScale = weibullScale
-        self.measurementHeight = measurementHeight
-
-
-class AverageWindSpeedParameters(FlowParameters):
-    """The parameters required for a *AverageWindSpeed* calculation.
-
-    Args:
-        averageWindSpeed (float): The average wind speed of your site to use as calibration (m/s)
-        measurementHeight (float): The height at which the measurements were taken (m)
-    """
-
-    def __init__(self, averageWindSpeed: float, measurementHeight: float):
-        super().__init__(WindType.AverageWindSpeed)
-        self.averageWindSpeed = averageWindSpeed
-        self.measurementHeight = measurementHeight
-
-
-class PowerDensityParameters(FlowParameters):
-    """The parameters required for a *PowerDensity* calculation.
-
-    Args:
-        averagePowerDensity (float): The average power density of your site to use as calibration (W/m2)
-        measurementHeight (float): The height at which the measurements were taken (m)
-    """
-
-    def __init__(self, averagePowerDensity: float, measurementHeight: float):
-        super().__init__(WindType.PowerDensity)
-        self.averagePowerDensity = averagePowerDensity
-        self.measurementHeight = measurementHeight
 
 
 class P50ScalingParameters(FlowParameters):
@@ -229,6 +197,20 @@ class P50YieldScalingParameters(FlowParameters):
         self.annualProductionInGWHours = annualProductionInGWHours
 
 
+class PowerDensityParameters(FlowParameters):
+    """The parameters required for a *PowerDensity* calculation.
+
+    Args:
+        averagePowerDensity (float): The average power density of your site to use as calibration (W/m2)
+        measurementHeight (float): The height at which the measurements were taken (m)
+    """
+
+    def __init__(self, averagePowerDensity: float, measurementHeight: float):
+        super().__init__(WindType.PowerDensity)
+        self.averagePowerDensity = averagePowerDensity
+        self.measurementHeight = measurementHeight
+
+
 class UploadedWindParameters(FlowParameters):
     """The parameters required to run a custom (uploaded) load factor calculation.  If *highHeight*
     is specified it must be the same length as the *lowHeight* and be measured at a greater height.
@@ -252,3 +234,21 @@ class UploadedWindParameters(FlowParameters):
         self.lowHeight = lowHeight
         self.highHeight = highHeight
         self.granularityInMins = granularityInMins
+
+
+class WeibullParameters(FlowParameters):
+    """The parameters required for a *Weibull* calculation.
+
+    Args:
+        weibullShape (float): The long term shape parameter from your wind report
+        weibullScale (float): The long term scale parameter from your wind report
+        measurementHeight (float): The height at which the measurements were taken (m)
+    """
+
+    def __init__(
+        self, weibullShape: float, weibullScale: float, measurementHeight: float
+    ):
+        super().__init__(WindType.Weibull)
+        self.weibullShape = weibullShape
+        self.weibullScale = weibullScale
+        self.measurementHeight = measurementHeight

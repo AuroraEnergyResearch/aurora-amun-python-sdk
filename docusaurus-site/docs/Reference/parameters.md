@@ -9,55 +9,55 @@ title: parameters
 class WindType(Enum)
 ```
 
-The types of wind to use in calculations
-
-#### Era5
-
-Uses the raw reanalysis dataset Era5. Check the region details endpoint for dataset availability.
-
-#### UploadedWind
-
-Uses the wind speeds uploaded by the user.
-
-#### Generation
-
-Uses generation data uploaded by the user.
-
-#### Merra2
-
-Uses the raw reanalysis dataset Merra2. Check the region details endpoint for dataset availability.
-
-#### Weibull
-
-Uses Weibull shape and scale parametes to estimate the wind speeds.
-
-#### NEWA
-
-Uses the raw reanalysis dataset NEWA. Check the region details endpoint for dataset availability.
-
-#### P50Scaling
-
-Uses P50 load factor parameter which represents the long-term production potential of this site.
-
-#### PowerDensity
-
-Uses power density of the site at a specific height to estimate the wind speeds.
+The types of power data to use in calculations.
 
 #### AverageWindSpeed
 
-Uses the average wind speed of the site at a specific height to estimate the wind speeds.
-
-#### CalibratedGeneration
-
-Uses the calibrated generation data uploaded by the user.
+Amun will use wind speed reanalysis data in the location and calibrate it so that the long-term average wind speed matched the user&#x27;s projection.
 
 #### AuroraWindAtlas
 
-Uses the reanalysis dataset calibrated using the AmunWindAtlas. Check the region details endpoint for dataset availability.
+Aurora&#x27;s high-resolution wind speed atlas based on Aurora&#x27;s data from existing wind farms. Check the region details for availability.
+
+#### CalibratedGeneration
+
+Hourly simulated production series in the same reference year as Aurora&#x27;s power market model uploaded by the user. The only adjustment made by Amun to this data will come from price-based economic curtailment.
+
+#### Era5
+
+ERA5 reanalysis dataset. Check the region details for availability.
+
+#### Generation
+
+At least one year of hourly metered or modelled production uploaded by the user. Amun will use this data create bespoke power curve that captures the relationship between reanalysis wind speed and observed generation.
+
+#### Merra2
+
+MERRA-2 reanalysis dataset. Check the region details for availability.
+
+#### NEWA
+
+NEWA reanalysis dataset. Check the region details for availability.
+
+#### P50Scaling
+
+Represents the site&#x27;s long-term P50 production potential as a load factor. Amun will calibrate underlying reanalysis wind speeds to match the long-term P50 load factor.
 
 #### P50YieldScaling
 
-Uses expectde annual production in GWh to estimate the wind speeds.
+Represents the site&#x27;s long-term production P50 potential as generation (GWh/year). Amun will calibrate underlying reanalysis wind speeds to match the long-term P50 production.
+
+#### PowerDensity
+
+Power Density is a quantitative measure of wind energy available at a location. Amun will calibrate underlying reanalysis wind speeds to match the average power density.
+
+#### UploadedWind
+
+Upload at least one year of hourly modelled or metered wind speed data to calibrate your wind speed profile. Amun will use this data to derive a statistical relationship between uploaded data and the reanalysis wind speed for the same location and time period uploaded.
+
+#### Weibull
+
+Weibull parameters represent the long-term wind speed distribution at the site. Amun will calibrate underlying reanalysis wind speeds distribution to match shape.
 
 ## SpeedAtHeight Objects
 
@@ -87,7 +87,7 @@ Parameters for all wind types.
 
 **Arguments**:
 
-- `turbineModelId` _int_ - The Id of the Turbine to use in the calculation as returned from :meth:`.AmunSession.get_turbines`.
+- `turbineModelId` _int_ - The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
 - `latitude` _float_ - The latitude of the point (-90 to 90).
 - `longitude` _float_ - The latitude of the point (-180 to 180).
   
@@ -119,6 +119,19 @@ Base class for a flow. Internal Use only.
 
 - `windType` _WindType_ - All flows must define a unique windtype as defined by the Amun http API.
 
+## AverageWindSpeedParameters Objects
+
+```python
+class AverageWindSpeedParameters(FlowParameters)
+```
+
+The parameters required for a *AverageWindSpeed* calculation.
+
+**Arguments**:
+
+- `averageWindSpeed` _float_ - The average wind speed of your site to use as calibration (m/s)
+- `measurementHeight` _float_ - The height at which the measurements were taken (m)
+
 ## BuiltInWindParameters Objects
 
 ```python
@@ -134,51 +147,11 @@ The parameters used for built in wind calculations.
 
 **Arguments**:
 
-- `windType` _WindType_ - one of (WindType.Era5,WindType.Merra2,WindType.NEWA)
+- `windType` _WindType_ - AuroraWindAtlas, Era5, Merra2, or NEWA
   useReanalysisCorrection (bool, optional):Should Regional Reanalysis Correction be enabled. If true then a location
   specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
 - `reanalysisScaleCorrectionDelta` _float, optional_ - Override the location specific *reanalysisScaleCorrectionDelta*.
   This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
-
-## WeibullParameters Objects
-
-```python
-class WeibullParameters(FlowParameters)
-```
-
-The parameters required for a *Weibull* calculation.
-
-**Arguments**:
-
-- `weibullShape` _float_ - The long term shape parameter from your wind report
-- `weibullScale` _float_ - The long term scale parameter from your wind report
-- `measurementHeight` _float_ - The height at which the measurements were taken (m)
-
-## AverageWindSpeedParameters Objects
-
-```python
-class AverageWindSpeedParameters(FlowParameters)
-```
-
-The parameters required for a *AverageWindSpeed* calculation.
-
-**Arguments**:
-
-- `averageWindSpeed` _float_ - The average wind speed of your site to use as calibration (m/s)
-- `measurementHeight` _float_ - The height at which the measurements were taken (m)
-
-## PowerDensityParameters Objects
-
-```python
-class PowerDensityParameters(FlowParameters)
-```
-
-The parameters required for a *PowerDensity* calculation.
-
-**Arguments**:
-
-- `averagePowerDensity` _float_ - The average power density of your site to use as calibration (W/m2)
-- `measurementHeight` _float_ - The height at which the measurements were taken (m)
 
 ## P50ScalingParameters Objects
 
@@ -206,6 +179,19 @@ The parameters required for a *P50YieldScaling* calculation.
 
 - `annualProductionInGWHours` _float, 0 &lt; annualProductionInGWHours &lt; 1000000_ - the production expected by the site in a year in Gigawatt Hours.
 
+## PowerDensityParameters Objects
+
+```python
+class PowerDensityParameters(FlowParameters)
+```
+
+The parameters required for a *PowerDensity* calculation.
+
+**Arguments**:
+
+- `averagePowerDensity` _float_ - The average power density of your site to use as calibration (W/m2)
+- `measurementHeight` _float_ - The height at which the measurements were taken (m)
+
 ## UploadedWindParameters Objects
 
 ```python
@@ -221,4 +207,18 @@ The speeds upload should be hourly measurements starting at *uploadedWindStartTi
 - `uploadedWindStartTime` _str_ - The time in UTC that the wind speeds upload start from. This must be in the form &#x27;*2016-07-28T00:00:00.000Z*&#x27; .
 - `lowHeight` _SpeedAtHeight_ - The height and speed for the low height wind speed to upload.
 - `highHeight` _SpeedAtHeight, optional_ - The height and speed for the high height wind speed to upload. Defaults to None.
+
+## WeibullParameters Objects
+
+```python
+class WeibullParameters(FlowParameters)
+```
+
+The parameters required for a *Weibull* calculation.
+
+**Arguments**:
+
+- `weibullShape` _float_ - The long term shape parameter from your wind report
+- `weibullScale` _float_ - The long term scale parameter from your wind report
+- `measurementHeight` _float_ - The height at which the measurements were taken (m)
 

@@ -127,7 +127,7 @@ class APISession:
         return self._parse_as_json(response)
 
     def _parse_as_json(self, response):
-        if response.status_code == 200:
+        if response.status_code == 200 or response.status_code == 202:
             return response.json()
         elif response.status_code == 401:
             raise RuntimeError(
@@ -185,8 +185,7 @@ class AmunSession(APISession):
         return self._get_request(url)
 
     def get_turbine_by_name(self, turbine_name):
-        """Get a turbine by name.
-        """
+        """Get a turbine by name."""
         turbines = self.get_turbines()
 
         return get_single_value_form_list(
@@ -245,13 +244,25 @@ class AmunSession(APISession):
         params = {"region": region}
         scenarios = self._get_request(url, params)
         return scenarios  # list(map(lambda x: scenario_from_dict(x), scenarios))
+    
+
+    def get_scenario_by_name(self, region, scenario_name):
+        """Get a scenario by name."""
+        scenarios = self.get_scenarios(region)
+        return get_single_value_form_list(
+            filter_function=lambda x: x["name"] == scenario_name
+            and x["isRetired"] == False,
+            results_list=scenarios,
+            error=f"with name '{scenario_name}'",
+        )
+
 
     def create_valuation(self, valuation):
         url = f"{self.base_url}/valuations"
         return self._put_request(url, valuation)
 
 
-    def submit_load_factor_calculations(self, load_factor_configurations: List(Dict)) -> List(str):
+    def submit_load_factor_calculations(self, load_factor_configurations: List[Dict]) -> List[str]:
         """
         Submits a request to calculate the load factor and wind speeds for a year given
         a start time and a location.
@@ -262,7 +273,7 @@ class AmunSession(APISession):
             `AmunSession.get_region_details` to get region codes and available datasets for a point
 
         Args:
-            list of load_factor_configurations (List(Dict)) where each load_factor_configuration is a dictionary of load factor parameters.
+            list of load_factor_configurations where each load_factor_configuration is a dictionary of load factor parameters.
 
         Returns:
             List of tokens where each token is a unique identifier for the calculation. The order of the tokens matches the order of the input parameters.
@@ -276,11 +287,11 @@ class AmunSession(APISession):
         tokens = []
         for i, configuration in enumerate(load_factor_configurations):
             creation_response = self._put_request(url, configuration)
-            if not hasattr(creation_response, 'token'):
+            if 'token' in creation_response.keys():
+                tokens.append(creation_response['token'])
+            else:
                 print(f"Could not create load factor calculation for configuration {i}: {configuration}")
                 tokens.append(None)
-            else:
-                tokens.append(creation_response.token)
         return tokens
     
 
@@ -305,7 +316,7 @@ class AmunSession(APISession):
         return self._get_request(f'{url}/{token}')
 
 
-    def track_load_factor_calculation(self, tokens: List(str)) -> List(Dict):
+    def track_load_factor_calculation(self, tokens: List[str]) -> List[Dict]:
         """
         V2 feature
         Tracks the status of a load factor calculation/simulation given their token and
@@ -333,6 +344,7 @@ class AmunSession(APISession):
 
         while len(leftToRun) > 0:
             time.sleep(10)
+            log.info("Checking status...")
             for token in leftToRun:
                 i = tokens.index(token)
 
@@ -341,17 +353,17 @@ class AmunSession(APISession):
                     leftToRun.remove(token)
                 
                 response = self.get_load_factor_calculation(token)
-                if response.status == "Errored":
+                if response['status'] == "Errored":
                     leftToRun.remove(token)
-                    results[i] = response.error
-                elif response.status == "Complete":
+                    results[i] = response['error']
+                elif response['status'] == "Complete":
                     leftToRun.remove(token)
-                    results[i] = response.result
+                    results[i] = response['result']
         return results
     
 
-    def run_load_factors_in_batch(self, load_factor_configurations: List(Dict)) -> List(Dict):
-        """Calculate the load factor and wind speeds for a year given a start time and a location.
+    def run_load_factors_in_batch(self, load_factor_configurations: List[Dict]) -> List[Dict]:
+        """Perform multiple load factor calculations in parallel.
 
         See Also:
             `.AmunSession.get_region_details` to get region codes and available datasets for a point
@@ -366,10 +378,9 @@ class AmunSession(APISession):
             - `typicalHourly` - typical hourly load factors
             - `weatherYearHourly` - hourly load factors for the weather year  
         """
-        url = get_v2_url(f"{self.base_url}/loadfactor")
-
         # Step 1: Submit all the calculations/simualations
         tokens = self.submit_load_factor_calculations(load_factor_configurations)
+        log.info(f"Submitted {len(tokens)} load factor calculations to perform")
 
         # Step 2: Wait for each simulation to finish
         results = self.track_load_factor_calculation(tokens)
@@ -400,9 +411,10 @@ class AmunSession(APISession):
 
 
     def run_load_factors_for_parameters_batch(
-        self, flow_parameters: List(FlowParameters), base_parameters: List(LoadFactorBaseParameters)
-    ) -> List(Dict):
-        """Calculate the load factor and wind speeds for a year given a start time and a location.
+        self, flow_parameters: List[FlowParameters], base_parameters: List[LoadFactorBaseParameters]
+    ) -> List[Dict]:
+        """Perform multiple load factor calculations in parallel by providing flow parameters and base parameters
+            for each calculation.
 
         See Also:
             `.AmunSession.get_region_details` to get region codes and available datasets for a point
@@ -429,7 +441,7 @@ class AmunSession(APISession):
 
         requests = []
         for flow, base in zip(flow_parameters, base_parameters):
-            # Create a request by combining the paramters
+            # Create a request by combining the parameters
             request = {}
             request.update(vars(flow))
             request.update(vars(base))
@@ -489,6 +501,11 @@ class AmunSession(APISession):
         return self._get_request(url, params=params, should_retry=True)
 
     def delete_valuation(self, valuation_id):
+        """Deletes a valuation from Amun.
+
+        Args:
+            valuation_id (string): The id of the valuation to delete.
+        """
         url = f"{self.base_url}/valuations/{valuation_id}"
         return self._del_request(url)
 

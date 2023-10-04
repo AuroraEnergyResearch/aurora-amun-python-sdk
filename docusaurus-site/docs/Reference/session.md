@@ -91,7 +91,7 @@ def get_scenarios(region)
 ```
 
 Get the scenarios that are available for the specified region. The regions for a given location
-to use can be found be using :meth:`.AmunSession.get_region_details`
+to use can be found be using `.AmunSession.get_region_details`
 
 **Arguments**:
 
@@ -118,11 +118,19 @@ to use can be found be using :meth:`.AmunSession.get_region_details`
         ...
 ```
 
+#### get\_scenario\_by\_name
+
+```python
+def get_scenario_by_name(region, scenario_name)
+```
+
+Get a scenario by name.
+
 #### submit\_load\_factor\_calculations
 
 ```python
-def submit_load_factor_calculations(load_factor_configurations: List(
-    Dict)) -> List(str)
+def submit_load_factor_calculations(
+        load_factor_configurations: List[Dict]) -> List[str]
 ```
 
 Submits a request to calculate the load factor and wind speeds for a year given
@@ -137,7 +145,7 @@ to check on the status of each calculation.
 
 **Arguments**:
 
-  list of load_factor_configurations (List(Dict)) where each load_factor_configuration is a dictionary of load factor parameters.
+  list of load_factor_configurations where each load_factor_configuration is a dictionary of load factor parameters.
   
 
 **Returns**:
@@ -169,7 +177,7 @@ For errored calculation:
 #### track\_load\_factor\_calculation
 
 ```python
-def track_load_factor_calculation(tokens: List(str)) -> List(Dict)
+def track_load_factor_calculation(tokens: List[str]) -> List[Dict]
 ```
 
 V2 feature
@@ -195,11 +203,11 @@ For calcualtions that failed to be submitted:
 #### run\_load\_factors\_in\_batch
 
 ```python
-def run_load_factors_in_batch(load_factor_configurations: List(Dict)) -> List(
-        Dict)
+def run_load_factors_in_batch(
+        load_factor_configurations: List[Dict]) -> List[Dict]
 ```
 
-Calculate the load factor and wind speeds for a year given a start time and a location.
+Perform multiple load factor calculations in parallel.
 
 **See Also**:
 
@@ -249,11 +257,12 @@ Calculate the load factor and wind speeds for a year given a start time and a lo
 
 ```python
 def run_load_factors_for_parameters_batch(
-        flow_parameters: List(FlowParameters),
-        base_parameters: List(LoadFactorBaseParameters)) -> List(Dict)
+        flow_parameters: List[FlowParameters],
+        base_parameters: List[LoadFactorBaseParameters]) -> List[Dict]
 ```
 
-Calculate the load factor and wind speeds for a year given a start time and a location.
+Perform multiple load factor calculations in parallel by providing flow parameters and base parameters
+for each calculation.
 
 **See Also**:
 
@@ -313,6 +322,18 @@ Calculate the load factor and wind speeds for a year given a start time and a lo
   - `flow_parameters`0 - smoothing coefficients and other parameters applied to the calculation
   - `flow_parameters`1 - typical hourly load factors
   - `flow_parameters`2 - hourly load factors for the weather year
+
+#### delete\_valuation
+
+```python
+def delete_valuation(valuation_id)
+```
+
+Deletes a valuation from Amun.
+
+**Arguments**:
+
+- `valuation_id` _string_ - The id of the valuation to delete.
 
 #### get\_wind
 

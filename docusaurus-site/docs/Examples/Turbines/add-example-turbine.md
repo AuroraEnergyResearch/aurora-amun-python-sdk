@@ -2,7 +2,7 @@
 title: Add Custom Turbine
 ---
 
-You can upload a turbine to Amun providing an Excel workbook with required information. You can get a template for the workbook from [Amun](https://eos.auroraer.com/dragonfly/amun) in turbine section of New Valuation form.
+You can upload a turbine to Amun providing an Excel workbook with required information. You can get a template for the workbook from [Amun](https://eos.auroraer.com/dragonfly/amun) in the Turbine section of a New Valuation form.
 
 ```python
 import requests
