@@ -1,4 +1,3 @@
-from json import encoder
 import time
 from aurora.amun.client.responses import (
     RegionDetail,
@@ -9,13 +8,12 @@ from aurora.amun.client.parameters import (
     LoadFactorBaseParameters,
 )
 from aurora.amun.client.utils import get_single_value_form_list
-from typing import Dict, List, Tuple
+from typing import Dict, List
 import requests
 import logging
 import os
 from pathlib import Path
 import json
-from urllib.parse import urlencode
 from aurora.amun.client.utils import AmunJSONEncoder, configure_session_retry, get_v2_url
 
 
@@ -345,7 +343,7 @@ class AmunSession(APISession):
 
         while len(leftToRun) > 0:
             time.sleep(10)
-            log.info("Checking status...")
+            log.debug("Checking load factor simulation status...")
             for token in leftToRun:
                 i = tokens.index(token)
 
@@ -381,7 +379,7 @@ class AmunSession(APISession):
         """
         # Step 1: Submit all the calculations/simualations
         tokens = self.submit_load_factor_calculations(load_factor_configurations)
-        log.info(f"Submitted {len(tokens)} load factor calculations to perform")
+        log.info(f"Submitted {len(tokens)} load factor calculations to perform. It will take several minutes to complete.")
 
         # Step 2: Wait for each simulation to finish
         results = self.track_load_factor_calculation(tokens)
@@ -389,7 +387,6 @@ class AmunSession(APISession):
         return results
 
 
-    ## Chris never used it and probably never will
     def run_load_factor_calculation(self, load_factor_configuration: Dict):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
@@ -407,8 +404,7 @@ class AmunSession(APISession):
             - `weatherYearHourly` - hourly load factors for the weather year  
 
         """
-        url = f"{self.base_url}/loadfactor"
-        return self._put_request(url, load_factor_configuration)
+        return self.run_load_factors_in_batch([load_factor_configuration])[0]
 
 
     def run_load_factors_for_parameters_batch(
