@@ -16,7 +16,7 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import save_to_json, get_json
+from aurora.amun.client.utils import get_single_value_form_list, save_to_json, get_json
 
 log = logging.getLogger(__name__)
 
@@ -132,6 +132,6 @@ def main():
         base_parameters,
     )
     
-    
+
 if __name__ == "__main__":
     main()

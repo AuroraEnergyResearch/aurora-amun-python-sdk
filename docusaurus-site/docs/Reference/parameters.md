@@ -9,7 +9,7 @@ title: parameters
 class WindType(Enum)
 ```
 
-The types of power data to use in calculations.
+The types of wind to use in calculations
 
 #### AverageWindSpeed
 
