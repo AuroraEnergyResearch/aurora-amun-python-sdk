@@ -14,12 +14,12 @@ const config = {
   url: "https://auroraenergyresearch.github.io",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/aurora-amun-python-sdk-docs/",
+  baseUrl: "/aurora-amun-python-sdk/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "AuroraEnergyResearch", // Usually your GitHub org/user name.
-  projectName: "aurora-amun-python-sdk-docs", // Usually your repo name.
+  projectName: "aurora-amun-python-sdk", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",

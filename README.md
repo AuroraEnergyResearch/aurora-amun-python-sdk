@@ -20,3 +20,5 @@ session  = AmunSession()
 turbines  = session.get_turbines()
 print(turbines[0])
 ```
+
+You can find documentation website at [auroraenergyresearch.github.io/aurora-amun-python-sdk/](https://auroraenergyresearch.github.io/aurora-amun-python-sdk/)
