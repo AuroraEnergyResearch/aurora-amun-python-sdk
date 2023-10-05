@@ -1,11 +1,15 @@
 from typing import Dict, List
 
+"""
+Defines the format of responses returned by the Amun API.
+"""
+
 
 class RegionDetail:
     """The details about a region required to construct valid valuation and load factor requests.
 
       Args:
-          pmfCode (str): The *regionCode* to use when required to look up more details e.g. which scenarios are available. :meth:`.AmunSession.get_scenarios`
+          pmfCode (str): The *regionCode* to use when required to look up more details e.g. which scenarios are available. `.AmunSession.get_scenarios`
           defaultWind (str): The dataset used by default in calculations
           availableDatasets (List[str]): A list of datasets that are available for the region.
           era5CorrectionEnabled (bool): Is era5 correction available for the region.

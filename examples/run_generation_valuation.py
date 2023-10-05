@@ -38,21 +38,18 @@ def main():
 
     region = "gbr"
     scenarios = session.get_scenarios(region)
-
-    turbines = session.get_turbines()
-
     scenario_name = "Aurora Central - July 2021"
 
     valuation_parameters = {
         "name": f"SDK Wind Farm {datetime.now()}",
         "description": "Created by Api",
-        "longitude": "-3.67",
-        "latitude": "58.57",
+        "longitude": -0.23,
+        "latitude": 52.93,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
-        "turbineModelId": 6,
-        "numberOfTurbines": 1,
-        "hubHeight": 65,
+        "hubHeight": 59,
         "obstacleHeight": 0,
+        "useReanalysisCorrection": False,
+        "usePowerCurveSmoothing": False,
     }
 
     valuation = session.create_valuation(valuation_parameters)

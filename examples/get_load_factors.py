@@ -69,9 +69,9 @@ def run_request_and_save(
         load_factors,
     )
 
-
 def main():
     setup_file_and_console_loggers("get_load_factors_example.log")
+
     log.info(f"Starting")
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
@@ -131,7 +131,7 @@ def main():
         ),
         base_parameters,
     )
-
+    
 
 if __name__ == "__main__":
     main()
