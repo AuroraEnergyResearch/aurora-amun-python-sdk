@@ -124,6 +124,8 @@ def get_results_from_tokens():
 
 
 if __name__ == "__main__":
-    # main()
+    main()
+
+    # Uncomment to run the more advanced example
     # submit_batch()
     # get_results_from_tokens()

@@ -6,7 +6,7 @@ Collection of classes used to define the parameters for a load factor calculatio
 """
 
 class WindType(Enum):
-    """The types of power data to use in calculations."""
+    """The types of wind to use in calculations"""
 
     #: Amun will use wind speed reanalysis data in the location and calibrate it so that the long-term average wind speed matched the user's projection.
     AverageWindSpeed = "AverageWindSpeed"

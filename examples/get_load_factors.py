@@ -16,9 +16,42 @@ import logging
 import logging.handlers
 import os
 from datetime import datetime
-from aurora.amun.client.utils import save_to_json, get_json, setup_file_and_console_loggers
+from aurora.amun.client.utils import save_to_json, get_json
 
 log = logging.getLogger(__name__)
+
+
+# Sets Up root loging console(INFO) and file (DEBUG) handlers
+def setup_file_and_console_loggers(fileName):
+    os.makedirs("logs", exist_ok=True)
+    rotFileHandler = logging.handlers.RotatingFileHandler(
+        f"logs/{fileName}", "a", 30 * 1024 * 1024, 10
+    )
+    f = logging.Formatter("%(asctime)s %(name)s %(levelname)-8s %(message)s")
+    rotFileHandler.setFormatter(f)
+    rotFileHandler.setLevel(logging.DEBUG)
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setLevel(logging.INFO)
+    consoleHandler.setFormatter(
+        logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
+    )
+    logger = logging.getLogger()
+    logger.addHandler(rotFileHandler)
+    logger.addHandler(consoleHandler)
+    log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
+    # Set Level for Amun SDK
+    logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
+
+    #
+
+
+def get_turbine_by_name(turbines, turbine_name):
+    return get_single_value_form_list(
+        filter_function=lambda x: x["name"] == turbine_name,
+        results_list=turbines,
+        error=f"with name '{turbine_name}'",
+    )
+
 
 def run_request_and_save(
     session, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
@@ -43,10 +76,10 @@ def main():
     # Calling with no token in constructor will load one from an environment variable if provided
     # or a file HOME/.
     session = AmunSession()
-    turbine = session.get_turbine_by_name("Siemens SWT-4.0-130")
+    turbines = session.get_turbines()
 
     base_parameters = LoadFactorBaseParameters(
-        turbineModelId=turbine["id"],
+        turbineModelId=get_turbine_by_name(turbines, "Siemens SWT-4.0-130")["id"],
         latitude=59.59,
         longitude=0,
         startTimeUTC="2018-01-01T00:00:00.000Z",
@@ -98,6 +131,7 @@ def main():
         ),
         base_parameters,
     )
+    
     
 if __name__ == "__main__":
     main()
