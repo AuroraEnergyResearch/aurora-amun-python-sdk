@@ -148,10 +148,10 @@ The parameters used for built in wind calculations.
 **Arguments**:
 
 - `windType` _WindType_ - AuroraWindAtlas, Era5, Merra2, or NEWA
-  useReanalysisCorrection (bool, optional):Should Regional Reanalysis Correction be enabled. If true then a location
-  specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
-- `reanalysisScaleCorrectionDelta` _float, optional_ - Override the location specific *reanalysisScaleCorrectionDelta*.
-  This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
+- `useReanalysisCorrection` _bool, optional_ - Should Regional Reanalysis Correction be enabled.
+  If true then a location specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
+- `reanalysisScaleCorrectionDelta` _float, optional_ - Override the location specific
+  *reanalysisScaleCorrectionDelta*. This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
 
 ## P50ScalingParameters Objects
 

@@ -13,12 +13,13 @@ from aurora.amun.client.parameters import (
     P50YieldScalingParameters,
 )
 from aurora.amun.client.session import AmunSession
-from aurora.amun.client.utils import save_to_json, get_json, setup_file_and_console_loggers
+from aurora.amun.client.utils import save_to_json, get_json
 
 log = logging.getLogger(__name__)
 
+# Submitting a batch of load factor calculations
+# via run_load_factors_for_parameters_batch
 def main():
-    setup_file_and_console_loggers("get_load_factors_example.log")
 
     log.info(f"Starting")
     session = AmunSession()
@@ -65,5 +66,64 @@ def main():
             result,
         )
 
+
+# More advanced example
+# Submitting a batch of load factor calculations in stages
+# via submit_load_factor_calculations
+def submit_batch():
+    session = AmunSession()
+    turbine = session.get_turbine_by_name("Siemens SWT-4.0-130")
+
+    # I want to run load factor calculation with the same parameters
+    # in 100 different locations
+    def get_configuration(lat: float, lon: float):
+        return {
+        "windType": "AuroraWindAtlas",
+        "turbineModelId": turbine["id"],
+        "latitude": lat,
+        "longitude": lon,
+        "startTimeUTC": "2018-01-01T00:00:00.000Z",
+        "regionCode": "GBR",
+        "hubHeight": 90,
+        "obstacleHeight": 0,
+        "numberOfTurbines": 12,
+        "roughnessLength": 0.02,
+        "usePowerCurveSmoothing": False,
+    }
+
+    # Make a list of coordinates
+    coordinates = []
+    for lat in range(500, 550, 5):
+        for lon in range(-50, 0, 5):
+            coordinates.append((lat/10, lon/10))
+    
+    # Construct configurations
+    configs = []
+    for (lat, lon) in coordinates:
+        configs.append(get_configuration(lat, lon))
+    
+    print(coordinates)
+    print(f"Submitting {len(configs)} configurations to run. First two:")
+    print(configs[:2])
+
+    # For future reference, you could save the tokens to a file to get the results later
+    tokens = session.submit_load_factor_calculations(configs[:2])
+    print(tokens)
+
+    save_to_json("tokens.json", tokens)
+
+
+# Get results for the calculations submitted in the previous example
+def get_results_from_tokens():
+    session = AmunSession()
+    tokens = get_json("out/tokens.json")
+
+    for token in tokens:
+        result = session.get_load_factor_calculation(token)
+        print(result)
+
+
 if __name__ == "__main__":
-    main()
+    # main()
+    # submit_batch()
+    # get_results_from_tokens()

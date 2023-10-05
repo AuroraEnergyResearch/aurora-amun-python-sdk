@@ -17,9 +17,10 @@ You can find more examples with code in [Amun Python SDK repository](https://git
 
 ### Calculate Load Factors with Amun Wind Atlas
 To use `AmunSession.run_load_factor_for_parameters`, select an available turbine that is available in Amun and set base parameters. See [SDK Reference](/docs/Reference/parameters#loadfactorbaseparameters-objects) for explanations on what each parameter means.  
-Amun Wind Atlas is a good choice if no site-specific data is available. `aurora.amun.client.parameters.BuiltInWindParameters("AuroraWindAtlas")` can be passed to the load factor function to run the calculations.
 
-Note that Amun Wind Atlas is not available for some of the regions. See the guide to [Regions](/docs/Examples/Regions/get-region-details) in our examples documentation.
+Built-in dataset is a good choice of wind type to use if no site-specific data is available. To use a built-in datase, use [`aurora.amun.client.parameters.BuiltInWindParameters(WindType)`](/docs/Reference/parameters#builtinwindparameters-objects). You can pass types like `AuroraWindAtlas`, `Era5`, `Merra2`, or `NEWA`. But check whether the wind type is supported by the [region](/docs/Examples/Regions/get-region-details).  
+
+In our case, the region support Amun Wind Atlas, which is the most accurate version of built-in wind data available in Amun
 
 ```python
 from aurora.amun.client.session import AmunSession

@@ -289,8 +289,9 @@ class AmunSession(APISession):
             creation_response = self._put_request(url, configuration)
             if 'token' in creation_response.keys():
                 tokens.append(creation_response['token'])
+                log.debug("Submitted a load factor calculation")
             else:
-                print(f"Could not create load factor calculation for configuration {i}: {configuration}")
+                log.warning(f"Could not create load factor calculation for configuration {i}: {configuration}")
                 tokens.append(None)
         return tokens
     
