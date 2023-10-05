@@ -310,7 +310,7 @@ class AmunSession(APISession):
         - `results` - load factors
 
         For errored calculation:
-        - `status` - "Running"
+        - `status` - "Errored"
         - `error` - a string explaining the error
         """
         url = get_v2_url(f"{self.base_url}/loadfactor")
