@@ -16,7 +16,7 @@ And to read more information about each wind/power type, refer to the [WindType 
 You can find more examples with code in [Amun Python SDK repository](https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk) inside the `examples/` folder.
 
 #### Time consideration
-It will take around 2-15 minutes to complete 1 load factors calculation. There may be cases where you need to run 100+ calculations, so it might take a while for your requests to come back. For such cases, we have more advanced API that allows you submit calculations in a batch which will speed up the total time of calculations. See [Advanced Examples](/docs/Examples/Load%20Factors/advanced) to see how it works
+It will take around 2-15 minutes to complete 1 load factors calculation. There may be times when you need to run 100+ calculations, so it might take a while for your requests to come back. For such cases, we have more advanced functions that allow you submit calculations in a batch which will speed up the total time of calculations. See [Advanced Examples](/docs/Examples/Load%20Factors/advanced) to see how it works
 
 ### Calculate Load Factors with Amun Wind Atlas
 To use `AmunSession.run_load_factor_for_parameters`, select an available turbine that is available in Amun and set base parameters. See [SDK Reference](/docs/Reference/parameters#loadfactorbaseparameters-objects) for explanations on what each parameter means.  

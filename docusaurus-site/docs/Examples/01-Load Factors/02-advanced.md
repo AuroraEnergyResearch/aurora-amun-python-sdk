@@ -5,7 +5,7 @@ title: Advanced Features
 There are cases where you could benefit from running multiple load factor simulations in bulk using [`run_load_factors_for_parameters_batch`](/docs/Reference/session#run_load_factors_for_parameters_batch). In cases where you need to produce results for over 100 iterations, it will be faster than using common functions.
 
 ### Calculating load factors for all wind types
-In this example, you can see how you can run load factor calculation iterating through different wind types. You can do it by creating a base parameters objects that all the calculations will use (`base_parameters`) and create a list of parameters for individual requests (`list_of_parameters`). After this, you can send all the request. Be aware that you will need to provide the same number of base parameters and flow parameters because they are paired with each other.
+In this example, you can see how you can run load factor calculation iterating through different wind types. You can do it by creating a base parameters objects that all the calculations will use (`base_parameters`) and create a list of parameters for individual requests (`list_of_parameters`). After this, you can send all the requests. Be aware that you will need to provide the same number of base parameters and flow parameters because they are paired with each other.
 
 ```python
 from datetime import datetime

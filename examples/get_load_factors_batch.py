@@ -53,7 +53,6 @@ def main():
     for result, params in zip(results, list_of_parameters):
         
         # If you want, you can use a unique identifier for each request in the name of your file
-        # You can later use this ID to request the results of this specific request again later
         loadFactorRequestId = result["parameters"]["loadFactorRequestId"]
 
         timestamp = datetime.now().isoformat().replace(':','_')
