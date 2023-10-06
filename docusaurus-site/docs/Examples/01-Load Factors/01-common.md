@@ -62,10 +62,10 @@ print("Example load factors for wind type:", load_factors["parameters"]["windTyp
 print(load_factors["weatherYearHourly"][:5])
 ```
 
-Expected output (truncated)
+Expected output
 ```powershell
-Example load factors for wind type: era5
-[{'dateTime': '2018-01-01T00:00Z', 'windSpeed': 8.344985289917028, 'loadFactor': 0.5179}, {'dateTime': '2018-01-01T01:00Z', 'windSpeed': 7.460143358993289, 'loadFactor': 0.3753}, {'dateTime': '2018-01-01T02:00Z', 'windSpeed': 7.143849120158415, 'loadFactor': 0.327}, {'dateTime': '2018-01-01T03:00Z', 'windSpeed': 8.058062729353766, 'loadFactor': 0.4678}, {'dateTime': '2018-01-01T04:00Z', 'windSpeed': 8.742962986200617, 'loadFactor': 0.5874}]
+Example load factors for wind type: AuroraWindAtlas
+[{'dateTime': '2018-01-01T00:00Z', 'windSpeed': 8.330645528908647, 'loadFactor': 0.5154}, {'dateTime': '2018-01-01T01:00Z', 'windSpeed': 7.447324082608763, 'loadFactor': 0.3733}, {'dateTime': '2018-01-01T02:00Z', 'windSpeed': 7.131573353874345, 'loadFactor': 0.3252}, {'dateTime': '2018-01-01T03:00Z', 'windSpeed': 8.044216007075045, 'loadFactor': 0.4654}, {'dateTime': '2018-01-01T04:00Z', 'windSpeed': 8.72793935280024, 'loadFactor': 0.5847}]
 ```
 
 ### Calculate Load Factors with Custom Wind Data

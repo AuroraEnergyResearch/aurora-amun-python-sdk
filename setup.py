@@ -8,7 +8,7 @@ setup(
     author="Aurora Development team",
     author_email="aurora_development@auroraer.com",
     packages=["aurora.amun.client"],
-    install_requires=["requests==2.28.2"],
+    install_requires=["requests==2.31.0"],
     zip_safe=False,
     entry_points={"console_scripts": [""]},
     setup_requires=["pytest-runner"],

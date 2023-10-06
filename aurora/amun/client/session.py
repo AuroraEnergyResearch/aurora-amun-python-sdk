@@ -377,7 +377,7 @@ class AmunSession(APISession):
             - `typicalHourly` - typical hourly load factors
             - `weatherYearHourly` - hourly load factors for the weather year  
         """
-        # Step 1: Submit all the calculations/simualations
+        # Step 1: Submit all the calculations/simulations
         tokens = self.submit_load_factor_calculations(load_factor_configurations)
         log.info(f"Submitted {len(tokens)} load factor calculations to perform. It will take several minutes to complete.")
 
