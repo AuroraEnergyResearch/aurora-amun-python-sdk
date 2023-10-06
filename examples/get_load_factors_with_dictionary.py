@@ -82,16 +82,5 @@ def main():
         load_factors,
     )
 
-    # The same result can be achieved using run_load_factor_calculation:
-    parameters_list = [parameters]
-    responses = session.run_load_factors_in_batch(parameters_list)
-    for res, params in zip(responses, parameters_list):
-        loadFactorRequestId = res["parameters"]["loadFactorRequestId"]
-        log.info(f"Got result for {loadFactorRequestId}")
-        save_to_json(
-            f"load_factors/load_factors_{datetime.now().isoformat().replace(':','_')}_{params['windType']}_{loadFactorRequestId}.json",
-            load_factors,
-        )
-
 if __name__ == "__main__":
     main()

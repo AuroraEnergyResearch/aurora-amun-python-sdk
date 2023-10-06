@@ -9,6 +9,16 @@
 
 ## Developing
 
+To run docusaurus site in development watch-mode, run `npm run start` inside `docusaurus-site/`
+
+## Deployment
+We use GitHub pages to deploy the documentation
+- Navigate to `docusaurus-site/`
+- Run `npm run build`. This command will generate the static website file in `docusaurus-site/build` directory and copy them to `docs`
+- After these changes are merged into the master branch, GitHub will automatically deploy the new version of the website from the `docs` folder
+
+**To avoid confusion: `./docs` hosts a built statis website. `./docusaurus-site/docs` hosts markdown files for editing documentation**
+
 ### Create a venv and activate if required
 
 ```powershell

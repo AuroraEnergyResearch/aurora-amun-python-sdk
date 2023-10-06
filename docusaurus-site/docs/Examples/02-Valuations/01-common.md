@@ -14,6 +14,7 @@ Optionally, you can add losses to the valuation parameters.
 ```python
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.utils import save_to_json
+from datetime import datetime
 
 session = AmunSession()
     
@@ -58,6 +59,7 @@ The same method is used for all other power types. For example, Average Wind Spe
 ```python
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.utils import save_to_json
+from datetime import datetime
 
 session = AmunSession()
     
@@ -97,6 +99,7 @@ AmunSession also allows you to detele a valuation with [`AmunSession.delete_valu
 ```python
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.utils import save_to_json
+from datetime import datetime
 
 session = AmunSession()
     
@@ -140,7 +143,8 @@ Because the generation data has already been provided, it is not necessary to sp
 
 ```python
 from aurora.amun.client.session import AmunSession
-from aurora.amun.client.utils import save_to_json
+from aurora.amun.client.utils import save_to_json, get_json
+from datetime import datetime
 
 session = AmunSession()
     
@@ -166,7 +170,7 @@ save_to_json(f"valuations/valuation_{valuation['id']}.json", valuation)
 generation_json = get_json("examples\data\example_generation_request.json")
 
 # Specify data's granularity in minutes
-generation_json = ["granularityInMins"] = 60
+generation_json["granularityInMins"] = 60
 
 session.send_production_for_calibration(valuation["id"], generation_json)
 

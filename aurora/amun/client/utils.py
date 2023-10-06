@@ -23,7 +23,7 @@ def get_single_value_form_list(filter_function, results_list, error):
 # This is a sub class of the Retry util from the requests package that allows the Max wait time between
 # requests to be configured and to log warnings if any connection issues occur.
 class RetryWithLogger(Retry):
-    def __init__(self, backoff_max=Retry.BACKOFF_MAX, *args, **kwargs):
+    def __init__(self, backoff_max=Retry.DEFAULT_BACKOFF_MAX, *args, **kwargs):
         super(RetryWithLogger, self).__init__(*args, **kwargs)
         self.BACKOFF_MAX = backoff_max
 

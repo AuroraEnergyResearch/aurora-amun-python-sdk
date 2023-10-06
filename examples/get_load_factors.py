@@ -54,11 +54,11 @@ def get_turbine_by_name(turbines, turbine_name):
 
 
 def run_request_and_save(
-    session, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
+    session: AmunSession, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
 ):
     log.info(f"getting for {flow_parameters.windType}")
 
-    load_factors = session.run_load_factor_for_parameters(
+    load_factors  = session.run_load_factor_for_parameters(
         flow_parameters, base_parameters
     )
 
