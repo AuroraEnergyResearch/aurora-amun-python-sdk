@@ -67,7 +67,9 @@ def main():
         "obstacleHeight": 0,
         "roughnessLength": 0.001,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
-        "annualProductionInGWHours": 1
+        "annualProductionInGWHours": 1,
+        "useReanalysisCorrection": False,
+        "usePowerCurveSmoothing": False
         # Optional
         # "lossesWake": 0.2,
         # "lossesAvailability": 0.02,

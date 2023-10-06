@@ -53,6 +53,7 @@ base_parameters = LoadFactorBaseParameters(
 
 flow_parameters = BuiltInWindParameters("AuroraWindAtlas")
 
+print("Running load factor calculation. This will take a few minutes...")
 load_factors = session.run_load_factor_for_parameters(
     flow_parameters, base_parameters
 )
@@ -74,6 +75,7 @@ The same code template can be used with other wind types. But for [Uploaded Wind
 ```python
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.parameters import (
+    SpeedAtHeight,
     UploadedWindParameters,
     LoadFactorBaseParameters
 )
@@ -86,7 +88,7 @@ base_parameters = LoadFactorBaseParameters(
     turbineModelId=turbine["id"],
     latitude=59.59,
     longitude=0,
-    startTimeUTC="2018-01-01T00:00:00.000Z",
+    startTimeUTC="2017-01-01T00:00:00.000Z",
     regionCode="GBR",
     hubHeight=90,
     obstacleHeight=0,
@@ -103,12 +105,14 @@ base_parameters = LoadFactorBaseParameters(
 # and contains 8760 values - for each hour in a year 2017
 speeds = get_json("examples\data\example_windSpeed.json")["speeds"]
 
+# Insert the speeds as a SpeedAtHeight object for UploadedWindParameters
 flow_parameters = UploadedWindParameters(
     uploadedWindStartTime="2017-01-01T00:00:00.000Z",
     lowHeight=SpeedAtHeight(10, speeds=speeds),
     granularityInMins=60,
 )
 
+print("Running load factor calculation. This will take a few minutes...")
 load_factors = session.run_load_factor_for_parameters(
     flow_parameters, base_parameters
 )
@@ -124,15 +128,16 @@ Example load factors for wind type: UploadedWind
 ```
 
 ### Calculate Load Factors with P50 scaling + Save to JSON
-You might want to save the load factors in a file. And for that you could use one of the Amun SDK utils. For example, you can save a [P50 scaling](/docs/Reference/parameters#p50scalingparameters-objects) calculation giving it a timestamp, wind type and unique id for reference.
+You might want to save the load factors in a file. And for that you could either use Python's json API [`json.dump()`](https://docs.python.org/3/library/json.html#json.dump) or Amun SDK's `save_to_json` function. For example, you can save a [P50 scaling](/docs/Reference/parameters#p50scalingparameters-objects) calculation giving it a timestamp, wind type and unique id for reference.
 
 ```python
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.parameters import (
-    WeibullParameters,
+    P50ScalingParameters,
     LoadFactorBaseParameters
 )
 from aurora.amun.client.utils import save_to_json
+from datetime import datetime
 
 session = AmunSession()
 turbine = session.get_turbine_by_name("Siemens SWT-4.0-130")
@@ -155,18 +160,19 @@ base_parameters = LoadFactorBaseParameters(
 
 flow_parameters = P50ScalingParameters(p50GrossProduction=0.6)
 
+print("Running load factor calculation. This will take a few minutes...")
 load_factors = session.run_load_factor_for_parameters(
     flow_parameters, base_parameters
 )
 
-loadFactorRequestId = load_factors["parameters"]["loadFactorRequestId"]
+timestamp = datetime.now().isoformat().replace(':','_')
 save_to_json(
-    f"load_factors_{datetime.now().isoformat().replace(':','_')}_{flow_parameters.windType}_{loadFactorRequestId}.json",
+    f"load_factors_{timestamp}_{flow_parameters.windType}.json",
     load_factors
 )
 ```
 
-You will find the output in the new directoty called 'out' (will be created in the same folder where you run the script from). And the output file's name will look like this: `load_factors_2023-10-03T10_43_21.083658_WindType.P50Scaling_e33fcdf0-5e98-47ee-b7df-424d75809e66.json`.
+You will find the output in the new directoty called 'out' (will be created in the same folder where you run the script from). And the output file's name will look like this: `load_factors_2023-10-06T10_01_09.965295_WindType.P50Scaling.json`.
 
 ### Calculate Load Factors from Average Wind Speed
 Average Wind Speed is another type of calibration Amun SDK has available. See [wind type overview](/docs/Reference/parameters#averagewindspeed) for context, and [parameters documentation](/docs/Reference/parameters#averagewindspeedparameters-objects) to see which values need to be provided
@@ -200,9 +206,10 @@ base_parameters = LoadFactorBaseParameters(
 
 flow_parameters = AverageWindSpeedParameters(averageWindSpeed=10, measurementHeight=40)
 
+print("Running load factor calculation. This will take a few minutes...")
 load_factors = session.run_load_factor_for_parameters(
     flow_parameters, base_parameters
 )
-
-loadFactorRequestId = load_factors["parameters"]["loadFactorRequestId"]
 ```
+
+If you want to know how to run larger number of calculations more effectively, check the [Advanced Features](/docs/Examples/Load%20Factors/advanced) on the next page

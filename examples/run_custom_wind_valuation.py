@@ -56,6 +56,8 @@ def main():
         "obstacleHeight": 0,
         "roughnessLength": 0.001,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
+        "useReanalysisCorrection": False,
+        "usePowerCurveSmoothing": False
     }
 
     valuation = session.create_valuation(valuation_parameters)

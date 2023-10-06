@@ -50,6 +50,8 @@ def main():
         "longitude": "-1.21",
         "latitude": "59.59",
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
+        "useReanalysisCorrection": False,
+        "usePowerCurveSmoothing": False
     }
 
     valuation = session.create_valuation(valuation_parameters)

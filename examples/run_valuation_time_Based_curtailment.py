@@ -68,6 +68,8 @@ def main():
         "roughnessLength": 0.001,
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
         "curtailmentThreshold": 2,
+        "useReanalysisCorrection": False,
+        "usePowerCurveSmoothing": False,
         # Optional
         "timeBasedCurtailmentThresholds": [
             {"threshold": 10, "timeValidFrom": "2024-01-01T00:00:00.000Z",},
