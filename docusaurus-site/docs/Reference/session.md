@@ -63,7 +63,48 @@ Get the turbines available to the user.
 def get_turbine_by_name(turbine_name)
 ```
 
-Get a turbine by name.
+Get turbine information by name.
+
+**Returns**:
+
+  A dictionary with the turbine information. If not found, raises an error.
+  
+  **Response example**:
+```json
+    {
+        'id': 29,
+        'manufacturer': 'EWT Directwind',
+        'name': 'EWT Directwind 2000/96',
+        'ratedCapacity': 2,
+        'rotorDiameter': 96,
+        'minHubHeight': None,
+        'maxHubHeight': None,
+        'cutInSpeed': 3.5,
+        'cutOutSpeed': 25,
+        'specSource': 'https://www.thewindpower.net/turbine_en_879_ewt_directwind-2000-96.php',
+        'type': 'public',
+    }
+```
+
+#### get\_power\_curve
+
+```python
+def get_power_curve(turbine_id)
+```
+
+Get the power curve for a turbine.
+
+**Arguments**:
+
+- `turbine_id` _int_ - The id of the turbine. To get ID (with additional info), refer to `AmunSession.get_turbines`
+  or `AmunSession.get_turbine_by_name`
+  
+
+**Returns**:
+
+  List of dictionaries with these fields:
+  - `speed` - wind speed in m/s
+  - `power` - generated power in kW
 
 #### get\_region\_details
 
@@ -124,7 +165,68 @@ to use can be found be using `.AmunSession.get_region_details`
 def get_scenario_by_name(region, scenario_name)
 ```
 
-Get a scenario by name.
+Get a scenario by name
+
+**Arguments**:
+
+- `region` _str_ - The code for the region to lookup scenarios for. Use `AmunSession.get_region_details` to get the region code for a point.
+- `scenario_name` _str_ - The name of the scenario to get. Please ensure the name is spelled correctly.
+  
+
+**Returns**:
+
+  An object with infomation about the scenario. If not found, raises an error.
+  
+  **Response example**:
+  
+```json
+    {
+        'id': 3,
+        'name': '2019 Smart Power Scenario',
+        'description': 'To examine the impact of a smarter power system with more flexible capacity and demand',
+        'region': 'gbr',
+        'S3uri': None,
+        'currency': 'GBP',
+        'currencyYear': 2018,
+        'hasFile': False
+    }
+```
+
+#### create\_valuation
+
+```python
+def create_valuation(valuation)
+```
+
+Creates a valuation in Amun.
+
+Expects a dictionary of with these fields:
+- **name** (str)
+- **description** (str)
+- **longitude** (str)
+- **latitude** (str)
+- **windType** (str) - One of &quot;era5&quot;, &quot;merra2&quot;, &quot;weibull&quot;, &quot;newa&quot;, &quot;p50scaling&quot;, &quot;powerdensity&quot;, &quot;averagewindspeed&quot;, &quot;aurorawindatlas&quot;, &quot;p50yieldscaling&quot;. Not applicable for uploaded data.
+- **scenarioId** (string) to get the id of the scenario you want to use, check `AmunSession.get_scenario_by_name` or `AmunSession.get_scenarios`
+- **turbineModelId** (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
+- **numberOfTurbines** (int): The number of turbines in the site.
+- **hubHeight** (float): Given in meters (m).
+- **useReanalysisCorrection** - if True, will use regional reanalysis correction if it is available for the location
+- **usePowerCurveSmoothing** - if True, will use regional reanalysis correction if it is available for the location
+- **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
+- **curtailmentThreshold** (float, optional): Defaults to 0
+- **lossesWake** (float, optional): The percentage to apply for wake loss. (0 &lt;= lossesWake &lt; 1)
+- **lossesAvailability** (float, optional): Percentage for external losses. (0 &lt;= lossesAvailability &lt; 1)
+- **lossesElectrical** (float, optional): Percentage for external losses. (0 &lt;= lossesElectrical &lt; 1)
+- **lossesTurbinePerformance** (float, optional): Percentage for external losses. (0 &lt;= lossesTurbinePerformance &lt; 1)
+- **lossesEnvironmental** (float, optional): Percentage for external losses. (0 &lt;= lossesEnvironmental &lt; 1)
+- **lossesOtherCurtailment** (float, optional): Percentage for external losses. (0 &lt;= lossesOtherCurtailment &lt; 1)
+
+Additional parameters that are specific to a wind type will be required. Please look at the parameters section of SDK Reference documentation and
+see Amun SDK Examples to see how to create a valuation for your use case.
+
+**Returns**:
+
+  A dictionary with the valuation information. Additionally provides a unique valuation id that should be used to run it and get results. Please see `AmunSession.get_valuation_results` for more details.
 
 #### submit\_load\_factor\_calculations
 
@@ -171,7 +273,7 @@ For a finished calculation:
 - `results` - load factors
 
 For errored calculation:
-- `status` - &quot;Running&quot;
+- `status` - &quot;Errored&quot;
 - `error` - a string explaining the error
 
 #### track\_load\_factor\_calculation
@@ -247,7 +349,7 @@ Calculate the load factor and wind speeds for a year given a start time and a lo
 
 **Returns**:
 
-- `Dictionary` - A Dictionary with the keys
+  A Dictionary with the keys
   - `parameters` - the parameters used for the calculation
   - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
   - `typicalHourly` - typical hourly load factors
@@ -306,22 +408,36 @@ Calculate the load factor and wind speeds for a year given a start time and a lo
 **Arguments**:
 
 - `flow_parameters` - The parameters specific to the calculation type
-  * `aurora.amun.client.parameters.AverageWindSpeedParameters`
-  * `aurora.amun.client.parameters.BuiltInWindParameters`
-  * `aurora.amun.client.parameters.PowerDensityParameters`
-  * `aurora.amun.client.parameters.WeibullParameters`
-  * `aurora.amun.client.parameters.UploadedWindParameters`
+  - `aurora.amun.client.parameters.AverageWindSpeedParameters`
+  - `aurora.amun.client.parameters.BuiltInWindParameters`
+  - `aurora.amun.client.parameters.PowerDensityParameters`
+  - `aurora.amun.client.parameters.WeibullParameters`
+  - `aurora.amun.client.parameters.UploadedWindParameters`
   
 - `base_parameters` _LoadFactorBaseParameters_ - The parameters required for all flows to the calculation type.
   
 
 **Returns**:
 
-- `Dictionary` - A Dictionary with the keys
-  - `parameters` - the parameters used for the calculation
-  - `flow_parameters`0 - smoothing coefficients and other parameters applied to the calculation
-  - `flow_parameters`1 - typical hourly load factors
-  - `flow_parameters`2 - hourly load factors for the weather year
+  A Dictionary with the keys
+  - **parameters** - the parameters used for the calculation
+  - **appliedParams** - smoothing coefficients and other parameters applied to the calculation
+  - **typicalHourly** - typical hourly load factors
+  - **weatherYearHourly** - hourly load factors for the weather year
+
+#### get\_valuation\_results
+
+```python
+def get_valuation_results(valuation_id, format, should_return_hourly_data)
+```
+
+Gets the results of a valuation
+
+**Arguments**:
+
+- `valuation_id` _number_ - The id of the valuation to get the results for.
+- `format` _string_ - The format of the results. One of (&quot;json&quot;,&quot;xlsx&quot;)
+- `should_return_hourly_data` _bool_ - Set to true to return the hourly data for the valuation.
 
 #### delete\_valuation
 
