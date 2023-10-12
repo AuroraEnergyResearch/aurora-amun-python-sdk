@@ -180,17 +180,16 @@ Get a scenario by name
   **Response example**:
   
 ```json
-        [{
-            'id': 3,
-            'name': '2019 Smart Power Scenario',
-            'description': 'To examine the impact of a smarter power system with more flexible capacity and demand',
-            'region': 'gbr',
-            'S3uri': None,
-            'currency': 'GBP',
-            'currencyYear': 2018,
-            'hasFile': False
-        },
-        ...
+    {
+        'id': 3,
+        'name': '2019 Smart Power Scenario',
+        'description': 'To examine the impact of a smarter power system with more flexible capacity and demand',
+        'region': 'gbr',
+        'S3uri': None,
+        'currency': 'GBP',
+        'currencyYear': 2018,
+        'hasFile': False
+    }
 ```
 
 #### create\_valuation
@@ -208,16 +207,19 @@ Expects a dictionary of with these fields:
 - **latitude** (str)
 - **windType** (str) - One of &quot;era5&quot;, &quot;merra2&quot;, &quot;weibull&quot;, &quot;newa&quot;, &quot;p50scaling&quot;, &quot;powerdensity&quot;, &quot;averagewindspeed&quot;, &quot;aurorawindatlas&quot;, &quot;p50yieldscaling&quot;. Not applicable for uploaded data.
 - **scenarioId** (string) to get the id of the scenario you want to use, check `AmunSession.get_scenario_by_name` or `AmunSession.get_scenarios`
+- **turbineModelId** (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
+- **numberOfTurbines** (int): The number of turbines in the site.
+- **hubHeight** (float): Given in meters (m).
 - **useReanalysisCorrection** - if True, will use regional reanalysis correction if it is available for the location
 - **usePowerCurveSmoothing** - if True, will use regional reanalysis correction if it is available for the location
+- **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
+- **curtailmentThreshold** (float, optional): Defaults to 0
 - **lossesWake** (float, optional): The percentage to apply for wake loss. (0 &lt;= lossesWake &lt; 1)
 - **lossesAvailability** (float, optional): Percentage for external losses. (0 &lt;= lossesAvailability &lt; 1)
 - **lossesElectrical** (float, optional): Percentage for external losses. (0 &lt;= lossesElectrical &lt; 1)
 - **lossesTurbinePerformance** (float, optional): Percentage for external losses. (0 &lt;= lossesTurbinePerformance &lt; 1)
 - **lossesEnvironmental** (float, optional): Percentage for external losses. (0 &lt;= lossesEnvironmental &lt; 1)
 - **lossesOtherCurtailment** (float, optional): Percentage for external losses. (0 &lt;= lossesOtherCurtailment &lt; 1)
-- **curtailmentThreshold** (float, optional): Defaults to 0
-- **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
 
 Additional parameters that are specific to a wind type will be required. Please look at the parameters section of SDK Reference documentation and
 see Amun SDK Examples to see how to create a valuation for your use case.

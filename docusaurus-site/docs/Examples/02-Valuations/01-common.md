@@ -6,6 +6,10 @@ Here you will see common usage of Amun SDK for creating valuations. Each section
 
 You can find more examples with code in [Amun Python SDK repository](https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk) inside the `examples/` folder.
 
+:::caution
+Valuations SDK has been built to support "reasonable" level of usage for now, but will not support scripts that produce very large numbers (1000s) of valuations automatically. If you are interested in using Amun SDK for such purposes, get in touch with Aurora.
+:::
+
 ### Run Valuation with Amun Wind Atlas + Losses
 Running a valuation involves multiple steps. Firstly, you need to create parameters and get information about scenario and turbine you want to use. Make sure the names are spelled correctly. Secondly, you will need to create a valuation. After it's successfully created, you will be able to see it in your Amun profile on our website. And lastly, the valuation needs to be launched using the `AmunSession.get_valuation_results` function.  
 
