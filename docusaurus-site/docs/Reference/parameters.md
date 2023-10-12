@@ -70,7 +70,7 @@ The wind speeds at a given height,
 **Arguments**:
 
 - `height` _float_ - The measurement height (m) of the wind speeds.
-  speeds (List[float]):A list of wind speeds in m/s.
+- `speeds` _List[float]_ - A list of wind speeds in m/s.
 
 ## LoadFactorBaseParameters Objects
 
@@ -87,25 +87,24 @@ Parameters for all wind types.
 
 **Arguments**:
 
-- `turbineModelId` _int_ - The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
-- `latitude` _float_ - The latitude of the point (-90 to 90).
-- `longitude` _float_ - The latitude of the point (-180 to 180).
-  
-- `startTimeUTC` _str_ - The time in UTC that the calcution should start from. This must be in the form &#x27;*2016-07-28T00:00:00.000Z*&#x27; .
-- `regionCode` _str_ - The code for the region used to set region specific parameters.
-- `hubHeight` _float_ - Given in meters (m).
-- `obstacleHeight` _float_ - Given in meters (m).
-- `numberOfTurbines` _int_ - The number of turbines in the site.
-- `roughnessLength` _float, optional_ - Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
-  usePowerCurveSmoothing (bool, optional):Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
-  useReanalysisCorrection(bool, optional):Should Reanalysis Correctionbe used only valid for ERA5, Defaults to False.
-- `.AmunSession.get_turbines`0 _float_ - The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
-  lossesWake (float) default 0: The percentage to apply for wake loss. (0 &lt;= lossesWake &lt; 1)
-  lossesAvailability (float) default 0: Percentage for external losses.  (0 &lt;= lossesAvailability &lt; 1)
-  lossesElectrical (float) default 0: Percentage for external losses.  (0 &lt;= lossesElectrical &lt; 1)
-  lossesTurbinePerformance (float) default 0: Percentage for external losses.  (0 &lt;= lossesTurbinePerformance &lt; 1)
-  lossesEnvironmental (float) default 0: Percentage for external losses.  (0 &lt;= lossesEnvironmental &lt; 1)
-  lossesOtherCurtailment (float) default 0: Percentage for external losses.  (0 &lt;= lossesOtherCurtailment &lt; 1)
+  - **turbineModelId** (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
+  - **latitude** (float): The latitude of the point (-90 to 90).
+  - **longitude** (float): The latitude of the point (-180 to 180).
+  - **startTimeUTC** (str): The time in UTC that the calcution should start from. This must be in the form &#x27;*2016-07-28T00:00:00.000Z*&#x27; .
+  - **regionCode** (str): The code for the region used to set region specific parameters.
+  - **hubHeight** (float): Given in meters (m).
+  - **obstacleHeight** (float): Given in meters (m).
+  - **numberOfTurbines** (int): The number of turbines in the site.
+  - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
+  - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
+  - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correctionbe used only valid for ERA5, Defaults to False.
+  - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
+  - **lossesWake** (float, default 0): The percentage to apply for wake loss. (0 &lt;= lossesWake &lt; 1)
+  - **lossesAvailability** (float, default 0): Percentage for external losses.  (0 &lt;= lossesAvailability &lt; 1)
+  - **lossesElectrical** (float, default 0): Percentage for external losses.  (0 &lt;= lossesElectrical &lt; 1)
+  - **lossesTurbinePerformance** (float, default 0): Percentage for external losses.  (0 &lt;= lossesTurbinePerformance &lt; 1)
+  - **lossesEnvironmental** (float, default 0): Percentage for external losses.  (0 &lt;= lossesEnvironmental &lt; 1)
+  - **lossesOtherCurtailment** (float, default 0): Percentage for external losses.  (0 &lt;= lossesOtherCurtailment &lt; 1)
 
 ## FlowParameters Objects
 

@@ -183,7 +183,30 @@ class AmunSession(APISession):
         return self._get_request(url)
 
     def get_turbine_by_name(self, turbine_name):
-        """Get a turbine by name."""
+        """
+        Get turbine information by name.
+
+        Returns:
+            A dictionary with the turbine information. If not found, raises an error.
+        
+         **Response example**:
+        ```json
+            {
+                'id': 29,
+                'manufacturer': 'EWT Directwind',
+                'name': 'EWT Directwind 2000/96',
+                'ratedCapacity': 2,
+                'rotorDiameter': 96,
+                'minHubHeight': None,
+                'maxHubHeight': None,
+                'cutInSpeed': 3.5,
+                'cutOutSpeed': 25,
+                'specSource': 'https://www.thewindpower.net/turbine_en_879_ewt_directwind-2000-96.php',
+                'type': 'public',
+            }
+        ```
+        
+        """
         turbines = self.get_turbines()
 
         return get_single_value_form_list(
@@ -191,6 +214,22 @@ class AmunSession(APISession):
             results_list=turbines,
             error=f"with name '{turbine_name}'",
         )
+    
+    def get_power_curve(self, turbine_id):
+        """
+        Get the power curve for a turbine.
+
+        Args:
+            turbine_id (int): The id of the turbine. To get ID (with additional info), refer to `AmunSession.get_turbines`
+                or `AmunSession.get_turbine_by_name`
+        
+        Returns:
+            List of dictionaries with these fields:
+            - `speed` - wind speed in m/s
+            - `power` - generated power in kW
+        """
+        url = f"{self.base_url}/turbines/{turbine_id}/powerCurve"
+        return self._get_request(url)
 
     def get_region_details(
         self, latitude: float, longitude: float
@@ -245,7 +284,32 @@ class AmunSession(APISession):
     
 
     def get_scenario_by_name(self, region, scenario_name):
-        """Get a scenario by name."""
+        """
+        Get a scenario by name
+
+        Args:
+            region (str): The code for the region to lookup scenarios for. Use `AmunSession.get_region_details` to get the region code for a point.
+            scenario_name (str): The name of the scenario to get. Please ensure the name is spelled correctly.
+
+        Returns:
+            An object with infomation about the scenario. If not found, raises an error.
+
+        **Response example**:
+
+        ```json
+                [{
+                    'id': 3,
+                    'name': '2019 Smart Power Scenario',
+                    'description': 'To examine the impact of a smarter power system with more flexible capacity and demand',
+                    'region': 'gbr',
+                    'S3uri': None,
+                    'currency': 'GBP',
+                    'currencyYear': 2018,
+                    'hasFile': False
+                },
+                ...
+        ```
+        """
         scenarios = self.get_scenarios(region)
         return get_single_value_form_list(
             filter_function=lambda x: x["name"] == scenario_name
@@ -256,6 +320,33 @@ class AmunSession(APISession):
 
 
     def create_valuation(self, valuation):
+        """
+        Creates a valuation in Amun.
+
+        Expects a dictionary of with these fields:
+        - **name** (str)
+        - **description** (str)
+        - **longitude** (str)
+        - **latitude** (str)
+        - **windType** (str) - One of "era5", "merra2", "weibull", "newa", "p50scaling", "powerdensity", "averagewindspeed", "aurorawindatlas", "p50yieldscaling". Not applicable for uploaded data.
+        - **scenarioId** (string) to get the id of the scenario you want to use, check `AmunSession.get_scenario_by_name` or `AmunSession.get_scenarios`
+        - **useReanalysisCorrection** - if True, will use regional reanalysis correction if it is available for the location
+        - **usePowerCurveSmoothing** - if True, will use regional reanalysis correction if it is available for the location
+        - **lossesWake** (float, optional): The percentage to apply for wake loss. (0 <= lossesWake < 1)
+        - **lossesAvailability** (float, optional): Percentage for external losses. (0 <= lossesAvailability < 1)
+        - **lossesElectrical** (float, optional): Percentage for external losses. (0 <= lossesElectrical < 1)
+        - **lossesTurbinePerformance** (float, optional): Percentage for external losses. (0 <= lossesTurbinePerformance < 1)
+        - **lossesEnvironmental** (float, optional): Percentage for external losses. (0 <= lossesEnvironmental < 1)
+        - **lossesOtherCurtailment** (float, optional): Percentage for external losses. (0 <= lossesOtherCurtailment < 1)
+        - **curtailmentThreshold** (float, optional): Defaults to 0
+        - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
+
+        Additional parameters that are specific to a wind type will be required. Please look at the parameters section of SDK Reference documentation and
+            see Amun SDK Examples to see how to create a valuation for your use case.
+        
+        Returns:
+            A dictionary with the valuation information. Additionally provides a unique valuation id that should be used to run it and get results. Please see `AmunSession.get_valuation_results` for more details.
+        """
         url = f"{self.base_url}/valuations"
         return self._put_request(url, valuation)
 
@@ -397,7 +488,7 @@ class AmunSession(APISession):
             load_factor_configuration: A dictionary of load factor parameters.
 
         Returns:
-            Dictionary: A Dictionary with the keys
+            A Dictionary with the keys
             - `parameters` - the parameters used for the calculation
             - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
             - `typicalHourly` - typical hourly load factors
@@ -456,20 +547,20 @@ class AmunSession(APISession):
 
         Args:
             flow_parameters: The parameters specific to the calculation type
-                * `aurora.amun.client.parameters.AverageWindSpeedParameters`
-                * `aurora.amun.client.parameters.BuiltInWindParameters`
-                * `aurora.amun.client.parameters.PowerDensityParameters`
-                * `aurora.amun.client.parameters.WeibullParameters`
-                * `aurora.amun.client.parameters.UploadedWindParameters`
+                - `aurora.amun.client.parameters.AverageWindSpeedParameters`
+                - `aurora.amun.client.parameters.BuiltInWindParameters`
+                - `aurora.amun.client.parameters.PowerDensityParameters`
+                - `aurora.amun.client.parameters.WeibullParameters`
+                - `aurora.amun.client.parameters.UploadedWindParameters`
 
             base_parameters (LoadFactorBaseParameters): The parameters required for all flows to the calculation type.
 
         Returns:
-            Dictionary: A Dictionary with the keys
-            - `parameters` - the parameters used for the calculation
-            - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
-            - `typicalHourly` - typical hourly load factors
-            - `weatherYearHourly` - hourly load factors for the weather year 
+            A Dictionary with the keys
+            - **parameters** - the parameters used for the calculation
+            - **appliedParams** - smoothing coefficients and other parameters applied to the calculation
+            - **typicalHourly** - typical hourly load factors
+            - **weatherYearHourly** - hourly load factors for the weather year 
         """
 
         # Create a request by combining the paramters
@@ -491,6 +582,14 @@ class AmunSession(APISession):
         return self._post_request(url, {})
 
     def get_valuation_results(self, valuation_id, format, should_return_hourly_data):
+        """
+        Gets the results of a valuation
+
+        Args:
+            valuation_id (number): The id of the valuation to get the results for.
+            format (string): The format of the results. One of ("json","xlsx")
+            should_return_hourly_data (bool): Set to true to return the hourly data for the valuation.
+        """
         url = f"{self.base_url}/valuations/{valuation_id}/outputs"
         params = {"format": format}
         if should_return_hourly_data:
