@@ -19,7 +19,7 @@ We use GitHub pages to deploy the documentation
 
 **To avoid confusion: `./docs` hosts a built statis website. `./docusaurus-site/docs` hosts markdown files for editing documentation**
 
-> Please remember to update the version number in `setup.py` and navbar in `docusaurus.config.js` to reflect the new version of the SDK. This is especially relevant when the new version of the SDK is not backward compatible with the previous version.
+> Please remember to update the version number in `setup.py` to reflect the changes in SDK and docs. This is especially relevant when the new version of the SDK is not backward compatible with the previous version.
 
 ### Create a venv and activate if required
 
