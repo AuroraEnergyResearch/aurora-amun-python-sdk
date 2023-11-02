@@ -3,6 +3,21 @@
 
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+const fs = require("fs");
+const path = require("path");
+
+
+const getSDKVersion = () => {
+  const setupFilePath = path.resolve(__dirname, '../setup.py');
+  const setupFileContent = fs.readFileSync(setupFilePath, 'utf8');
+  const versionMatch = setupFileContent.match(/version="(.*)"/);
+
+  if (!versionMatch) {
+    throw new Error('Could not extract SDK version from setup.py');
+  }
+
+  return versionMatch[1];
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -68,6 +83,11 @@ const config = {
             sidebarId: "docSidebar",
             position: "left",
             label: "Docs",
+          },
+          {
+            href: "/",
+            label: `SDK Version: ${getSDKVersion()}`,
+            position: "left",
           },
           {
             href: "https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk",
