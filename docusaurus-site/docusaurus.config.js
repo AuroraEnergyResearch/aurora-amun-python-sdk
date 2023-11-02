@@ -70,6 +70,11 @@ const config = {
             label: "Docs",
           },
           {
+            href: "/",
+            label: "SDK Version: 1.0.0",
+            position: "left",
+          },
+          {
             href: "https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk",
             label: "GitHub",
             position: "right",
