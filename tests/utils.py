@@ -3,29 +3,27 @@ from functools import reduce
 
 
 def summarize_hourly_output(hourly_speed_and_load_factors):
-    def round_results(result):
-        return {
-            "dateTime": result["dateTime"],
-            "windSpeed": round(result["windSpeed"], 6),
-            "loadFactor": round(result["loadFactor"], 6),
-        }
-    first_day = hourly_speed_and_load_factors[:24]
-    last_day = hourly_speed_and_load_factors[-24:]
+    """
+    Extracts enough information from hourly speed and load factor 
+    output to help capture correctness of the results.
+    """
+    hourly_load_factor = [result["loadFactor"] for result in hourly_speed_and_load_factors]
+    hourly_wind_speed = [result["windSpeed"] for result in hourly_speed_and_load_factors]
+
+    stats = {
+        "total hours": len(hourly_speed_and_load_factors),
+        "load factor sum": sum(hourly_load_factor),
+        "load factor max": max(hourly_load_factor),
+        "load factor min": min(hourly_load_factor),
+        "wind speed sum": sum(hourly_wind_speed),
+        "wind speed max": max(hourly_wind_speed),
+        "wind speed min": min(hourly_wind_speed),
+    }
 
     return {
-        "first day": [round_results(result) for result in first_day],
-        "last day": [round_results(result) for result in last_day],
-        "count": len(hourly_speed_and_load_factors),
-        "load factor sum": reduce(
-            lambda a, b: round(a + b["loadFactor"], 6),
-            hourly_speed_and_load_factors,
-            0
-        ),
-        "wind speed sum": reduce(
-            lambda a, b: round(a + b["windSpeed"], 6),
-            hourly_speed_and_load_factors,
-            0
-        )
+        "first day": hourly_speed_and_load_factors[:24],
+        "last day": hourly_speed_and_load_factors[-24:],
+        "statistics": stats,
     }
 
 

@@ -488,7 +488,7 @@ class AmunSession(APISession):
 
         Args:
             load_factor_configuration: A dictionary of load factor parameters.
-            version: Version of the API to use for calculations (1 or 2).
+            version (defaults to 1): Version of the API to use for calculations (1 or 2).
 
         Returns:
             A Dictionary with the keys
