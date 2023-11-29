@@ -19,8 +19,8 @@ pip install git+https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk
 
 ```python
 from aurora.amun.client.session import AmunSession
-session  = AmunSession()
-result  = session.get_scenarios("gbr")
+session = AmunSession()
+result = session.get_scenarios("gbr")
 print(result[0])
 ```
 

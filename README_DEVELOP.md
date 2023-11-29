@@ -8,7 +8,6 @@
 - `examples` is a directory with miscellaneous examples for how to use Amun Python SDK
 
 ## Developing
-
 To run docusaurus site in development watch-mode, run `npm run start` inside `docusaurus-site/`
 
 ## Deployment
