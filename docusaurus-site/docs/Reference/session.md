@@ -332,7 +332,8 @@ Perform multiple load factor calculations in parallel.
 #### run\_load\_factor\_calculation
 
 ```python
-def run_load_factor_calculation(load_factor_configuration: Dict)
+def run_load_factor_calculation(load_factor_configuration: Dict,
+                                version=1) -> Dict
 ```
 
 Calculate the load factor and wind speeds for a year given a start time and a location.
@@ -345,6 +346,7 @@ Calculate the load factor and wind speeds for a year given a start time and a lo
 **Arguments**:
 
 - `load_factor_configuration` - A dictionary of load factor parameters.
+- `version` _defaults to 1_ - Version of the API to use for calculations (1 or 2).
   
 
 **Returns**:
@@ -395,7 +397,8 @@ for each calculation.
 
 ```python
 def run_load_factor_for_parameters(flow_parameters: FlowParameters,
-                                   base_parameters: LoadFactorBaseParameters)
+                                   base_parameters: LoadFactorBaseParameters,
+                                   version=1)
 ```
 
 Calculate the load factor and wind speeds for a year given a start time and a location.
@@ -415,6 +418,7 @@ Calculate the load factor and wind speeds for a year given a start time and a lo
   - `aurora.amun.client.parameters.UploadedWindParameters`
   
 - `base_parameters` _LoadFactorBaseParameters_ - The parameters required for all flows to the calculation type.
+- `version` _defaults to 1_ - Version of the API to use for calculations (1 or 2).
   
 
 **Returns**:

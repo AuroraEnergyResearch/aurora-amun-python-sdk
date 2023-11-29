@@ -180,7 +180,7 @@ Average Wind Speed is another type of calibration Amun SDK has available. See [w
 ```python
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.parameters import (
-    WeibullParameters,
+    AverageWindSpeedParameters,
     LoadFactorBaseParameters
 )
 from aurora.amun.client.utils import save_to_json
@@ -206,10 +206,13 @@ base_parameters = LoadFactorBaseParameters(
 
 flow_parameters = AverageWindSpeedParameters(averageWindSpeed=10, measurementHeight=40)
 
-print("Running load factor calculation. This will take a few minutes...")
 load_factors = session.run_load_factor_for_parameters(
     flow_parameters, base_parameters
 )
+
+# Print out the wind type and first 5 hourly load factors
+print("Example load factors for wind type:", load_factors["parameters"]["windType"])
+print(load_factors["weatherYearHourly"][:5])
 ```
 
 If you want to know how to run larger number of calculations more effectively, check the [Advanced Features](/docs/Examples/Load%20Factors/advanced) on the next page
