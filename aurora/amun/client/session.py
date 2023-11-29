@@ -480,7 +480,7 @@ class AmunSession(APISession):
         return results
 
 
-    def run_load_factor_calculation(self, load_factor_configuration: Dict):
+    def run_load_factor_calculation(self, load_factor_configuration: Dict, version=1) -> Dict:
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
         See Also:
@@ -488,16 +488,22 @@ class AmunSession(APISession):
 
         Args:
             load_factor_configuration: A dictionary of load factor parameters.
+            version (defaults to 1): Version of the API to use for calculations (1 or 2).
 
         Returns:
             A Dictionary with the keys
             - `parameters` - the parameters used for the calculation
             - `appliedParams` - smoothing coefficients and other parameters applied to the calculation
             - `typicalHourly` - typical hourly load factors
-            - `weatherYearHourly` - hourly load factors for the weather year  
-
+            - `weatherYearHourly` - hourly load factors for the weather year
         """
-        return self.run_load_factors_in_batch([load_factor_configuration])[0]
+        if version == 1:
+            url = f"{self.base_url}/loadfactor"
+            return self._put_request(url, load_factor_configuration)
+        elif version == 2:
+            return self.run_load_factors_in_batch([load_factor_configuration])[0]
+        else:
+            raise ValueError("Invalid version number: only versions 1 and 2 are allowed")
 
 
     def run_load_factors_for_parameters_batch(
@@ -540,7 +546,7 @@ class AmunSession(APISession):
 
 
     def run_load_factor_for_parameters(
-        self, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters
+        self, flow_parameters: FlowParameters, base_parameters: LoadFactorBaseParameters, version=1
     ):
         """Calculate the load factor and wind speeds for a year given a start time and a location.
 
@@ -556,6 +562,7 @@ class AmunSession(APISession):
                 - `aurora.amun.client.parameters.UploadedWindParameters`
 
             base_parameters (LoadFactorBaseParameters): The parameters required for all flows to the calculation type.
+            version (defaults to 1): Version of the API to use for calculations (1 or 2).
 
         Returns:
             A Dictionary with the keys
@@ -569,7 +576,7 @@ class AmunSession(APISession):
         request = {}
         request.update(vars(flow_parameters))
         request.update(vars(base_parameters))
-        return self.run_load_factor_calculation(request)
+        return self.run_load_factor_calculation(request, version)
 
     def get_valuations(self, searchText=None):
         url = f"{self.base_url}/valuations"
