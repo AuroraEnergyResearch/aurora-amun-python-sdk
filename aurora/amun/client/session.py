@@ -435,7 +435,7 @@ class AmunSession(APISession):
         leftToRun = tokens.copy()
 
         while len(leftToRun) > 0:
-            time.sleep(10)
+            time.sleep(1)
             log.debug("Checking load factor simulation status...")
             for token in leftToRun:
                 i = tokens.index(token)
