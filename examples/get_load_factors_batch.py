@@ -1,6 +1,3 @@
-import os
-import logging
-import logging.handlers
 from datetime import datetime
 from aurora.amun.client.parameters import (
     AverageWindSpeedParameters,
@@ -14,36 +11,9 @@ from aurora.amun.client.parameters import (
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.utils import save_to_json
 
-log = logging.getLogger(__name__)
-
-
-# Sets Up root loging console(INFO) and file (DEBUG) handlers
-def setup_file_and_console_loggers(fileName):
-    os.makedirs("logs", exist_ok=True)
-    rotFileHandler = logging.handlers.RotatingFileHandler(
-        f"logs/{fileName}", "a", 30 * 1024 * 1024, 10
-    )
-    f = logging.Formatter("%(asctime)s %(name)s %(levelname)-8s %(message)s")
-    rotFileHandler.setFormatter(f)
-    rotFileHandler.setLevel(logging.DEBUG)
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setLevel(logging.INFO)
-    consoleHandler.setFormatter(
-        logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
-    )
-    logger = logging.getLogger()
-    logger.addHandler(rotFileHandler)
-    logger.addHandler(consoleHandler)
-    log.setLevel(logging.DEBUG)  # Set Level for main logging in this file
-    # Set Level for Amun SDK
-    logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
-
-    #
-
 # Submitting a batch of load factor calculations
 # via run_load_factors_for_parameters_batch
 def main():
-    setup_file_and_console_loggers("get_load_factors_batch_example.log")
     session = AmunSession()
     turbine = session.get_turbine_by_name("Siemens SWT-4.0-130")
 

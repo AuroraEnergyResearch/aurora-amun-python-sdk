@@ -59,7 +59,7 @@ def run_request_and_save(
     log.info(f"getting for {flow_parameters.windType}")
 
     load_factors  = session.run_load_factor_for_parameters(
-        flow_parameters, base_parameters, 2
+        flow_parameters, base_parameters
     )
 
     loadFactorRequestId = load_factors["parameters"]["loadFactorRequestId"]
