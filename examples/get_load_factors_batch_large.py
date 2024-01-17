@@ -2,14 +2,10 @@ import os
 import logging
 import logging.handlers
 from datetime import datetime
+import time
 from aurora.amun.client.parameters import (
     AverageWindSpeedParameters,
-    BuiltInWindParameters,
     LoadFactorBaseParameters,
-    P50ScalingParameters,
-    PowerDensityParameters,
-    WeibullParameters,
-    P50YieldScalingParameters,
 )
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.utils import save_to_json
@@ -27,7 +23,7 @@ def setup_file_and_console_loggers(fileName):
     rotFileHandler.setFormatter(f)
     rotFileHandler.setLevel(logging.DEBUG)
     consoleHandler = logging.StreamHandler()
-    consoleHandler.setLevel(logging.INFO)
+    consoleHandler.setLevel(logging.DEBUG)
     consoleHandler.setFormatter(
         logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
     )
@@ -40,11 +36,8 @@ def setup_file_and_console_loggers(fileName):
 
     #
 
-# Submitting a batch of load factor calculations
-# via run_load_factors_for_parameters_batch
-def main():
-    setup_file_and_console_loggers("get_load_factors_batch_example.log")
-    session = AmunSession()
+def request_simulations(number: int, batch: bool, version: int):
+    session = AmunSession("https://api-staging.auroraer.com/amun/v1", "36630c69063314ef248db53b11e848530b625dd2f1aa6c76798ad5abf062299d")
     turbine = session.get_turbine_by_name("Siemens SWT-4.0-130")
 
     base_parameters = LoadFactorBaseParameters(
@@ -63,33 +56,33 @@ def main():
         useReanalysisCorrection=False,
     )
 
-    list_of_parameters = [
-        BuiltInWindParameters("era5"),
-        WeibullParameters(measurementHeight=90, weibullScale=12, weibullShape=6),
-        PowerDensityParameters(measurementHeight=90, averagePowerDensity=400.1),
-        AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=6.43),
-        P50ScalingParameters(p50GrossProduction=0.4),
-        P50YieldScalingParameters(annualProductionInGWHours=200)
-    ]
+    start_time = time.time()
 
-    print("Running load factor calculations. This will take a few minutes...")
-    results = session.run_load_factors_for_parameters_batch(
-        list_of_parameters,
-        [base_parameters] * len(list_of_parameters) # We must match every flow parameter with a base parameter
-    )
+    if batch:
+        variants = []
+        for _ in range(0, number):
+            variants.append(AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=12))
 
-    # Save each result individually pairing it with the request parameters
-    # (the results come in the same order as the requests)
-    for result, params in zip(results, list_of_parameters):
-        
-        # If you want, you can use a unique identifier for each request in the name of your file
-        loadFactorRequestId = result["parameters"]["loadFactorRequestId"]
-
-        timestamp = datetime.now().isoformat().replace(':','_')
-        save_to_json(
-            f"load_factors/load_factors_{timestamp}_{params.windType}_{loadFactorRequestId}.json",
-            result,
+        session.run_load_factors_for_parameters_batch(
+            variants,
+            [base_parameters] * len(variants) # This is needed to match every variant of wind speed with a base parameter
         )
+    else:
+        for _ in range(0, number):
+            flow_parameters = AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=12)
+            session.run_load_factor_for_parameters(
+                flow_parameters, base_parameters, version
+            )
+    
+    end_time = time.time()
+    print(f"Finished running {number} sims using APIv{version} in {'batch' if batch else 'sequence'} in: {end_time - start_time} seconds")
+
+
+# Submitting a batch of load factor calculations
+# via run_load_factors_for_parameters_batch
+def main():
+    setup_file_and_console_loggers("get_load_factors_batch_large.log")
+    request_simulations(number=100, batch=False, version=1)
 
 if __name__ == "__main__":
     main()
