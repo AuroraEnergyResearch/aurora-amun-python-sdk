@@ -30,6 +30,8 @@ class WindType(Enum):
     PowerDensity = "PowerDensity"
     #: Upload at least one year of hourly modelled or metered wind speed data to calibrate your wind speed profile. Amun will use this data to derive a statistical relationship between uploaded data and the reanalysis wind speed for the same location and time period uploaded.
     UploadedWind = "UploadedWind"
+    #: TODO: write description, verify with Charlie or Hudson
+    UploadedGeneration = "UploadedGeneration"
     #: Weibull parameters represent the long-term wind speed distribution at the site. Amun will calibrate underlying reanalysis wind speeds distribution to match shape.
     Weibull = "Weibull"
 
@@ -251,3 +253,22 @@ class WeibullParameters(FlowParameters):
         self.weibullShape = weibullShape
         self.weibullScale = weibullScale
         self.measurementHeight = measurementHeight
+
+
+class UploadedGenerationParameters(FlowParameters):
+    """
+    TODO: Add docs
+    """
+
+    def __init__(
+        self,
+        uploadGenerationStartTime: str,
+        uploadedGeneration: List[float],
+        installedCapacity: int,
+        granularityInMins: int = 60,
+    ):
+        super().__init__(WindType.UploadedGeneration)
+        self.uploadGenerationStartTime = uploadGenerationStartTime
+        self.uploadedGeneration = uploadedGeneration
+        self.installedCapacity = installedCapacity
+        self.granularityInMins = granularityInMins
