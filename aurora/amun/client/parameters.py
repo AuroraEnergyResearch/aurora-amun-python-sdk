@@ -266,9 +266,11 @@ class UploadedGenerationParameters(FlowParameters):
         uploadedGeneration: List[float],
         installedCapacity: int,
         granularityInMins: int = 60,
+        showAll: bool = False,
     ):
         super().__init__(WindType.UploadedGeneration)
         self.uploadGenerationStartTime = uploadGenerationStartTime
         self.uploadedGeneration = uploadedGeneration
         self.installedCapacity = installedCapacity
         self.granularityInMins = granularityInMins
+        self.showAll = showAll
