@@ -256,8 +256,13 @@ class WeibullParameters(FlowParameters):
 
 
 class UploadedGenerationParameters(FlowParameters):
-    """
-    TODO: Add docs
+    """The Parameters required for *UploadedGeneration* calculation.
+
+    Args:
+        uploadGenerationStartTime (str): The time in UTC that the uploaded generation starts from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
+        uploadedGeneration (List[float]): A list of hourly generation values in MW.
+        installedCapacity (int): The installed capacity of the site in MW.
+        granularityInMins (int, optional): The granularity of the uploaded generation in minutes. Defaults to 60.
     """
 
     def __init__(
@@ -266,11 +271,9 @@ class UploadedGenerationParameters(FlowParameters):
         uploadedGeneration: List[float],
         installedCapacity: int,
         granularityInMins: int = 60,
-        showAll: bool = False,
     ):
         super().__init__(WindType.UploadedGeneration)
         self.uploadGenerationStartTime = uploadGenerationStartTime
         self.uploadedGeneration = uploadedGeneration
         self.installedCapacity = installedCapacity
         self.granularityInMins = granularityInMins
-        self.showAll = showAll

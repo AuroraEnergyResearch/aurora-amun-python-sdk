@@ -27,11 +27,10 @@ AURORA_AMUN_PRODUCTION_ENDPOINT = "https://api.auroraer.com/amun/v1"
 class APISession:
     """Internal class to hold base methods for interacting with the Aurora HTTP API"""
 
-    def __init__(self, base_url=None, token=None, debug=False):
+    def __init__(self, base_url=None, token=None):
         self.token = self._get_token(token)
         self.base_url = self._get_base_url(base_url)
         self.session = self._create_session()
-        self.debug = debug
 
     def _get_token(self, token):
         if token is not None:
@@ -88,8 +87,6 @@ class APISession:
         return session
 
     def _get_request(self, url, params={}, should_retry=False):
-        if(self.debug):
-            params["debug"] = True
         log.debug(f"GET Request to {url}  with params {params}")
 
         if should_retry:
@@ -101,8 +98,6 @@ class APISession:
         return self._parse_as_json(response)
 
     def _del_request(self, url, params={}):
-        if(self.debug):
-            params["debug"] = True
         log.debug(f"DEL Request to {url}  with params {params}")
 
         response = self.session.request("DELETE", url, params=params)
@@ -116,22 +111,16 @@ class APISession:
             raise RuntimeError(f"{response.status_code}  {response.text}")
 
     def _put_request(self, url, payload):
-        if(self.debug):
-            params = {}
-            params["debug"] = True
         log.debug(f"PUT Request to {url} with payload {payload}")
         response = self.session.request(
-            "PUT", url, data=json.dumps(payload, cls=AmunJSONEncoder, params=params)
+            "PUT", url, data=json.dumps(payload, cls=AmunJSONEncoder)
         )
         return self._parse_as_json(response)
 
     def _post_request(self, url, payload):
-        if(self.debug):
-            params = {}
-            params["debug"] = True
         log.debug(f"POST Request to {url} with payload {payload}")
         response = self.session.request(
-            "POST", url, data=json.dumps(payload, cls=AmunJSONEncoder, params=params)
+            "POST", url, data=json.dumps(payload, cls=AmunJSONEncoder)
         )
         return self._parse_as_json(response)
 
