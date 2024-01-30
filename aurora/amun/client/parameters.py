@@ -30,7 +30,7 @@ class WindType(Enum):
     PowerDensity = "PowerDensity"
     #: Upload at least one year of hourly modelled or metered wind speed data to calibrate your wind speed profile. Amun will use this data to derive a statistical relationship between uploaded data and the reanalysis wind speed for the same location and time period uploaded.
     UploadedWind = "UploadedWind"
-    #: TODO: write description, verify with Charlie or Hudson
+    #: At least one year of hourly modelled or measured generation data. This will be used to derive an empirical site-specific power curve which captures the relationship between reanalysis data and observed generation
     UploadedGeneration = "UploadedGeneration"
     #: Weibull parameters represent the long-term wind speed distribution at the site. Amun will calibrate underlying reanalysis wind speeds distribution to match shape.
     Weibull = "Weibull"
