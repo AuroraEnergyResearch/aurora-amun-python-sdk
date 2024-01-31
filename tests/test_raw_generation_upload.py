@@ -1,11 +1,10 @@
 import pytest
 from datetime import datetime
 import logging
-import json
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.parameters import UploadedGenerationParameters, LoadFactorBaseParameters
-from aurora.amun.client.utils import get_json, get_scenario_by_name, save_to_json
-from tests.utils import create_load_factor_snapshot
+from aurora.amun.client.utils import get_json, get_scenario_by_name
+from tests.utils import compare_load_factor_from_valuations_and_load_factor
 
 
 
@@ -96,12 +95,5 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         flow_parameters, base_parameters, version=1
     )
 
+    compare_load_factor_from_valuations_and_load_factor(hourly_load_factor_results, hourly_valuation_results)
 
-    # Results from the two versions should be the same
-    with open("tests/results/valuation.json", "w") as f:
-        json.dump(hourly_valuation_results, f)
-    with open("tests/results/load_factor.json", "w") as f:
-        json.dump(hourly_load_factor_results, f)
-        
-    # snapshot.assert_match(hourly_valuation_results, "valuation")
-    # snapshot.assert_match(hourly_load_factor_results, "load factor")
