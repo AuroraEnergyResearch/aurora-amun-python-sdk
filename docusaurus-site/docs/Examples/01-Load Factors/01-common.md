@@ -257,10 +257,13 @@ base_parameters = LoadFactorBaseParameters(
     obstacleHeight = obstacle_height,
     usePowerCurveSmoothing = use_power_curve_smoothing,
     useReanalysisCorrection = use_reanalysis_correction,
+    ## These parameters are required but irrelevant
+    turbineModelId = 1,
+    numberOfTurbines = 1,
 )
 
 loadfactor = session.run_load_factor_for_parameters(flow_parameters, base_parameters, version=1)
-save_to_json(f"loadfactor/loadfactor_{loadfactor['params']['loadFactorRequestId']}.json", loadfactor)
+save_to_json(f"loadfactor/loadfactor_{loadfactor['parameters']['loadFactorRequestId']}.json", loadfactor)
 
 
 ```
