@@ -221,7 +221,7 @@ class UploadedGenerationParameters(FlowParameters)
 
 **Arguments**
 
-- `granularityInMins` _int (30 || 60)_ - The interval at which the data is collected (either 30 or 60 minute)
+- `granularityInMins` _int (60 mins)_ - The interval at which the data is collected - default is 60 and most widly supported
 - `installedCapacity` _int_ - The maxium amout of production from the particular wind turbine.
 - `uploadedGeneration` _list&#60;float&#62;_ - A list of floats that dictate the production of a wind turbine at each hour/half hour for a whole year.
 - `uploadGenerationStartTime` _str_ - The time in UTC that the wind speeds upload start from. This must be in the form '2016-07-28T00:00:00.000Z' .
