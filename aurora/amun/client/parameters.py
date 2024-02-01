@@ -258,6 +258,8 @@ class WeibullParameters(FlowParameters):
 class UploadedGenerationParameters(FlowParameters):
     """The Parameters required for *UploadedGeneration* calculation.
 
+    *Note*: Please use Version 2 of the API, Version 1 does not support this wind type.
+
     Args:
         uploadGenerationStartTime (str): The time in UTC that the uploaded generation starts from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
         uploadedGeneration (List[float]): A list of hourly generation values in MW.

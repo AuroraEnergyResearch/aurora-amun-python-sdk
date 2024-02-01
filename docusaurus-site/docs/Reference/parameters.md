@@ -218,6 +218,7 @@ The speeds upload should be hourly measurements starting at *uploadedWindStartTi
 class UploadedGenerationParameters(FlowParameters)
 ```
 
+![API Version](https://img.shields.io/badge/Required_API_Version-V2-8A2BE2?style=for-the-badge)
 
 **Arguments**
 
