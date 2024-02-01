@@ -13,8 +13,7 @@ log = logging.getLogger(__name__)
 
 @pytest.fixture
 def amun_session():
-    # Temporarily configure for local testing
-    return AmunSession(token="AMUN_AUTOMATED_TEST_TOKEN", base_url="http://localhost:3001/amun/v1")
+    return AmunSession(token="AMUN_AUTOMATED_TEST_TOKEN")
 
 
 def test_load_factor_to_valuation(amun_session, snapshot):

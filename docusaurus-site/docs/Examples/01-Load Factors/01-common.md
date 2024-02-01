@@ -262,7 +262,8 @@ base_parameters = LoadFactorBaseParameters(
     numberOfTurbines = 1,
 )
 
-loadfactor = session.run_load_factor_for_parameters(flow_parameters, base_parameters, version=1)
+## Ensure version is set to 2, as Version 1 of the API does not support UplodedGeneration for LoadFactor
+loadfactor = session.run_load_factor_for_parameters(flow_parameters, base_parameters, version=2)
 save_to_json(f"loadfactor/loadfactor_{loadfactor['parameters']['loadFactorRequestId']}.json", loadfactor)
 
 
