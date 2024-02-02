@@ -11,10 +11,8 @@
 To run docusaurus site in development watch-mode, run `npm run start` inside `docusaurus-site/`
 
 ## Deployment
-We use GitHub pages to deploy the documentation
-- Navigate to `docusaurus-site/`
-- Run `npm run build`. This command will generate the static website file in `docusaurus-site/build` directory and copy them to `docs`
-- After these changes are merged into the master branch, GitHub will automatically deploy the new version of the website from the `docs` folder
+We use GitHub Actions and pages to deploy the documentation, therefore once the PR has been mereged, it will automatically build and deploy the documentation within `docusaurus-site/` and deploy the `build` folder to the branch `gh-pages` which is the branch that is being used to render the GH
+
 
 **To avoid confusion: `./docs` hosts a built statis website. `./docusaurus-site/docs` hosts markdown files for editing documentation**
 
