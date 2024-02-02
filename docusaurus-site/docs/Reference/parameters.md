@@ -222,10 +222,10 @@ class UploadedGenerationParameters(FlowParameters)
 
 **Arguments**
 
-- `granularityInMins` _int (60 mins)_ - The interval at which the data is collected - default is 60 and most widly supported
-- `installedCapacity` _int_ - The maxium amout of production from the particular wind turbine.
-- `uploadedGeneration` _list&#60;float&#62;_ - A list of floats that dictate the production of a wind turbine at each hour/half hour for a whole year.
-- `uploadGenerationStartTime` _str_ - The time in UTC that the wind speeds upload start from. This must be in the form '2016-07-28T00:00:00.000Z' .
+- `uploadGenerationStartTime` (str): The time in UTC that the uploaded generation starts from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
+- `uploadedGeneration` (List[float]): A list of hourly generation values in MW.
+- `installedCapacity` (int): The installed capacity of the site in MW.
+- `granularityInMins` (int, optional): The granularity of the uploaded generation in minutes. Defaults to 60.
 
 
 ## WeibullParameters Objects

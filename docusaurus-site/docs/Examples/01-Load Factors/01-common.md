@@ -219,7 +219,11 @@ print(load_factors["weatherYearHourly"][:5])
 
 ### Calculate Load Factors from Collected Production Data
 
-Uploading production data from an existing turbine is supported by the Amun SDK. This will return Average windspeed and load factor. See [wind type overview](/docs/Reference/parameters#averagewindspeed) for context, and [parameters documentation](/docs/Reference/parameters#averagewindspeedparameters-objects) to see which values need to be provided.
+Sometimes you will need to provide sizeable data to Amun SDK. In these cases, it is convenient to use one of the utils of Amun SDK: `get_json`. Below is an example for Time Series Generation upload. The process includes an extra step of uploading the generation data to Amun before running valuation.
+
+Make sure that the format of the data is correct and that the generation values have been produced in the location that you pass in valuation parameters. If there is a large discrepancy between the generation values and the long-term reanalysis data in that location Amun API will throw and error.
+
+Because the generation data has already been provided, it is not necessary to specify a turbine.
 
 ```python
 
