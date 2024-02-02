@@ -91,7 +91,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         numberOfTurbines = number_of_turbines
     )
     hourly_load_factor_results = amun_session.run_load_factor_for_parameters(
-        flow_parameters, base_parameters, version=1
+        flow_parameters, base_parameters, version=2
     )
 
     compare_load_factor_from_valuations_and_load_factor(hourly_load_factor_results, hourly_valuation_results)
