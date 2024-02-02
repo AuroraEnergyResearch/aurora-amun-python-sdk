@@ -211,23 +211,6 @@ The speeds upload should be hourly measurements starting at *uploadedWindStartTi
 - `lowHeight` _SpeedAtHeight_ - The height and speed for the low height wind speed to upload.
 - `highHeight` _SpeedAtHeight, optional_ - The height and speed for the high height wind speed to upload. Defaults to None.
 
-
-## UploadedGeneration Objects
-
-```python
-class UploadedGenerationParameters(FlowParameters)
-```
-
-![API Version](https://img.shields.io/badge/Required_API_Version-V2-8A2BE2?style=for-the-badge)
-
-**Arguments**
-
-- `uploadGenerationStartTime` (str): The time in UTC that the uploaded generation starts from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
-- `uploadedGeneration` (List[float]): A list of hourly generation values in MW.
-- `installedCapacity` (int): The installed capacity of the site in MW.
-- `granularityInMins` (int, optional): The granularity of the uploaded generation in minutes. Defaults to 60.
-
-
 ## WeibullParameters Objects
 
 ```python
@@ -241,4 +224,21 @@ The parameters required for a *Weibull* calculation.
 - `weibullShape` _float_ - The long term shape parameter from your wind report
 - `weibullScale` _float_ - The long term scale parameter from your wind report
 - `measurementHeight` _float_ - The height at which the measurements were taken (m)
+
+## UploadedGenerationParameters Objects
+
+```python
+class UploadedGenerationParameters(FlowParameters)
+```
+
+The Parameters required for *UploadedGeneration* calculation.
+
+![API Version](https://img.shields.io/badge/Required_API_Version-V2-8A2BE2?style=for-the-badge)
+
+**Arguments**:
+
+- `uploadGenerationStartTime` _str_ - The time in UTC that the uploaded generation starts from. This must be in the form &#x27;*2016-07-28T00:00:00.000Z*&#x27; .
+- `uploadedGeneration` _List[float]_ - A list of hourly generation values in MW.
+- `installedCapacity` _int_ - The installed capacity of the site in MW.
+- `granularityInMins` _int, optional_ - The granularity of the uploaded generation in minutes. Defaults to 60.
 
