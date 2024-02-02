@@ -1,8 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+const themes = require("prism-react-renderer")
 const fs = require("fs");
 const path = require("path");
 
@@ -101,8 +100,8 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Aurora Energy Research. Built with Docusaurus.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: themes.themes.github,
+        darkTheme: themes.themes.dracula
       },
       colorMode: {
         defaultMode: 'dark',
