@@ -35,7 +35,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
 
     # Valuation specific parameters
     scenarios = amun_session.get_scenarios(region)
-    scenario_name = "Aurora Central 2019 October V1"
+    scenario_name = "Great Britain Jan 23 (Central)"
 
     # Load factor specific parameters
     start_time_utc = "2013-01-01T00:00:00.000Z"
