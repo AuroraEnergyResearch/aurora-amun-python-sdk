@@ -81,14 +81,14 @@ class LoadFactorBaseParameters:
 
     def __init__(
         self,
-        turbineModelId: int,
         latitude: float,
         longitude: float,
         startTimeUTC: str,
         regionCode: str,
         hubHeight: float,
         obstacleHeight: float,
-        numberOfTurbines: int,
+        numberOfTurbines: int = None,
+        turbineModelId: int = None,
         roughnessLength: float = None,
         usePowerCurveSmoothing: bool = None,
         useReanalysisCorrection: bool = False,
