@@ -39,9 +39,6 @@ def test_load_factor_to_valuation(amun_session, snapshot):
 
     # Load factor specific parameters
     start_time_utc = "2013-01-01T00:00:00.000Z"
-    turbine_id = 1  # not relevant but requied by SDK
-    number_of_turbines = 1  # not relevant but requied by SDK
-
 
     # Run a valuation simulation
     valuation_parameters = {
@@ -86,9 +83,6 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         obstacleHeight = obstacle_height,
         usePowerCurveSmoothing = use_power_curve_smoothing,
         useReanalysisCorrection = use_reanalysis_correction,
-        # not relevant
-        turbineModelId = turbine_id,
-        numberOfTurbines = number_of_turbines
     )
     hourly_load_factor_results = amun_session.run_load_factor_for_parameters(
         flow_parameters, base_parameters, version=2

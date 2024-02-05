@@ -261,9 +261,6 @@ base_parameters = LoadFactorBaseParameters(
     obstacleHeight = obstacle_height,
     usePowerCurveSmoothing = use_power_curve_smoothing,
     useReanalysisCorrection = use_reanalysis_correction,
-    ## These parameters are required but irrelevant
-    turbineModelId = 1,
-    numberOfTurbines = 1,
 )
 
 ## Ensure version is set to 2, as Version 1 of the API does not support UplodedGeneration for LoadFactor
