@@ -30,6 +30,8 @@ class WindType(Enum):
     PowerDensity = "PowerDensity"
     #: Upload at least one year of hourly modelled or metered wind speed data to calibrate your wind speed profile. Amun will use this data to derive a statistical relationship between uploaded data and the reanalysis wind speed for the same location and time period uploaded.
     UploadedWind = "UploadedWind"
+    #: At least one year of hourly modelled or measured generation data. This will be used to derive an empirical site-specific power curve which captures the relationship between reanalysis data and observed generation
+    UploadedGeneration = "UploadedGeneration"
     #: Weibull parameters represent the long-term wind speed distribution at the site. Amun will calibrate underlying reanalysis wind speeds distribution to match shape.
     Weibull = "Weibull"
 
@@ -79,14 +81,14 @@ class LoadFactorBaseParameters:
 
     def __init__(
         self,
-        turbineModelId: int,
         latitude: float,
         longitude: float,
         startTimeUTC: str,
         regionCode: str,
         hubHeight: float,
         obstacleHeight: float,
-        numberOfTurbines: int,
+        numberOfTurbines: int = None,
+        turbineModelId: int = None,
         roughnessLength: float = None,
         usePowerCurveSmoothing: bool = None,
         useReanalysisCorrection: bool = False,
@@ -251,3 +253,29 @@ class WeibullParameters(FlowParameters):
         self.weibullShape = weibullShape
         self.weibullScale = weibullScale
         self.measurementHeight = measurementHeight
+
+
+class UploadedGenerationParameters(FlowParameters):
+    """The Parameters required for *UploadedGeneration* calculation.
+
+    ![API Version](https://img.shields.io/badge/Required_API_Version-V2-8A2BE2?style=for-the-badge)
+    
+    Args:
+        uploadGenerationStartTime (str): The time in UTC that the uploaded generation starts from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
+        uploadedGeneration (List[float]): A list of hourly generation values in MW.
+        installedCapacity (int): The installed capacity of the site in MW.
+        granularityInMins (int, optional): The granularity of the uploaded generation in minutes. Defaults to 60.
+    """
+
+    def __init__(
+        self,
+        uploadGenerationStartTime: str,
+        uploadedGeneration: List[float],
+        installedCapacity: int,
+        granularityInMins: int = 60,
+    ):
+        super().__init__(WindType.UploadedGeneration)
+        self.uploadGenerationStartTime = uploadGenerationStartTime
+        self.uploadedGeneration = uploadedGeneration
+        self.installedCapacity = installedCapacity
+        self.granularityInMins = granularityInMins

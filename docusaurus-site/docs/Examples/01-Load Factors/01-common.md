@@ -10,6 +10,8 @@ Amun SDK provides an array of options on how to calculate load factors for a loc
 - [`P50YieldScalingParameters`](/docs/Reference/parameters#p50yieldscalingparameters-objects)
 - [`UploadedWindParameters`](/docs/Reference/parameters#uploadedwindparameters-objects)
 - [`WeibullParameters`](/docs/Reference/parameters#weibullparameters-objects)
+- [`UploadedGeneration`](/docs/Reference/parameters#uploadedgeneration-objects)
+
 
 And to read more information about each wind/power type, refer to the [WindType Objects](/docs/Reference/parameters#windtype-objects) section of SDK Reference.
 
@@ -213,6 +215,59 @@ load_factors = session.run_load_factor_for_parameters(
 # Print out the wind type and first 5 hourly load factors
 print("Example load factors for wind type:", load_factors["parameters"]["windType"])
 print(load_factors["weatherYearHourly"][:5])
+```
+
+### Calculate Load Factors from Collected Production Data
+
+Sometimes you will need to provide sizeable data to Amun SDK. In these cases, it is convenient to use one of the utils of Amun SDK: `get_json`. Below is an example for Time Series Generation upload. The process includes an extra step of uploading the generation data to Amun before running valuation.
+
+Make sure that the format of the data is correct and that the generation values have been produced in the location that you pass in valuation parameters. If there is a large discrepancy between the generation values and the long-term reanalysis data in that location Amun API will throw and error.
+
+Because the generation data has already been provided, it is not necessary to specify a turbine.
+
+```python
+
+from aurora.amun.client.parameters import LoadFactorBaseParameters, UploadedGenerationParameters
+from aurora.amun.client.session import AmunSession
+from aurora.amun.client.utils import get_json, save_to_json
+
+session = AmunSession()
+
+region = "gbr"
+longitude = 7.774
+latitude = 55.019
+hub_height = 120
+obstacle_height = 0
+generation_array = get_json("examples/example_loadfactor_generation_request/generation.json")["generation"]
+generation_start_time_utc = "2015-12-31T23:00:00.000Z"
+start_time_utc = "2013-01-01T00:00:00.000Z"
+installed_capacity = 288
+granularity_in_mins = 60
+use_reanalysis_correction = False
+use_power_curve_smoothing = False
+ 
+flow_parameters = UploadedGenerationParameters(
+    uploadedGeneration = generation_array,
+    uploadGenerationStartTime = generation_start_time_utc,
+    installedCapacity = installed_capacity,
+    granularityInMins = granularity_in_mins
+)
+base_parameters = LoadFactorBaseParameters(
+    latitude = latitude,
+    longitude = longitude,
+    startTimeUTC = start_time_utc,
+    regionCode = region,
+    hubHeight = hub_height,
+    obstacleHeight = obstacle_height,
+    usePowerCurveSmoothing = use_power_curve_smoothing,
+    useReanalysisCorrection = use_reanalysis_correction,
+)
+
+## Ensure version is set to 2, as Version 1 of the API does not support UplodedGeneration for LoadFactor
+loadfactor = session.run_load_factor_for_parameters(flow_parameters, base_parameters, version=2)
+save_to_json(f"loadfactor/loadfactor_{loadfactor['parameters']['loadFactorRequestId']}.json", loadfactor)
+
+
 ```
 
 If you want to know how to run larger number of calculations more effectively, check the [Advanced Features](/docs/Examples/Load%20Factors/advanced) on the next page

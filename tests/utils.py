@@ -44,3 +44,25 @@ def create_load_factor_snapshot(response):
     snapshot["weatherYear summary"] = summarize_hourly_output(weather_year_hourly)
 
     return snapshot
+
+def compare_load_factor_from_valuations_and_load_factor(loadFactorResponse, valuationResponse):
+    """
+    Compares the output of the load factor API and the valuation API
+    """
+    
+    load_hourly = loadFactorResponse['typicalHourly']
+    valuation_hourly = valuationResponse['forecast']['hourly']
+
+    valuation_formatted = {item['dateTime']: item for item in valuation_hourly}
+
+    inconsistencies = {}
+    inconsistencies_wind = {}
+
+    for item in load_hourly:
+        if item['loadFactor'] != valuation_formatted[item['dateTime']]['loadFactor']:
+            inconsistencies[item['dateTime']] = valuation_formatted[item['dateTime']]['loadFactor'] - item['loadFactor']
+        if item['windSpeed'] != valuation_formatted[item['dateTime']]['windSpeed']:
+            inconsistencies_wind[item['dateTime']] = valuation_formatted[item['dateTime']]['windSpeed'] - item['windSpeed']
+
+    assert inconsistencies.__len__() == 0
+    assert inconsistencies_wind.__len__() == 0

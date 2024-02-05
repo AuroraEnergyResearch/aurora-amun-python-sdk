@@ -55,6 +55,10 @@ Power Density is a quantitative measure of wind energy available at a location. 
 
 Upload at least one year of hourly modelled or metered wind speed data to calibrate your wind speed profile. Amun will use this data to derive a statistical relationship between uploaded data and the reanalysis wind speed for the same location and time period uploaded.
 
+#### UploadedGeneration
+
+At least one year of hourly modelled or measured generation data. This will be used to derive an empirical site-specific power curve which captures the relationship between reanalysis data and observed generation
+
 #### Weibull
 
 Weibull parameters represent the long-term wind speed distribution at the site. Amun will calibrate underlying reanalysis wind speeds distribution to match shape.
@@ -220,4 +224,21 @@ The parameters required for a *Weibull* calculation.
 - `weibullShape` _float_ - The long term shape parameter from your wind report
 - `weibullScale` _float_ - The long term scale parameter from your wind report
 - `measurementHeight` _float_ - The height at which the measurements were taken (m)
+
+## UploadedGenerationParameters Objects
+
+```python
+class UploadedGenerationParameters(FlowParameters)
+```
+
+The Parameters required for *UploadedGeneration* calculation.
+
+![API Version](https://img.shields.io/badge/Required_API_Version-V2-8A2BE2?style=for-the-badge)
+
+**Arguments**:
+
+- `uploadGenerationStartTime` _str_ - The time in UTC that the uploaded generation starts from. This must be in the form &#x27;*2016-07-28T00:00:00.000Z*&#x27; .
+- `uploadedGeneration` _List[float]_ - A list of hourly generation values in MW.
+- `installedCapacity` _int_ - The installed capacity of the site in MW.
+- `granularityInMins` _int, optional_ - The granularity of the uploaded generation in minutes. Defaults to 60.
 
