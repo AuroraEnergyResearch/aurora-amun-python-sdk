@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 
 @pytest.fixture
 def amun_session():
-    return AmunSession(token="AMUN_AUTOMATED_TEST_TOKEN")
+    return AmunSession()
 
 
 def test_load_factor_to_valuation(amun_session, snapshot):
