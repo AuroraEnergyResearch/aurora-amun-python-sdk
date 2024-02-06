@@ -30,6 +30,12 @@ const HomePageHeader = () => {
           >
             SDK Reference
           </Link>
+          <Link
+            className="button button--secondary button--lg margin-right--md"
+            to="/docs/changelog"
+          >
+            Changelogs
+          </Link>
         </div>
       </div>
     </header>
