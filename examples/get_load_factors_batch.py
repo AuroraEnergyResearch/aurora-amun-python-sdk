@@ -29,8 +29,7 @@ def main():
         lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=False,
+        usePowerCurveSmoothing=False
     )
 
     list_of_parameters = [

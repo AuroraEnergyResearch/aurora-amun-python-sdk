@@ -49,11 +49,10 @@ base_parameters = LoadFactorBaseParameters(
     lossesWake=0,
     numberOfTurbines=12,
     roughnessLength=0.02,
-    usePowerCurveSmoothing=False,
-    useReanalysisCorrection=True,
+    usePowerCurveSmoothing=False
 )
 
-flow_parameters = BuiltInWindParameters("AuroraWindAtlas")
+flow_parameters = BuiltInWindParameters("AuroraWindAtlas", True)
 
 print("Running load factor calculation. This will take a few minutes...")
 load_factors = session.run_load_factor_for_parameters(
@@ -98,8 +97,7 @@ base_parameters = LoadFactorBaseParameters(
     lossesWake=0,
     numberOfTurbines=12,
     roughnessLength=0.02,
-    usePowerCurveSmoothing=False,
-    useReanalysisCorrection=False,
+    usePowerCurveSmoothing=False
 )
 
 # Provide the path to your file
@@ -156,8 +154,7 @@ base_parameters = LoadFactorBaseParameters(
     lossesWake=0,
     numberOfTurbines=12,
     roughnessLength=0.02,
-    usePowerCurveSmoothing=False,
-    useReanalysisCorrection=False,
+    usePowerCurveSmoothing=False
 )
 
 flow_parameters = P50ScalingParameters(p50GrossProduction=0.6)
@@ -202,8 +199,7 @@ base_parameters = LoadFactorBaseParameters(
     lossesWake=0,
     numberOfTurbines=12,
     roughnessLength=0.02,
-    usePowerCurveSmoothing=False,
-    useReanalysisCorrection=False,
+    usePowerCurveSmoothing=False
 )
 
 flow_parameters = AverageWindSpeedParameters(averageWindSpeed=10, measurementHeight=40)
@@ -238,12 +234,11 @@ longitude = 7.774
 latitude = 55.019
 hub_height = 120
 obstacle_height = 0
-generation_array = get_json("examples/example_loadfactor_generation_request/generation.json")["generation"]
+generation_array = get_json("examples/data/example_loadfactor_generation_request.json")["uploadedGeneration"]
 generation_start_time_utc = "2015-12-31T23:00:00.000Z"
 start_time_utc = "2013-01-01T00:00:00.000Z"
 installed_capacity = 288
 granularity_in_mins = 60
-use_reanalysis_correction = False
 use_power_curve_smoothing = False
  
 flow_parameters = UploadedGenerationParameters(
@@ -259,8 +254,7 @@ base_parameters = LoadFactorBaseParameters(
     regionCode = region,
     hubHeight = hub_height,
     obstacleHeight = obstacle_height,
-    usePowerCurveSmoothing = use_power_curve_smoothing,
-    useReanalysisCorrection = use_reanalysis_correction,
+    usePowerCurveSmoothing = use_power_curve_smoothing
 )
 
 ## Ensure version is set to 2, as Version 1 of the API does not support UplodedGeneration for LoadFactor

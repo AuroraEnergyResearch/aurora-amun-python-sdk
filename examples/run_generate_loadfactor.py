@@ -28,7 +28,6 @@ def main():
     start_time_utc = "2013-01-01T00:00:00.000Z"
     installed_capacity = 288
     granularity_in_mins = 60
-    use_reanalysis_correction = False
     use_power_curve_smoothing = False
  
     flow_parameters = UploadedGenerationParameters(
@@ -44,8 +43,7 @@ def main():
         regionCode = region,
         hubHeight = hub_height,
         obstacleHeight = obstacle_height,
-        usePowerCurveSmoothing = use_power_curve_smoothing,
-        useReanalysisCorrection = use_reanalysis_correction,
+        usePowerCurveSmoothing = use_power_curve_smoothing
     )
 
     ## Ensure version is set to 2, as Version 1 of the API does not support UplodedGeneration for LoadFactor

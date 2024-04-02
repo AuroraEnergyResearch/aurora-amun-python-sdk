@@ -31,7 +31,6 @@ snapshots['test_v1_and_v2_calculations result_v1'] = {
         'startTimeUTC': '2018-01-01T00:00:00.000Z',
         'turbineModelId': 268,
         'usePowerCurveSmoothing': False,
-        'useReanalysisCorrection': False,
         'windType': 'P50Scaling'
     },
     'typical summary': {

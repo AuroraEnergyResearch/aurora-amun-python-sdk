@@ -69,7 +69,6 @@ class LoadFactorBaseParameters:
         - **numberOfTurbines** (int): The number of turbines in the site.
         - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
         - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
-        - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correctionbe used only valid for ERA5, Defaults to False.
         - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
         - **lossesWake** (float, default 0): The percentage to apply for wake loss. (0 <= lossesWake < 1)
         - **lossesAvailability** (float, default 0): Percentage for external losses.  (0 <= lossesAvailability < 1)
@@ -91,7 +90,6 @@ class LoadFactorBaseParameters:
         turbineModelId: int = None,
         roughnessLength: float = None,
         usePowerCurveSmoothing: bool = None,
-        useReanalysisCorrection: bool = False,
         smoothingCoefficient: float = None,
         lossesWake: float = 0.0,
         lossesAvailability: float = 0.0,
@@ -112,7 +110,6 @@ class LoadFactorBaseParameters:
         self.numberOfTurbines = numberOfTurbines
         self.roughnessLength = roughnessLength
         self.usePowerCurveSmoothing = usePowerCurveSmoothing
-        self.useReanalysisCorrection = useReanalysisCorrection
 
         self.lossesWake = lossesWake
         self.lossesAvailability = lossesAvailability
@@ -164,7 +161,7 @@ class BuiltInWindParameters(FlowParameters):
     def __init__(
         self,
         windType: WindType,
-        useReanalysisCorrection: bool = None,
+        useReanalysisCorrection: bool = False,
         reanalysisScaleCorrectionDelta: float = None,
     ):
         super().__init__(windType)

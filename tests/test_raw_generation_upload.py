@@ -30,7 +30,6 @@ def test_load_factor_to_valuation(amun_session, snapshot):
     generation_start_time_utc = "2015-12-31T23:00:00.000Z"
     installed_capacity = 288
     granularity_in_mins = 60
-    use_reanalysis_correction = False
     use_power_curve_smoothing = False
 
     # Valuation specific parameters
@@ -49,7 +48,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
         "hubHeight": hub_height,
         "obstacleHeight": obstacle_height,
-        "useReanalysisCorrection": use_reanalysis_correction,
+        "useReanalysisCorrection": False,
         "usePowerCurveSmoothing": use_power_curve_smoothing,
     }
     valuation = amun_session.create_valuation(valuation_parameters)
@@ -81,8 +80,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         regionCode = region,
         hubHeight = hub_height,
         obstacleHeight = obstacle_height,
-        usePowerCurveSmoothing = use_power_curve_smoothing,
-        useReanalysisCorrection = use_reanalysis_correction,
+        usePowerCurveSmoothing = use_power_curve_smoothing
     )
     hourly_load_factor_results = amun_session.run_load_factor_for_parameters(
         flow_parameters, base_parameters, version=2
