@@ -49,6 +49,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         "scenarioId": get_scenario_by_name(scenarios, scenario_name)["id"],
         "hubHeight": hub_height,
         "obstacleHeight": obstacle_height,
+        "useReanalysisCorrection": False,
         "useReanalysisCorrection": use_reanalysis_correction,
         "usePowerCurveSmoothing": use_power_curve_smoothing,
     }
@@ -81,8 +82,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         regionCode = region,
         hubHeight = hub_height,
         obstacleHeight = obstacle_height,
-        usePowerCurveSmoothing = use_power_curve_smoothing,
-        useReanalysisCorrection = use_reanalysis_correction,
+        usePowerCurveSmoothing = use_power_curve_smoothing
     )
     hourly_load_factor_results = amun_session.run_load_factor_for_parameters(
         flow_parameters, base_parameters, version=2

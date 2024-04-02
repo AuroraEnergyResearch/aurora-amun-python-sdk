@@ -17,7 +17,7 @@ def amun_session():
 def test_era5(amun_session):
     log.info("Testing for era5: expect correct successful response with load factors")
 
-    flow_parameters = BuiltInWindParameters("era5")
+    flow_parameters = BuiltInWindParameters("era5", True)
     base_parameters = LoadFactorBaseParameters(
         turbineModelId=amun_session.get_turbine_by_name("Siemens SWT-4.0-130")["id"],
         latitude=59.59,
@@ -30,8 +30,7 @@ def test_era5(amun_session):
         lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=True,
+        usePowerCurveSmoothing=False
     )
     result = amun_session.run_load_factor_for_parameters(flow_parameters, base_parameters)
     assert isinstance(result, dict)
@@ -44,7 +43,7 @@ def test_era5(amun_session):
 def test_era5_with_bad_base_parameters(amun_session):
     log.info("Testing for era5: expect error due to unsupported region")
 
-    flow_parameters = BuiltInWindParameters("era5")
+    flow_parameters = BuiltInWindParameters("era5", True)
     base_parameters = LoadFactorBaseParameters(
         turbineModelId=amun_session.get_turbine_by_name("Siemens SWT-4.0-130")["id"],
         latitude=159.59,
@@ -57,8 +56,7 @@ def test_era5_with_bad_base_parameters(amun_session):
         lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=True,
+        usePowerCurveSmoothing=False
     )
 
     with pytest.raises(Exception) as exception:
@@ -90,8 +88,7 @@ def test_average_wind_speed_with_bad_flow_parameters(amun_session):
         lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=True,
+        usePowerCurveSmoothing=False
     )
 
     # An exception is raised for API v1
@@ -129,8 +126,7 @@ def test_bulk_calculation(amun_session):
         lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=False,
+        usePowerCurveSmoothing=False
     )
 
     results = amun_session.run_load_factors_for_parameters_batch(
@@ -160,8 +156,7 @@ def test_v1_and_v2_calculations(amun_session, snapshot):
         lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=False,
+        usePowerCurveSmoothing=False
     )
 
     # The only thing that changes between usage of v1 and v2 is the version number
@@ -194,8 +189,7 @@ def test_unsupported_version(amun_session):
         lossesWake=0,
         numberOfTurbines=12,
         roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=False,
+        usePowerCurveSmoothing=False
     )
 
     with pytest.raises(Exception) as exception:
