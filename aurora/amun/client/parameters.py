@@ -153,7 +153,7 @@ class BuiltInWindParameters(FlowParameters):
     Args:
         windType (WindType): AuroraWindAtlas, Era5, Merra2, or NEWA
         useReanalysisCorrection (bool, optional): Should Regional Reanalysis Correction be enabled.
-            If true then a location specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
+            If true then a location specific *reanalysisScaleCorrectionDelta* is used. Defaults to False.
         reanalysisScaleCorrectionDelta (float, optional): Override the location specific
             *reanalysisScaleCorrectionDelta*. This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
     """

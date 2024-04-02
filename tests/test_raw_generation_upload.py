@@ -30,6 +30,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
     generation_start_time_utc = "2015-12-31T23:00:00.000Z"
     installed_capacity = 288
     granularity_in_mins = 60
+    use_reanalysis_correction = False
     use_power_curve_smoothing = False
 
     # Valuation specific parameters
@@ -49,6 +50,7 @@ def test_load_factor_to_valuation(amun_session, snapshot):
         "hubHeight": hub_height,
         "obstacleHeight": obstacle_height,
         "useReanalysisCorrection": False,
+        "useReanalysisCorrection": use_reanalysis_correction,
         "usePowerCurveSmoothing": use_power_curve_smoothing,
     }
     valuation = amun_session.create_valuation(valuation_parameters)
