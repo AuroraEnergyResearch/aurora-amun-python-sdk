@@ -26,10 +26,9 @@ snapshots['test_v1_and_v2_calculations result_v1'] = {
         'obstacleHeight': 0,
         'p50GrossProduction': 0.4,
         'regionCode': 'aus_qld',
-        'roughnessLength': 0.02,
         'smoothingCoefficient': None,
         'startTimeUTC': '2018-01-01T00:00:00.000Z',
-        'turbineModelId': 268,
+        'turbineModelId': 280,
         'usePowerCurveSmoothing': False,
         'windType': 'P50Scaling'
     },

@@ -99,7 +99,6 @@ Parameters for all wind types.
   - **hubHeight** (float): Given in meters (m).
   - **obstacleHeight** (float): Given in meters (m).
   - **numberOfTurbines** (int): The number of turbines in the site.
-  - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
   - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
   - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
   - **lossesWake** (float, default 0): The percentage to apply for wake loss. (0 &lt;= lossesWake &lt; 1)

@@ -29,7 +29,6 @@ def test_era5(amun_session):
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,
-        roughnessLength=0.02,
         usePowerCurveSmoothing=False
     )
     result = amun_session.run_load_factor_for_parameters(flow_parameters, base_parameters)
@@ -55,7 +54,6 @@ def test_era5_with_bad_base_parameters(amun_session):
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,
-        roughnessLength=0.02,
         usePowerCurveSmoothing=False
     )
 
@@ -87,7 +85,6 @@ def test_average_wind_speed_with_bad_flow_parameters(amun_session):
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,
-        roughnessLength=0.02,
         usePowerCurveSmoothing=False
     )
 
@@ -125,7 +122,6 @@ def test_bulk_calculation(amun_session):
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,
-        roughnessLength=0.02,
         usePowerCurveSmoothing=False
     )
 
@@ -155,7 +151,6 @@ def test_v1_and_v2_calculations(amun_session, snapshot):
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,
-        roughnessLength=0.02,
         usePowerCurveSmoothing=False
     )
 
@@ -188,7 +183,6 @@ def test_unsupported_version(amun_session):
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,
-        roughnessLength=0.02,
         usePowerCurveSmoothing=False
     )
 

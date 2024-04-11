@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="aurora-amun-sdk",
-    version="1.0.4",
+    version="1.0.5",
     description="",
     url="https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk",
     author="Aurora Development team",
