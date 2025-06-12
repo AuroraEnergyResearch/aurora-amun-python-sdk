@@ -35,8 +35,6 @@ valuation_parameters = {
     "turbineModelId": turbine["id"],
     "numberOfTurbines": 10,
     "hubHeight": 80,
-    "obstacleHeight": 0,
-    "roughnessLength": 0.001,
     "useReanalysisCorrection": False,
     "usePowerCurveSmoothing": True,
     # Optional
@@ -82,8 +80,6 @@ valuation_parameters = {
     "turbineModelId": turbine["id"],
     "numberOfTurbines": 10,
     "hubHeight": 80,
-    "obstacleHeight": 0,
-    "roughnessLength": 0.001,
     "useReanalysisCorrection": False,
     "usePowerCurveSmoothing": True
 }
@@ -121,8 +117,6 @@ valuation_parameters = {
     "turbineModelId": turbine["id"],
     "numberOfTurbines": 10,
     "hubHeight": 80,
-    "obstacleHeight": 0,
-    "roughnessLength": 0.001,
     "useReanalysisCorrection": False,
     "usePowerCurveSmoothing": True
 }
@@ -162,7 +156,6 @@ valuation_parameters = {
     "latitude": 52.93,
     "scenarioId": scenario["id"],
     "hubHeight": 59,
-    "obstacleHeight": 0,
     "useReanalysisCorrection": False,
     "usePowerCurveSmoothing": False,
 }
