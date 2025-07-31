@@ -67,7 +67,6 @@ class LoadFactorBaseParameters:
         - **hubHeight** (float): Given in meters (m).
         - **obstacleHeight** (float): Given in meters (m). Default to 0.
         - **numberOfTurbines** (int): The number of turbines in the site.
-        - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
         - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
         - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correction be used only valid for ERA5, Defaults to False.
         - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
@@ -89,9 +88,7 @@ class LoadFactorBaseParameters:
         obstacleHeight: float = 0.0,
         numberOfTurbines: int = None,
         turbineModelId: int = None,
-        roughnessLength: float = None,
         usePowerCurveSmoothing: bool = None,
-        useReanalysisCorrection: bool = False,
         smoothingCoefficient: float = None,
         lossesWake: float = 0.0,
         lossesAvailability: float = 0.0,
@@ -110,9 +107,7 @@ class LoadFactorBaseParameters:
         self.obstacleHeight = obstacleHeight
 
         self.numberOfTurbines = numberOfTurbines
-        self.roughnessLength = roughnessLength
         self.usePowerCurveSmoothing = usePowerCurveSmoothing
-        self.useReanalysisCorrection = useReanalysisCorrection
 
         self.lossesWake = lossesWake
         self.lossesAvailability = lossesAvailability
@@ -156,7 +151,7 @@ class BuiltInWindParameters(FlowParameters):
     Args:
         windType (WindType): AuroraWindAtlas, Era5, Merra2, or NEWA
         useReanalysisCorrection (bool, optional): Should Regional Reanalysis Correction be enabled.
-            If true then a location specific *reanalysisScaleCorrectionDelta* is used. Defaults to None.
+            If true then a location specific *reanalysisScaleCorrectionDelta* is used. Defaults to False.
         reanalysisScaleCorrectionDelta (float, optional): Override the location specific
             *reanalysisScaleCorrectionDelta*. This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
     """
@@ -164,7 +159,7 @@ class BuiltInWindParameters(FlowParameters):
     def __init__(
         self,
         windType: WindType,
-        useReanalysisCorrection: bool = None,
+        useReanalysisCorrection: bool = False,
         reanalysisScaleCorrectionDelta: float = None,
     ):
         super().__init__(windType)

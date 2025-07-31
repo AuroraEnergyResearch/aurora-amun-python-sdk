@@ -59,7 +59,6 @@ def main():
         "regionCode": "GBR",
         "hubHeight": 90,
         "numberOfTurbines": 12,
-        "roughnessLength": 0.02,
         "usePowerCurveSmoothing": False,
         # Optional
         # "lossesWake": 0.2,

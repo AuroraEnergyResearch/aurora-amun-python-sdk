@@ -34,8 +34,7 @@ base_parameters = LoadFactorBaseParameters(
     lossesAvailability=0.1,
     lossesWake=0,
     numberOfTurbines=12,
-    usePowerCurveSmoothing=False,
-    useReanalysisCorrection=False,
+    usePowerCurveSmoothing=False
 )
 
 list_of_parameters = [

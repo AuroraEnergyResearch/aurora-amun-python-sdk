@@ -89,12 +89,10 @@ def main():
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,
-        roughnessLength=0.02,
-        usePowerCurveSmoothing=False,
-        useReanalysisCorrection=True,
+        usePowerCurveSmoothing=False
     )
 
-    run_request_and_save(session, BuiltInWindParameters("era5"), base_parameters)
+    run_request_and_save(session, BuiltInWindParameters("era5", True), base_parameters)
 
     run_request_and_save(
         session,
