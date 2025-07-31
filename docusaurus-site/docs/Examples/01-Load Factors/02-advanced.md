@@ -31,11 +31,9 @@ base_parameters = LoadFactorBaseParameters(
     startTimeUTC="2018-01-01T00:00:00.000Z",
     regionCode="GBR",
     hubHeight=90,
-    obstacleHeight=0,
     lossesAvailability=0.1,
     lossesWake=0,
     numberOfTurbines=12,
-    roughnessLength=0.02,
     usePowerCurveSmoothing=False,
     useReanalysisCorrection=False,
 )
@@ -90,11 +88,9 @@ base_parameters = LoadFactorBaseParameters(
     startTimeUTC="2018-01-01T00:00:00.000Z",
     regionCode="GBR",
     hubHeight=90,
-    obstacleHeight=0,
     lossesAvailability=0.1,
     lossesWake=0,
     numberOfTurbines=12,
-    roughnessLength=0.02,
     usePowerCurveSmoothing=False,
     useReanalysisCorrection=False,
 )
@@ -102,7 +98,7 @@ base_parameters = LoadFactorBaseParameters(
 # Wind speeds from 1.0 to 15.0 m/s in 0.1 m/s increments
 variants = []
 for speedTimes10 in range(10, 150, 1):
-    speed = speedTimes10 / 10   # So that we could interate more granularly
+    speed = speedTimes10 / 10   # So that we could iterate more granularly
     variants.append(AverageWindSpeedParameters(measurementHeight=90, averageWindSpeed=speed))
 
 print("Running load factor calculations. This will take a few minutes...")

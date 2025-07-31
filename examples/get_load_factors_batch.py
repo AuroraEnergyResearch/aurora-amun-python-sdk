@@ -24,7 +24,6 @@ def main():
         startTimeUTC="2018-01-01T00:00:00.000Z",
         regionCode="GBR",
         hubHeight=90,
-        obstacleHeight=0,
         lossesAvailability=0.1,
         lossesWake=0,
         numberOfTurbines=12,

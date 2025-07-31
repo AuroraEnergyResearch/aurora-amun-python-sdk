@@ -62,14 +62,14 @@ class LoadFactorBaseParameters:
         - **turbineModelId** (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
         - **latitude** (float): The latitude of the point (-90 to 90).
         - **longitude** (float): The latitude of the point (-180 to 180).
-        - **startTimeUTC** (str): The time in UTC that the calcution should start from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
+        - **startTimeUTC** (str): The time in UTC that the calculation should start from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
         - **regionCode** (str): The code for the region used to set region specific parameters.
         - **hubHeight** (float): Given in meters (m).
-        - **obstacleHeight** (float): Given in meters (m).
+        - **obstacleHeight** (float): Given in meters (m). Default to 0.
         - **numberOfTurbines** (int): The number of turbines in the site.
         - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data. Defaults to None.
         - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
-        - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correctionbe used only valid for ERA5, Defaults to False.
+        - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correction be used only valid for ERA5, Defaults to False.
         - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
         - **lossesWake** (float, default 0): The percentage to apply for wake loss. (0 <= lossesWake < 1)
         - **lossesAvailability** (float, default 0): Percentage for external losses.  (0 <= lossesAvailability < 1)
@@ -86,7 +86,7 @@ class LoadFactorBaseParameters:
         startTimeUTC: str,
         regionCode: str,
         hubHeight: float,
-        obstacleHeight: float,
+        obstacleHeight: float = 0.0,
         numberOfTurbines: int = None,
         turbineModelId: int = None,
         roughnessLength: float = None,

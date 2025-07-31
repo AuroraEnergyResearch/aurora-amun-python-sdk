@@ -292,7 +292,7 @@ class AmunSession(APISession):
             scenario_name (str): The name of the scenario to get. Please ensure the name is spelled correctly.
 
         Returns:
-            An object with infomation about the scenario. If not found, raises an error.
+            An object with information about the scenario. If not found, raises an error.
 
         **Response example**:
 
@@ -397,7 +397,7 @@ class AmunSession(APISession):
 
         For a finished calculation:
         - `status` - "Complete"
-        - `exiryTime` - Date and time of when the results will be deleted,
+        - `expiryTime` - Date and time of when the results will be deleted,
         - `results` - load factors
 
         For errored calculation:
@@ -427,7 +427,7 @@ class AmunSession(APISession):
         For errored calculations:
         - `error` - a string explaining the error  
         
-        For calcualtions that failed to be submitted:
+        For calculations that failed to be submitted:
         - `None`
         """
         
@@ -572,7 +572,7 @@ class AmunSession(APISession):
             - **weatherYearHourly** - hourly load factors for the weather year 
         """
 
-        # Create a request by combining the paramters
+        # Create a request by combining the parameters
         request = {}
         request.update(vars(flow_parameters))
         request.update(vars(base_parameters))

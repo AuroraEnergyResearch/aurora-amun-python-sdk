@@ -48,7 +48,6 @@ base_parameters = LoadFactorBaseParameters(
     lossesAvailability=0.1,
     lossesWake=0,
     numberOfTurbines=12,
-    roughnessLength=0.02,
     usePowerCurveSmoothing=False,
     useReanalysisCorrection=True,
 )
@@ -93,11 +92,9 @@ base_parameters = LoadFactorBaseParameters(
     startTimeUTC="2017-01-01T00:00:00.000Z",
     regionCode="GBR",
     hubHeight=90,
-    obstacleHeight=0,
     lossesAvailability=0.1,
     lossesWake=0,
     numberOfTurbines=12,
-    roughnessLength=0.02,
     usePowerCurveSmoothing=False,
     useReanalysisCorrection=False,
 )
@@ -151,11 +148,9 @@ base_parameters = LoadFactorBaseParameters(
     startTimeUTC="2018-01-01T00:00:00.000Z",
     regionCode="GBR",
     hubHeight=90,
-    obstacleHeight=0,
     lossesAvailability=0.1,
     lossesWake=0,
     numberOfTurbines=12,
-    roughnessLength=0.02,
     usePowerCurveSmoothing=False,
     useReanalysisCorrection=False,
 )
@@ -197,11 +192,9 @@ base_parameters = LoadFactorBaseParameters(
     startTimeUTC="2018-01-01T00:00:00.000Z",
     regionCode="GBR",
     hubHeight=90,
-    obstacleHeight=0,
     lossesAvailability=0.1,
     lossesWake=0,
     numberOfTurbines=12,
-    roughnessLength=0.02,
     usePowerCurveSmoothing=False,
     useReanalysisCorrection=False,
 )
@@ -237,7 +230,6 @@ region = "gbr"
 longitude = 7.774
 latitude = 55.019
 hub_height = 120
-obstacle_height = 0
 generation_array = get_json("examples/example_loadfactor_generation_request/generation.json")["generation"]
 generation_start_time_utc = "2015-12-31T23:00:00.000Z"
 start_time_utc = "2013-01-01T00:00:00.000Z"
@@ -258,12 +250,11 @@ base_parameters = LoadFactorBaseParameters(
     startTimeUTC = start_time_utc,
     regionCode = region,
     hubHeight = hub_height,
-    obstacleHeight = obstacle_height,
     usePowerCurveSmoothing = use_power_curve_smoothing,
     useReanalysisCorrection = use_reanalysis_correction,
 )
 
-## Ensure version is set to 2, as Version 1 of the API does not support UplodedGeneration for LoadFactor
+## Ensure version is set to 2, as Version 1 of the API does not support UploadedGeneration for LoadFactor
 loadfactor = session.run_load_factor_for_parameters(flow_parameters, base_parameters, version=2)
 save_to_json(f"loadfactor/loadfactor_{loadfactor['parameters']['loadFactorRequestId']}.json", loadfactor)
 

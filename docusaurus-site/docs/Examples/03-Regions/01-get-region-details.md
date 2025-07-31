@@ -38,7 +38,7 @@ print(regions[1])
 
 Output:
 
-```powerwhell
+```powershell
 2 regions found
 RegionDetail->{'pmfCode': 'fra', 'defaultWind': 'Era5', 'availableDatasets': ['Era5', 'NEWA', 'AuroraWindAtlas'], 'era5CorrectionEnabled': False, 'powerCurveSmoothingEnabled': False}
 RegionDetail->{'pmfCode': 'gbr', 'defaultWind': 'Era5', 'availableDatasets': ['Era5', 'NEWA', 'AuroraWindAtlas'], 'era5CorrectionEnabled': True, 'powerCurveSmoothingEnabled': True}
@@ -64,7 +64,7 @@ print(f"Number of scenarios for the region {region_code}: {len(scenarios)}")
 
 Output will look something like this:
 
-```powerhshell
+```powershell
 2 regions found
 RegionDetail->{'pmfCode': 'fra', 'defaultWind': 'Era5', 'availableDatasets': ['Era5', 'NEWA', 'AuroraWindAtlas'], 'era5CorrectionEnabled': False, 'powerCurveSmoothingEnabled': False}
 RegionDetail->{'pmfCode': 'gbr', 'defaultWind': 'Era5', 'availableDatasets': ['Era5', 'NEWA', 'AuroraWindAtlas'], 'era5CorrectionEnabled': True, 'powerCurveSmoothingEnabled': True}    
