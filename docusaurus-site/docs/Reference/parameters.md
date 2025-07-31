@@ -100,6 +100,7 @@ Parameters for all wind types.
   - **obstacleHeight** (float): Given in meters (m). Defaults to 0.
   - **numberOfTurbines** (int): The number of turbines in the site.
   - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
+  - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correction be used only valid for ERA5, Defaults to False.
   - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
   - **lossesWake** (float, default 0): The percentage to apply for wake loss. (0 &lt;= lossesWake &lt; 1)
   - **lossesAvailability** (float, default 0): Percentage for external losses.  (0 &lt;= lossesAvailability &lt; 1)

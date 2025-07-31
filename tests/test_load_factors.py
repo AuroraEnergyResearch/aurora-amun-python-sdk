@@ -45,7 +45,7 @@ def test_era5_with_bad_base_parameters(amun_session):
     flow_parameters = BuiltInWindParameters("era5", True)
     base_parameters = LoadFactorBaseParameters(
         turbineModelId=amun_session.get_turbine_by_name("Siemens SWT-4.0-130")["id"],
-        latitude=159.59,
+        latitude=84,
         longitude=0,
         startTimeUTC="2018-01-01T00:00:00.000Z",
         regionCode="GBR",

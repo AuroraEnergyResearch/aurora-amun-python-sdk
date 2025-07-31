@@ -65,7 +65,7 @@ class LoadFactorBaseParameters:
         - **startTimeUTC** (str): The time in UTC that the calculation should start from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
         - **regionCode** (str): The code for the region used to set region specific parameters.
         - **hubHeight** (float): Given in meters (m).
-        - **obstacleHeight** (float): Given in meters (m). Default to 0.
+        - **obstacleHeight** (float): Given in meters (m). Defaults to 0.
         - **numberOfTurbines** (int): The number of turbines in the site.
         - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
         - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correction be used only valid for ERA5, Defaults to False.
@@ -121,7 +121,7 @@ class FlowParameters:
     """Base class for a flow. Internal Use only.
 
     Args:
-        windType (WindType): All flows must define a unique windtype as defined by the Amun http API.
+        windType (WindType): All flows must provide a unique wind type as defined by the Amun http API.
     """
 
     def __init__(self, windType: WindType):
@@ -208,12 +208,12 @@ class PowerDensityParameters(FlowParameters):
 
 
 class UploadedWindParameters(FlowParameters):
-    """The parameters required to run a custom (uploaded) load factor calculation.  If *highHeight*
+    """The parameters required to run a custom (uploaded) load factor calculation. If *highHeight*
     is specified it must be the same length as the *lowHeight* and be measured at a greater height.
     The speeds upload should be hourly measurements starting at *uploadedWindStartTime* and span at least 1 year.
 
     Args:
-        uploadedWindStartTime (str): The time in UTC that the wind speeds upload start from. This must be in the form '*2016-07-28T00:00:00.000Z*' .
+        uploadedWindStartTime (str): The time in UTC that the wind speeds upload start from. This must be in the form '*2016-07-28T00:00:00.000Z*'.
         lowHeight (SpeedAtHeight): The height and speed for the low height wind speed to upload.
         highHeight (SpeedAtHeight, optional): The height and speed for the high height wind speed to upload. Defaults to None.
     """

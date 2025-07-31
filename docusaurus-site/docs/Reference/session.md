@@ -175,7 +175,7 @@ Get a scenario by name
 
 **Returns**:
 
-  An object with infomation about the scenario. If not found, raises an error.
+  An object with information about the scenario. If not found, raises an error.
   
   **Response example**:
   
@@ -210,6 +210,7 @@ Expects a dictionary of with these fields:
 - **turbineModelId** (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
 - **numberOfTurbines** (int): The number of turbines in the site.
 - **hubHeight** (float): Given in meters (m).
+- **obstacleHeight** (float): Given in meters (m). Defaults to 0.
 - **useReanalysisCorrection** - if True, will use regional reanalysis correction if it is available for the location
 - **usePowerCurveSmoothing** - if True, will use regional reanalysis correction if it is available for the location
 - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
@@ -269,7 +270,7 @@ For calculation that is still running:
 
 For a finished calculation:
 - `status` - &quot;Complete&quot;
-- `exiryTime` - Date and time of when the results will be deleted,
+- `expiryTime` - Date and time of when the results will be deleted,
 - `results` - load factors
 
 For errored calculation:
@@ -299,7 +300,7 @@ For finished calculations:
 For errored calculations:
 - `error` - a string explaining the error  
 
-For calcualtions that failed to be submitted:
+For calculations that failed to be submitted:
 - `None`
 
 #### run\_load\_factors\_in\_batch
