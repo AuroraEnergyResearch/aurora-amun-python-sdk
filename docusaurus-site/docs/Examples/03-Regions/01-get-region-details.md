@@ -52,14 +52,14 @@ from aurora.amun.client.session import AmunSession
 session = AmunSession()
 regions = session.get_region_details(latitude=50.757310, longitude=1.225665)
 
-# Just to check how many regions are avaiable at this location
+# Just to check how many regions are available at this location
 print(len(regions), "regions found")
 for region in regions:
     print(region)
 
+# You can extract available scenarios for a region of interest
 region_code = regions[0].pmfCode
 scenarios = session.get_scenarios(region_code)
-print(f"Number of scenarios for the region {region_code}: {len(scenarios)}")
 ```
 
 Output will look something like this:
@@ -67,6 +67,5 @@ Output will look something like this:
 ```powershell
 2 regions found
 RegionDetail->{'pmfCode': 'fra', 'defaultWind': 'Era5', 'availableDatasets': ['Era5', 'NEWA', 'AuroraWindAtlas'], 'era5CorrectionEnabled': False, 'powerCurveSmoothingEnabled': False}
-RegionDetail->{'pmfCode': 'gbr', 'defaultWind': 'Era5', 'availableDatasets': ['Era5', 'NEWA', 'AuroraWindAtlas'], 'era5CorrectionEnabled': True, 'powerCurveSmoothingEnabled': True}    
-Number of scenarios for the region fra: 86
+RegionDetail->{'pmfCode': 'gbr', 'defaultWind': 'Era5', 'availableDatasets': ['Era5', 'NEWA', 'AuroraWindAtlas'], 'era5CorrectionEnabled': True, 'powerCurveSmoothingEnabled': True}
 ```

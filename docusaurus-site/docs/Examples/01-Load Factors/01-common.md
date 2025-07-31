@@ -23,7 +23,7 @@ It will take around 2-15 minutes to complete 1 load factors calculation. There m
 ### Calculate Load Factors with Amun Wind Atlas
 To use `AmunSession.run_load_factor_for_parameters`, select an available turbine that is available in Amun and set base parameters. See [SDK Reference](/docs/Reference/parameters#loadfactorbaseparameters-objects) for explanations on what each parameter means.  
 
-Built-in dataset is a good choice of wind type to use if no site-specific data is available. To use a built-in datase, use [`aurora.amun.client.parameters.BuiltInWindParameters(WindType)`](/docs/Reference/parameters#builtinwindparameters-objects). You can pass types like `AuroraWindAtlas`, `Era5`, `Merra2`, or `NEWA`. But check whether the wind type is supported by the [region](/docs/Examples/Regions/get-region-details).  
+Built-in dataset is a good choice of wind type to use if no site-specific data is available. To use a built-in dataset, use [`aurora.amun.client.parameters.BuiltInWindParameters(WindType)`](/docs/Reference/parameters#builtinwindparameters-objects). You can pass types like `AuroraWindAtlas`, `Era5`, `Merra2`, or `NEWA`. But check whether the wind type is supported by the [region](/docs/Examples/Regions/get-region-details).  
 
 In our case, the region support Amun Wind Atlas, which is the most accurate version of built-in wind data available in Amun
 
@@ -159,13 +159,17 @@ load_factors = session.run_load_factor_for_parameters(
 )
 
 timestamp = datetime.now().isoformat().replace(':','_')
+# If using `save_to_json`, a JSON file will be saved
+# to the ./out directory, relative to where you run
+# the script from.
+# Directory will be created if it does not exist
 save_to_json(
     f"load_factors_{timestamp}_{flow_parameters.windType}.json",
     load_factors
 )
 ```
 
-You will find the output in the new directoty called 'out' (will be created in the same folder where you run the script from). And the output file's name will look like this: `load_factors_2023-10-06T10_01_09.965295_WindType.P50Scaling.json`.
+You will find the output in the new directory called 'out' (will be created in the same folder where you run the script from). And the output file's name will look like this: `load_factors_2023-10-06T10_01_09.965295_WindType.P50Scaling.json`.
 
 ### Calculate Load Factors from Average Wind Speed
 Average Wind Speed is another type of calibration Amun SDK has available. See [wind type overview](/docs/Reference/parameters#averagewindspeed) for context, and [parameters documentation](/docs/Reference/parameters#averagewindspeedparameters-objects) to see which values need to be provided
@@ -214,7 +218,6 @@ Make sure that the format of the data is correct and that the generation values 
 Because the generation data has already been provided, it is not necessary to specify a turbine.
 
 ```python
-
 from aurora.amun.client.parameters import LoadFactorBaseParameters, UploadedGenerationParameters
 from aurora.amun.client.session import AmunSession
 from aurora.amun.client.utils import get_json, save_to_json
@@ -250,8 +253,6 @@ base_parameters = LoadFactorBaseParameters(
 ## Ensure version is set to 2, as Version 1 of the API does not support UploadedGeneration for LoadFactor
 loadfactor = session.run_load_factor_for_parameters(flow_parameters, base_parameters, version=2)
 save_to_json(f"loadfactor/loadfactor_{loadfactor['parameters']['loadFactorRequestId']}.json", loadfactor)
-
-
 ```
 
 If you want to know how to run larger number of calculations more effectively, check the [Advanced Features](/docs/Examples/Load%20Factors/advanced) on the next page

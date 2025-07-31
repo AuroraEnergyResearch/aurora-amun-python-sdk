@@ -332,6 +332,7 @@ class AmunSession(APISession):
         - **turbineModelId** (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
         - **numberOfTurbines** (int): The number of turbines in the site.
         - **hubHeight** (float): Given in meters (m).
+        - **obstacleHeight** (float): Given in meters (m). Defaults to 0.
         - **useReanalysisCorrection** - if True, will use regional reanalysis correction if it is available for the location
         - **usePowerCurveSmoothing** - if True, will use regional reanalysis correction if it is available for the location
         - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
@@ -350,6 +351,11 @@ class AmunSession(APISession):
             A dictionary with the valuation information. Additionally provides a unique valuation id that should be used to run it and get results. Please see `AmunSession.get_valuation_results` for more details.
         """
         url = f"{self.base_url}/valuations"
+
+        # Set sensible defaults if values not provided
+        if valuation and "obstacleHeight" not in valuation:
+            valuation["obstacleHeight"] = 0
+
         return self._put_request(url, valuation)
 
 
