@@ -4,7 +4,14 @@ title: Changelog
 description: Whats new in the SDK
 ---
 
-## Version 1.0.5 ![Latest](https://img.shields.io/badge/-Latest-ffcc00?style=for-the-badge)
+## Version 1.0.6 ![Latest](https://img.shields.io/badge/-Latest-ffcc00?style=for-the-badge)
+
+_Date: 31-07-2025_
+
+- Remove unused `obstacleHeight` parameter from load factor and valuation input validation.
+- Minor documentation improvements.
+
+## Version 1.0.5 (https://img.shields.io/badge/-Latest-ffcc00?style=for-the-badge)
 
 _Date: 11-04-2024_
 

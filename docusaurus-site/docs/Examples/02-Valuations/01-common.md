@@ -94,7 +94,7 @@ save_to_json(f"valuations/valuation_{valuation['id']}_out.json", results)
 ```
 
 ### Run P50 load factor + Delete Valuation
-AmunSession also allows you to detele a valuation with [`AmunSession.delete_valuation`](/docs/Reference/session#delete_valuation). This could be useful for cleaning up after experiments and when the valuation is unlikely to be used later. For example, you can create a valution with P50 load factor estimation and remove the valuation after saving the results in JSON.
+AmunSession also allows you to delete a valuation with [`AmunSession.delete_valuation`](/docs/Reference/session#delete_valuation). This could be useful for cleaning up after experiments and when the valuation is unlikely to be used later. For example, you can create a valuation with P50 load factor estimation and remove the valuation after saving the results in JSON.
 
 ```python
 from aurora.amun.client.session import AmunSession

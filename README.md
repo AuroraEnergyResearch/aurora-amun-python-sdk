@@ -1,8 +1,10 @@
 # Aurora Amun SDK
 
-This is under development.
+A Python SDK for interacting with Amun.
 
-## Installing
+## Installation
+
+Minimum Python version required is 3.8.
 
 ```powershell
 pip install git+https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk

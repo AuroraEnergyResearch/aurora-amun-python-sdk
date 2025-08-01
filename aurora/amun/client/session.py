@@ -292,7 +292,7 @@ class AmunSession(APISession):
             scenario_name (str): The name of the scenario to get. Please ensure the name is spelled correctly.
 
         Returns:
-            An object with infomation about the scenario. If not found, raises an error.
+            An object with information about the scenario. If not found, raises an error.
 
         **Response example**:
 
@@ -332,6 +332,7 @@ class AmunSession(APISession):
         - **turbineModelId** (int): The Id of the Turbine to use in the calculation as returned from `.AmunSession.get_turbines`.
         - **numberOfTurbines** (int): The number of turbines in the site.
         - **hubHeight** (float): Given in meters (m).
+        - **obstacleHeight** (float): Given in meters (m). Defaults to 0.
         - **useReanalysisCorrection** - if True, will use regional reanalysis correction if it is available for the location
         - **usePowerCurveSmoothing** - if True, will use regional reanalysis correction if it is available for the location
         - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
@@ -350,6 +351,11 @@ class AmunSession(APISession):
             A dictionary with the valuation information. Additionally provides a unique valuation id that should be used to run it and get results. Please see `AmunSession.get_valuation_results` for more details.
         """
         url = f"{self.base_url}/valuations"
+
+        # Set sensible defaults if values not provided
+        if valuation and "obstacleHeight" not in valuation:
+            valuation["obstacleHeight"] = 0
+
         return self._put_request(url, valuation)
 
 
@@ -397,7 +403,7 @@ class AmunSession(APISession):
 
         For a finished calculation:
         - `status` - "Complete"
-        - `exiryTime` - Date and time of when the results will be deleted,
+        - `expiryTime` - Date and time of when the results will be deleted,
         - `results` - load factors
 
         For errored calculation:
@@ -427,7 +433,7 @@ class AmunSession(APISession):
         For errored calculations:
         - `error` - a string explaining the error  
         
-        For calcualtions that failed to be submitted:
+        For calculations that failed to be submitted:
         - `None`
         """
         
@@ -572,7 +578,7 @@ class AmunSession(APISession):
             - **weatherYearHourly** - hourly load factors for the weather year 
         """
 
-        # Create a request by combining the paramters
+        # Create a request by combining the parameters
         request = {}
         request.update(vars(flow_parameters))
         request.update(vars(base_parameters))

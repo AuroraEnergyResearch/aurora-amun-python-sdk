@@ -7,7 +7,7 @@ description: Getting the SDK installed and authenticated
 
 # Installation
 
-1. Install the package from the git repository
+1. Install the package from the git repository. Python 3.8 or higher is required.
 
 ```bash
 pip install git+https://github.com/AuroraEnergyResearch/aurora-amun-python-sdk

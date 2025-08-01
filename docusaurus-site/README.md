@@ -6,7 +6,7 @@
 
 - `npm run start` -> Start the application
 - `npm run build` -> Builds the app locally (not required)
-- `npm run serve` -> Serves the built applcation
+- `npm run serve` -> Serves the built application
 
 
 ## Deployment
