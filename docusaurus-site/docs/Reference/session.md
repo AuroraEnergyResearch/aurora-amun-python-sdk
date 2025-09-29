@@ -211,8 +211,12 @@ Expects a dictionary of with these fields:
 - **numberOfTurbines** (int): The number of turbines in the site.
 - **hubHeight** (float): Given in meters (m).
 - **obstacleHeight** (float): Given in meters (m). Defaults to 0.
-- **useReanalysisCorrection** - if True, will use regional reanalysis correction if it is available for the location
-- **usePowerCurveSmoothing** - if True, will use regional reanalysis correction if it is available for the location
+- **useReanalysisCorrection** (bool, optional): if True, will use regional reanalysis correction if it is available for the location
+- **reanalysisScaleCorrectionVersion** (int, optional): The version of the reanalysis scale correction to use if known.
+- **reanalysisScaleCorrectionDelta** (float, optional): Override the location-specific *reanalysisScaleCorrectionDelta*. This has no effect if *useReanalysisCorrection* is false
+- **usePowerCurveSmoothing** (bool, optional): if True, will use regional reanalysis correction if it is available for the location
+- **smoothingConfigVersion** (int, optional): The version of the smoothing configuration to use if known. Defaults to None.
+- **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
 - **roughnessLength** (float, optional): Static roughness. If not given, will be derived from reanalysis data
 - **curtailmentThreshold** (float, optional): Defaults to 0
 - **lossesWake** (float, optional): The percentage to apply for wake loss. (0 &lt;= lossesWake &lt; 1)

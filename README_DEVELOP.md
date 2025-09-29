@@ -14,7 +14,7 @@ To run docusaurus site in development watch-mode, run `npm run start` inside `do
 We use GitHub Actions and pages to deploy the documentation, therefore once the PR has been mereged, it will automatically build and deploy the documentation within `docusaurus-site/` and deploy the `build` folder to the branch `gh-pages` which is the branch that is being used to render the GH Pages.
 
 
-**To avoid confusion: `./docs` hosts a built statis website. `./docusaurus-site/docs` hosts markdown files for editing documentation**
+**To avoid confusion: `./docs` hosts a built static website. `./docusaurus-site/docs` hosts markdown files for editing documentation**
 
 > Please remember to update the version number in `setup.py` to reflect the changes in SDK and docs. This is especially relevant when the new version of the SDK is not backward compatible with the previous version.
 
