@@ -68,7 +68,7 @@ class LoadFactorBaseParameters:
         - **obstacleHeight** (float): Given in meters (m). Defaults to 0.
         - **numberOfTurbines** (int): The number of turbines in the site.
         - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
-        - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correction be used only valid for ERA5, Defaults to False.
+        - **smoothingConfigVersion** (int, optional): The version of the smoothing configuration to use if known. Defaults to None.
         - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.
         - **lossesWake** (float, default 0): The percentage to apply for wake loss. (0 <= lossesWake < 1)
         - **lossesAvailability** (float, default 0): Percentage for external losses.  (0 <= lossesAvailability < 1)
@@ -89,6 +89,7 @@ class LoadFactorBaseParameters:
         numberOfTurbines: int = None,
         turbineModelId: int = None,
         usePowerCurveSmoothing: bool = None,
+        smoothingConfigVersion: int = None,
         smoothingCoefficient: float = None,
         lossesWake: float = 0.0,
         lossesAvailability: float = 0.0,
@@ -100,14 +101,15 @@ class LoadFactorBaseParameters:
         self.turbineModelId = turbineModelId
         self.latitude = latitude
         self.longitude = longitude
-        self.smoothingCoefficient = smoothingCoefficient
         self.startTimeUTC = startTimeUTC
         self.regionCode = regionCode
         self.hubHeight = hubHeight
         self.obstacleHeight = obstacleHeight
-
         self.numberOfTurbines = numberOfTurbines
+
         self.usePowerCurveSmoothing = usePowerCurveSmoothing
+        self.smoothingConfigVersion = smoothingConfigVersion
+        self.smoothingCoefficient = smoothingCoefficient
 
         self.lossesWake = lossesWake
         self.lossesAvailability = lossesAvailability
@@ -152,18 +154,22 @@ class BuiltInWindParameters(FlowParameters):
         windType (WindType): AuroraWindAtlas, Era5, Merra2, or NEWA
         useReanalysisCorrection (bool, optional): Should Regional Reanalysis Correction be enabled.
             If true then a location specific *reanalysisScaleCorrectionDelta* is used. Defaults to False.
-        reanalysisScaleCorrectionDelta (float, optional): Override the location specific
-            *reanalysisScaleCorrectionDelta*. This has no effect if *reanalysisScaleCorrectionDelta* is false. Defaults to None.
+        reanalysisScaleCorrectionVersion (int, optional): The version of the reanalysis scale correction to use if known.
+            Defaults to None.
+        reanalysisScaleCorrectionDelta (float, optional): Override the location-specific
+            *reanalysisScaleCorrectionDelta*. This has no effect if *useReanalysisCorrection* is false. Defaults to None.
     """
 
     def __init__(
         self,
         windType: WindType,
         useReanalysisCorrection: bool = False,
+        reanalysisScaleCorrectionVersion: int = None,
         reanalysisScaleCorrectionDelta: float = None,
     ):
         super().__init__(windType)
         self.useReanalysisCorrection = useReanalysisCorrection
+        self.reanalysisScaleCorrectionVersion = reanalysisScaleCorrectionVersion
         self.reanalysisScaleCorrectionDelta = reanalysisScaleCorrectionDelta
 
 
