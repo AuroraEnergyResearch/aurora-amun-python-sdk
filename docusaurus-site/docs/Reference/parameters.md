@@ -99,6 +99,7 @@ Parameters for all wind types.
   - **hubHeight** (float): Given in meters (m).
   - **obstacleHeight** (float): Given in meters (m). Defaults to 0.
   - **numberOfTurbines** (int): The number of turbines in the site.
+  - **baseWindProfile** (str, optional): A name of a wind dataset (e.g. &quot;NEWA&quot;, &quot;ERA5&quot;, &quot;MERRA2&quot;) to use as a base for load factor calculations.
   - **usePowerCurveSmoothing** (bool, optional): Should Default Multi-Turbine Power Curve Smoothing be used in the calculation if true then a region specific scale factor is used. If None then no smoothing is applied Defaults to None.
   - **useReanalysisCorrection** (bool, optional): Should Reanalysis Correction be used only valid for ERA5, Defaults to False.
   - **smoothingCoefficient** (float): The value to use for smoothing. This will override any region specific values. This has no effect unless *usePowerCurveSmoothing* is true.

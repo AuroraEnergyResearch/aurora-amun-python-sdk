@@ -22,7 +22,7 @@ def main():
         latitude=59.59,
         longitude=0,
         startTimeUTC="2018-01-01T00:00:00.000Z",
-        regionCode="GBR",
+        regionCode="gbr",
         hubHeight=90,
         lossesAvailability=0.1,
         lossesWake=0,
