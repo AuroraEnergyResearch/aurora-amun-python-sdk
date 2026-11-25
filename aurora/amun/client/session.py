@@ -97,6 +97,49 @@ class APISession:
         response = session_to_use.request("GET", url, params=params)
         return self._parse_as_json(response)
 
+    def _get_bytes_request(self, url, params={}, should_retry=False):
+        """GET a binary response (e.g. an Excel file) and return its raw bytes."""
+        log.debug(f"GET (binary) Request to {url}  with params {params}")
+
+        if should_retry:
+            session_to_use = configure_session_retry(self._create_session(), retries=20)
+        else:
+            session_to_use = self.session
+
+        response = session_to_use.request("GET", url, params=params)
+        self._raise_for_error_status(response)
+        return response.content
+
+    def _post_file_request(self, url, file_path, params={}):
+        """POST a file as multipart/form-data. The session's JSON content type is dropped
+        so that requests can set the multipart boundary itself."""
+        log.debug(f"POST (multipart) Request to {url} with file '{file_path}' and params {params}")
+        headers = {"Private-Token": self.token}
+        with open(file_path, "rb") as file:
+            files = {
+                "file": (
+                    os.path.basename(file_path),
+                    file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            }
+            response = requests.post(url, params=params, files=files, headers=headers)
+        return self._parse_as_json(response)
+
+    def _raise_for_error_status(self, response):
+        if response.status_code == 200 or response.status_code == 202:
+            return
+        elif response.status_code == 401:
+            raise RuntimeError(
+                f"You are not authorised. Please check you have set the correct api token."
+            )
+        elif response.status_code == 403:
+            raise RuntimeError(
+                f"Your token is valid but you do not have the required permissions to perform this operation."
+            )
+        else:
+            raise RuntimeError(f"{response.status_code}  {response.text}")
+
     def _del_request(self, url, params={}):
         log.debug(f"DEL Request to {url}  with params {params}")
 
@@ -343,7 +386,16 @@ class AmunSession(APISession):
         - **lossesTurbinePerformance** (float, optional): Percentage for external losses. (0 <= lossesTurbinePerformance < 1)
         - **lossesEnvironmental** (float, optional): Percentage for external losses. (0 <= lossesEnvironmental < 1)
         - **lossesOtherCurtailment** (float, optional): Percentage for external losses. (0 <= lossesOtherCurtailment < 1)
-        
+        - **fullHorizonMode** (bool, optional): If True, the wind output model builds production for the full forecast horizon
+            instead of repeating a single typical year. Defaults to False. Not supported for historic scenarios,
+            scenarios with weather years, or the uploaded generation wind types. Valuations run in this mode can download
+            the additional full-horizon files with `AmunSession.get_valuation_files`.
+        - **lossSource** (str, optional): "scalar" (default) uses the losses* fields above. "template" applies the
+            time-varying losses from an uploaded loss template instead (requires **fullHorizonMode** = True and **lossFileId**).
+            In template mode the scalar losses* fields are stored but have no effect.
+        - **lossFileId** (str, optional): The id of a loss template returned by `AmunSession.upload_loss_template`.
+            Only used when **lossSource** is "template".
+
         Additional parameters that are specific to a wind type will be required. Please look at the parameters section of SDK Reference documentation and
             see Amun SDK Examples to see how to create a valuation for your use case.
         
@@ -596,20 +648,113 @@ class AmunSession(APISession):
         url = f"{self.base_url}/valuations/{valuation_id}/copy"
         return self._post_request(url, {})
 
-    def get_valuation_results(self, valuation_id, format, should_return_hourly_data):
+    def get_valuation_results(
+        self, valuation_id, format, should_return_hourly_data, save_to=None
+    ):
         """
-        Gets the results of a valuation
+        Gets the results of a valuation. Runs the valuation first if it has not been calculated yet.
 
         Args:
             valuation_id (number): The id of the valuation to get the results for.
-            format (string): The format of the results. One of ("json","xlsx")
+            format (string): The format of the results. One of ("json", "gzip", "excel", "yearly", "legacy").
             should_return_hourly_data (bool): Set to true to return the hourly data for the valuation.
+            save_to (string, optional): If given, the raw response is written to this file path
+                (parent directories are created) and the path is returned instead of parsed JSON.
+                Required for "excel", whose response is an .xlsx workbook rather than JSON.
+
+        Returns:
+            The parsed JSON results, or the path written to when **save_to** is given.
         """
         url = f"{self.base_url}/valuations/{valuation_id}/outputs"
         params = {"format": format}
         if should_return_hourly_data:
             params["hourlyData"] = True
-        return self._get_request(url, params=params, should_retry=True)
+        if save_to is None:
+            return self._get_request(url, params=params, should_retry=True)
+
+        content = self._get_bytes_request(url, params=params, should_retry=True)
+        Path(save_to).parent.mkdir(parents=True, exist_ok=True)
+        with open(save_to, "wb") as file:
+            file.write(content)
+        log.debug(f"Saved valuation {valuation_id} '{format}' results to '{save_to}'")
+        return save_to
+
+    def upload_loss_template(self, file_path, name):
+        """Uploads an Excel (.xlsx) loss template, based on the Amun Loss Template, for time-varying losses.
+
+        The template's content is validated when a valuation using it runs, not on upload.
+        Templates are immutable: to change one, upload a new template and point the valuation at it.
+
+        Args:
+            file_path (string): Path to the .xlsx loss template.
+            name (string): A human readable name. Must be unique among your non-deleted loss templates.
+
+        Returns:
+            A dictionary with the template's **id** and **name**. Use the id as **lossFileId** on a valuation
+            (see `AmunSession.create_valuation`).
+        """
+        url = f"{self.base_url}/loss-files"
+        return self._post_file_request(url, file_path, params={"name": name})
+
+    def get_loss_templates(self):
+        """Lists your loss templates, newest first."""
+        url = f"{self.base_url}/loss-files"
+        return self._get_request(url)
+
+    def delete_loss_template(self, loss_template_id):
+        """Deletes a loss template.
+
+        Note:
+            Valuations that use a deleted template can no longer be run.
+
+        Args:
+            loss_template_id (string): The id of the loss template to delete.
+        """
+        url = f"{self.base_url}/loss-files/{loss_template_id}"
+        return self._del_request(url)
+
+    def get_valuation_files(self, valuation_id):
+        """Lists the additional full-horizon files produced for a valuation run with **fullHorizonMode**.
+
+        The files are: site_out_granular.csv, site_out_hourly.csv, central_year_hourly.csv,
+        central_year_granular.csv and, for loss template valuations, loss_schedule.csv.
+        They are provided in the wind output model's raw format (two header rows, the second holding units).
+
+        The valuation must already have been calculated (see `AmunSession.get_valuation_results`).
+
+        Args:
+            valuation_id (number): The id of the valuation.
+
+        Returns:
+            A list of dictionaries with **name** and **s3link**. Each link is a time-limited (90 second) download URL.
+        """
+        url = f"{self.base_url}/valuations/{valuation_id}/files"
+        return self._get_request(url)["valuationFiles"]["files"]
+
+    def download_valuation_files(self, valuation_id, out_dir, names=None):
+        """Downloads the additional full-horizon files of a valuation (see `AmunSession.get_valuation_files`).
+
+        Args:
+            valuation_id (number): The id of the valuation.
+            out_dir (string): Directory to write the files to. Created if it does not exist.
+            names (list of string, optional): Only download these files. Defaults to all files.
+
+        Returns:
+            A list of the paths written.
+        """
+        Path(out_dir).mkdir(parents=True, exist_ok=True)
+        written = []
+        for file in self.get_valuation_files(valuation_id):
+            if names is not None and file["name"] not in names:
+                continue
+            response = requests.get(file["s3link"])
+            response.raise_for_status()
+            path = os.path.join(out_dir, file["name"])
+            with open(path, "wb") as writer:
+                writer.write(response.content)
+            log.debug(f"Downloaded '{file['name']}' to '{path}'")
+            written.append(path)
+        return written
 
     def delete_valuation(self, valuation_id):
         """Deletes a valuation from Amun.
@@ -621,7 +766,7 @@ class AmunSession(APISession):
         return self._del_request(url)
 
     def update_valuation(self, valuation):
-        url = (f"{self.base_url}/valuations/{valuation['id']}",)
+        url = f"{self.base_url}/valuations/{valuation['id']}"
         return self._post_request(url, valuation)
 
     def send_production_for_calibration(self, valuation_id, generation):

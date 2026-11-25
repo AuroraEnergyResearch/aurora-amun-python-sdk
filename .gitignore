@@ -137,3 +137,5 @@ docs/build
 .idea
 
 examples/scratch
+# Local secrets for examples
+.env.local
