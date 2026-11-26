@@ -7,6 +7,8 @@ The runnable scripts are:
 - download_valuation_outputs.py
 - download_full_horizon_files.py
 - full_horizon_loss_template_e2e.py (chains all of the above)
+- NEW_visualise_full_horizon_losses.py (charts the downloaded files to check the losses;
+  needs `pip install pandas plotly`)
 
 Run them from the repository root, e.g. `python examples/upload_loss_template.py`.
 The API base URL and token are picked up from AURORA_API_BASE_URL / AURORA_API_KEY
@@ -61,16 +63,16 @@ def setup_file_and_console_loggers(file_name):
     logging.getLogger("aurora.amun").setLevel(logging.DEBUG)
 
 
-def default_template_name():
+def generate_loss_file_name():
     return f"SDK-uploaded loss template {datetime.now():%Y-%m-%d %H-%M-%S}"
 
 
-def upload_loss_template(session: AmunSession, template_path, template_name):
-    loss_template = session.upload_loss_template(template_path, template_name)
+def upload_loss_file(session: AmunSession, loss_file_path, loss_file_name):
+    loss_file = session.upload_loss_file(loss_file_path, loss_file_name)
     log.info(
-        f"Uploaded loss template '{loss_template['name']}' with id {loss_template['id']}"
+        f"Uploaded loss file '{loss_file['name']}' with id {loss_file['id']}"
     )
-    return loss_template
+    return loss_file
 
 
 def create_full_horizon_valuation(

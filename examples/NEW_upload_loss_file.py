@@ -2,15 +2,15 @@
 from aurora.amun.client.session import AmunSession
 
 from NEW_full_horizon_steps import (
-    default_template_name,
+    generate_loss_file_name,
     load_local_env,
     setup_file_and_console_loggers,
-    upload_loss_template,
+    upload_loss_file,
 )
 
 # --- EDIT ME -----------------------------------------------------------------
-TEMPLATE_PATH = "examples/data/loss_template.xlsx"
-TEMPLATE_NAME = default_template_name()  # must be unique among your templates
+LOSS_FILE_PATH = "examples/data/Amun Loss Template.xlsx"
+LOSS_FILE_NAME = generate_loss_file_name()  # must be unique among your templates
 # -----------------------------------------------------------------------------
 
 
@@ -18,7 +18,7 @@ def main():
     load_local_env()
     setup_file_and_console_loggers("upload_loss_template.log")
     session = AmunSession()
-    upload_loss_template(session, TEMPLATE_PATH, TEMPLATE_NAME)
+    upload_loss_file(session, LOSS_FILE_PATH, LOSS_FILE_NAME)
 
 
 if __name__ == "__main__":

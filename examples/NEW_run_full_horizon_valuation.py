@@ -14,7 +14,7 @@ from NEW_full_horizon_steps import (
 )
 
 # --- EDIT ME -----------------------------------------------------------------
-LOSS_TEMPLATE_ID = "b28c5d7e-6734-4bf7-9013-50759a9b9480"
+LOSS_FILE_ID = "903eafd6-f466-4536-813a-d7e140561be4"
 REGION = "deu"
 # Must be a non-historic scenario without weather years, covering whole months within 01/2019-12/2070
 SCENARIO_NAME = "Germany Q3 26 (Central)"
@@ -26,7 +26,7 @@ def main():
     load_local_env()
     setup_file_and_console_loggers("run_full_horizon_valuation.log")
     session = AmunSession()
-    valuation = create_full_horizon_valuation(session, LOSS_TEMPLATE_ID, REGION, SCENARIO_NAME)
+    valuation = create_full_horizon_valuation(session, LOSS_FILE_ID, REGION, SCENARIO_NAME)
     download_valuation_outputs(session, valuation["id"], HOURLY_DATA)
     download_full_horizon_files(session, valuation["id"])
 

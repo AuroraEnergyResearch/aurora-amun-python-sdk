@@ -1,4 +1,5 @@
 import time
+import base64
 from aurora.amun.client.responses import (
     RegionDetail,
     get_RegionDetail_from_response,
@@ -97,8 +98,12 @@ class APISession:
         response = session_to_use.request("GET", url, params=params)
         return self._parse_as_json(response)
 
-    def _get_bytes_request(self, url, params={}, should_retry=False):
-        """GET a binary response (e.g. an Excel file) and return its raw bytes."""
+    def _get_bytes_request(self, url, params={}, should_retry=False, accept=None):
+        """GET a binary response (e.g. an Excel file) and return its raw bytes.
+
+        API Gateway only converts a binary Lambda response back from base64 when the request's
+        Accept header matches one of its binary media types, so pass **accept** for binary content.
+        """
         log.debug(f"GET (binary) Request to {url}  with params {params}")
 
         if should_retry:
@@ -106,7 +111,8 @@ class APISession:
         else:
             session_to_use = self.session
 
-        response = session_to_use.request("GET", url, params=params)
+        headers = {"Accept": accept} if accept else None
+        response = session_to_use.request("GET", url, params=params, headers=headers)
         self._raise_for_error_status(response)
         return response.content
 
@@ -672,15 +678,19 @@ class AmunSession(APISession):
         if save_to is None:
             return self._get_request(url, params=params, should_retry=True)
 
-        content = self._get_bytes_request(url, params=params, should_retry=True)
+        accept = {"excel": "application/vnd.openxmlformats", "gzip": "application/gzip"}.get(format)
+        content = self._get_bytes_request(url, params=params, should_retry=True, accept=accept)
+        if format == "excel" and content.startswith(b"UEsDB"):
+            # Fallback: the workbook arrived base64-encoded ("UEsDB" is base64 of the zip header "PK\x03\x04").
+            content = base64.b64decode(content)
         Path(save_to).parent.mkdir(parents=True, exist_ok=True)
         with open(save_to, "wb") as file:
             file.write(content)
         log.debug(f"Saved valuation {valuation_id} '{format}' results to '{save_to}'")
         return save_to
 
-    def upload_loss_template(self, file_path, name):
-        """Uploads an Excel (.xlsx) loss template, based on the Amun Loss Template, for time-varying losses.
+    def upload_loss_file(self, file_path, name):
+        """Uploads an Excel (.xlsx) loss file, based on the Amun Loss Template, for time-varying losses.
 
         The template's content is validated when a valuation using it runs, not on upload.
         Templates are immutable: to change one, upload a new template and point the valuation at it.
@@ -696,21 +706,21 @@ class AmunSession(APISession):
         url = f"{self.base_url}/loss-files"
         return self._post_file_request(url, file_path, params={"name": name})
 
-    def get_loss_templates(self):
+    def get_loss_files(self):
         """Lists your loss templates, newest first."""
         url = f"{self.base_url}/loss-files"
         return self._get_request(url)
 
-    def delete_loss_template(self, loss_template_id):
-        """Deletes a loss template.
+    def delete_loss_file(self, loss_file_id):
+        """Deletes a loss file.
 
         Note:
             Valuations that use a deleted template can no longer be run.
 
         Args:
-            loss_template_id (string): The id of the loss template to delete.
+            loss_file_id (string): The id of the loss file to delete.
         """
-        url = f"{self.base_url}/loss-files/{loss_template_id}"
+        url = f"{self.base_url}/loss-files/{loss_file_id}"
         return self._del_request(url)
 
     def get_valuation_files(self, valuation_id):
