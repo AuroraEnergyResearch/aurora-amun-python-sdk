@@ -55,11 +55,12 @@ def main():
         "turbineModelId": get_turbine_by_name(turbines, "Siemens SWT-4.0-130")["id"],
         "latitude": 59.59,
         "longitude": 0,
-        "startTimeUTC": "2018-01-01T00:00:00.000Z",
+        "startTimeUTC": "2018-07-15T00:00:00.000Z",
         "regionCode": "gbr",
         "hubHeight": 90,
         "numberOfTurbines": 12,
         "usePowerCurveSmoothing": False,
+        "obstacleHeight": 10,
         # Optional
         # "lossesWake": 0.2,
         # "lossesAvailability": 0.02,

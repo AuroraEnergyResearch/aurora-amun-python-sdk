@@ -4,6 +4,15 @@ title: Changelog
 description: Whats new in the SDK
 ---
 
+## Unreleased
+
+- Full-horizon valuations and time-varying losses from Excel loss templates. [Example Here](Examples/Valuations/full-horizon-loss-templates)
+  - New `upload_loss_template`, `get_loss_templates` and `delete_loss_template`.
+  - New `get_valuation_files` and `download_valuation_files` for the additional full-horizon files.
+  - `create_valuation` documents the `fullHorizonMode`, `lossSource` and `lossFileId` fields.
+  - `get_valuation_results` takes an optional `save_to` path, needed for the `excel` format.
+- Fix `update_valuation`, which built an invalid URL.
+
 ## Version 1.0.6 ![Latest](https://img.shields.io/badge/-Latest-ffcc00?style=for-the-badge)
 
 _Date: 31-07-2025_
